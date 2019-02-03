@@ -1,0 +1,516 @@
+\hypertarget{user_8h}{}\subsection{Riferimenti per il file user.\+h}
+\label{user_8h}\index{user.\+h@{user.\+h}}
+
+
+file contenente definizione delle strutture per la gestione degli utenti e funzioni per operare su esse  
+
+
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$uthash.\+h$>$}\newline
+{\ttfamily \#include $<$utlist.\+h$>$}\newline
+{\ttfamily \#include $<$config.\+h$>$}\newline
+{\ttfamily \#include $<$message.\+h$>$}\newline
+{\ttfamily \#include $<$parser.\+h$>$}\newline
+{\ttfamily \#include $<$stats.\+h$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$sys/select.\+h$>$}\newline
+{\ttfamily \#include $<$sys/epoll.\+h$>$}\newline
+\subsubsection*{Strutture dati}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct__history}{\+\_\+history}}
+\begin{DoxyCompactList}\small\item\em lista history utente \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__user__list}{\+\_\+user\+\_\+list}}
+\begin{DoxyCompactList}\small\item\em lista utenti \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__user}{\+\_\+user}}
+\begin{DoxyCompactList}\small\item\em struttura contenente informazioni utente \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__user__group}{\+\_\+user\+\_\+group}}
+\begin{DoxyCompactList}\small\item\em struttura contenente informazioni utente di un gruppo \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__group}{\+\_\+group}}
+\item 
+struct \mbox{\hyperlink{struct__usersdata}{\+\_\+usersdata}}
+\begin{DoxyCompactList}\small\item\em struttura contenente utenti registrati \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsubsection*{Ridefinizioni di tipo (typedef)}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{user_8h_a554f83e99f378eab98256644d9f15af9}\label{user_8h_a554f83e99f378eab98256644d9f15af9}} 
+typedef struct \mbox{\hyperlink{struct__history}{\+\_\+history}} {\bfseries history}
+\item 
+\mbox{\Hypertarget{user_8h_a342cf971910307ec2d5d78fbc528d068}\label{user_8h_a342cf971910307ec2d5d78fbc528d068}} 
+typedef struct \mbox{\hyperlink{struct__user__list}{\+\_\+user\+\_\+list}} {\bfseries ulist}
+\item 
+\mbox{\Hypertarget{user_8h_a015ad14609b63bf8567ea367a5e858c0}\label{user_8h_a015ad14609b63bf8567ea367a5e858c0}} 
+typedef struct \mbox{\hyperlink{struct__user}{\+\_\+user}} {\bfseries user}
+\item 
+\mbox{\Hypertarget{user_8h_a0d7fcd9b4b7be5fe68484c228385cead}\label{user_8h_a0d7fcd9b4b7be5fe68484c228385cead}} 
+typedef struct \mbox{\hyperlink{struct__user__group}{\+\_\+user\+\_\+group}} {\bfseries user\+\_\+group}
+\item 
+\mbox{\Hypertarget{user_8h_a8c93ff4a099dfdc32376f3227d32e70b}\label{user_8h_a8c93ff4a099dfdc32376f3227d32e70b}} 
+typedef struct \mbox{\hyperlink{struct__group}{\+\_\+group}} {\bfseries group}
+\item 
+\mbox{\Hypertarget{user_8h_aeee797c3c1e7bb5386c1ebf9dce4b7e9}\label{user_8h_aeee797c3c1e7bb5386c1ebf9dce4b7e9}} 
+typedef struct \mbox{\hyperlink{struct__usersdata}{\+\_\+usersdata}} {\bfseries userdata}
+\end{DoxyCompactItemize}
+\subsubsection*{Funzioni}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ \mbox{\hyperlink{user_8h_a22092737cd5a0895c1f57e90c786b83f}{new\+\_\+udata}} (\mbox{\hyperlink{structconf}{conf}} $\ast$cf, struct \mbox{\hyperlink{structstatistics}{statistics}} $\ast$chatty\+Stats)
+\begin{DoxyCompactList}\small\item\em crea la struttura per la gestione degli utenti \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{user_8h_a2b5d2bb28b9c95159ae4c9650bd1bbfc}{del\+\_\+udata}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud)
+\begin{DoxyCompactList}\small\item\em elimina la struttura per la gestione degli utenti \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_a0b3da9bc8bad80b9e45aabffbf47ffbd}{reg\+\_\+user}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$nick)
+\begin{DoxyCompactList}\small\item\em registra utente \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_a36d6a58bf0fef737c8461d3b6fe2b4ed}{con\+\_\+user}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$nick, unsigned long fd)
+\begin{DoxyCompactList}\small\item\em connette utente \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_acd3cb71d6292ec2a1ed584f4881ee357}{del\+\_\+user}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$nick)
+\begin{DoxyCompactList}\small\item\em elimina utente \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_ac5918076cf75292bc08642e0feffe613}{logout\+\_\+user}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$nick)
+\begin{DoxyCompactList}\small\item\em disconnette utente \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_afe383557cd7baba7d0c7b9040011bfe7}{brutal\+\_\+logout}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, int fd, int epollfd, pthread\+\_\+mutex\+\_\+t $\ast$mtx)
+\begin{DoxyCompactList}\small\item\em disconnette utente dato il suo fd \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{user_8h_af5c73c15fe3f86d1d4ff9a1b71fac700}{all\+\_\+user}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, \mbox{\hyperlink{struct__user__list}{ulist}} $\ast$$\ast$list)
+\begin{DoxyCompactList}\small\item\em restituisce lista utenti connessi \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{user_8h_ad65a594ab75714463ba64596d36c0d0c}{del\+\_\+list}} (\mbox{\hyperlink{struct__user__list}{ulist}} $\ast$$\ast$list)
+\begin{DoxyCompactList}\small\item\em elimina lista utenti connessi \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_aece82f34fb4581299d6914ef871d886b}{save\+\_\+msg}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$nick, \mbox{\hyperlink{structmessage__t}{message\+\_\+t}} $\ast$msg)
+\begin{DoxyCompactList}\small\item\em salva msg nella history di un utente non connesso \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{user_8h_a69703738faca2131cb5714fa1fb8f8a1}{del\+\_\+history}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, \mbox{\hyperlink{struct__history}{history}} $\ast$$\ast$list)
+\begin{DoxyCompactList}\small\item\em elimina history utente \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct__user}{user}} $\ast$ \mbox{\hyperlink{user_8h_a4ae20b98acc64359de1f8baa82b8b7b4}{find\+\_\+user}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$nick)
+\begin{DoxyCompactList}\small\item\em cerca un utente \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct__history}{history}} $\ast$ \mbox{\hyperlink{user_8h_ac9e2beafc42bdb5158f33957d247f949}{find\+\_\+history}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$nick)
+\begin{DoxyCompactList}\small\item\em cerca history utente \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{user_8h_a9be930562c932e7e49d2f9ca0a68e428}\label{user_8h_a9be930562c932e7e49d2f9ca0a68e428}} 
+void {\bfseries print\+\_\+list} (\mbox{\hyperlink{struct__user__list}{ulist}} $\ast$list)
+\item 
+\mbox{\Hypertarget{user_8h_ac67d1bd84fe394508e26c4889c9544ce}\label{user_8h_ac67d1bd84fe394508e26c4889c9544ce}} 
+void {\bfseries print\+\_\+users} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud)
+\item 
+void \mbox{\hyperlink{user_8h_a21a1f4faff772a417f2f48bf45bcc89c}{stats}} (int reg, int con, int msg\+\_\+delivered, int msg\+\_\+waiting, int file\+\_\+delivered, int file\+\_\+waiting, int err, \mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud)
+\begin{DoxyCompactList}\small\item\em aggiorna statistiche \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct__group}{group}} $\ast$ \mbox{\hyperlink{user_8h_a95bf7e7bf28b0b58de967ee0618abd09}{new\+\_\+group}} (char $\ast$name)
+\begin{DoxyCompactList}\small\item\em crea una struttura di tipo \mbox{\hyperlink{struct__group}{\+\_\+group}} \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{user_8h_a31406d7a99a36caa72b976ae2996796f}{del\+\_\+group}} (\mbox{\hyperlink{struct__group}{group}} $\ast$gdata)
+\begin{DoxyCompactList}\small\item\em elimina una struttura di tipo \mbox{\hyperlink{struct__group}{\+\_\+group}} \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_a9a0c20af8dbe611c25900fff4b393e09}{reg\+\_\+user\+\_\+group}} (\mbox{\hyperlink{struct__group}{group}} $\ast$gdata, \mbox{\hyperlink{struct__user}{user}} $\ast$new)
+\begin{DoxyCompactList}\small\item\em aggiunge un utente ad un gruppo \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_a5236c2601d5fe844ca3e70676ea0997e}{del\+\_\+user\+\_\+group}} (\mbox{\hyperlink{struct__group}{group}} $\ast$gdata, \mbox{\hyperlink{struct__user}{user}} $\ast$del)
+\begin{DoxyCompactList}\small\item\em elimina un utente da un gruppo \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_addec4d9e953b2ce565cdde67ec90699d}{find\+\_\+user\+\_\+group}} (\mbox{\hyperlink{struct__group}{group}} $\ast$gdata, char $\ast$nick)
+\begin{DoxyCompactList}\small\item\em verifica la presenza di un utente in un gruppo \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct__group}{group}} $\ast$ \mbox{\hyperlink{user_8h_a97ebeace5e433443dfbc1566475a246a}{find\+\_\+group}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$name)
+\begin{DoxyCompactList}\small\item\em cerca un gruppo tra i gruppi creati \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{user_8h_a83e3853217d5eefd3e13def97c7545f9}{add\+\_\+group}} (\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud, char $\ast$name)
+\begin{DoxyCompactList}\small\item\em crea e registra un gruppo in ud \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsubsection{Descrizione dettagliata}
+file contenente definizione delle strutture per la gestione degli utenti e funzioni per operare su esse 
+
+\begin{DoxyAuthor}{Autore}
+Valerio Besozzi 543685 Si dichiara che il contenuto di questo file e\textquotesingle{} in ogni sua parte opera originale dell\textquotesingle{}autore 
+\end{DoxyAuthor}
+
+
+\subsubsection{Documentazione delle funzioni}
+\mbox{\Hypertarget{user_8h_a83e3853217d5eefd3e13def97c7545f9}\label{user_8h_a83e3853217d5eefd3e13def97c7545f9}} 
+\index{user.\+h@{user.\+h}!add\+\_\+group@{add\+\_\+group}}
+\index{add\+\_\+group@{add\+\_\+group}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{add\+\_\+group()}{add\_group()}}
+{\footnotesize\ttfamily int add\+\_\+group (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{name }\end{DoxyParamCaption})}
+
+
+
+crea e registra un gruppo in ud 
+
+add\+\_\+group 
+\begin{DoxyParams}{Parametri}
+{\em ud} & struttura \+\_\+userdata dove e\textquotesingle{} presente hashmap con i gruppi \\
+\hline
+{\em name} & nome del gruppo da creare e registrare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se il gruppo e\textquotesingle{} stato creato e registrato correttamente, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_af5c73c15fe3f86d1d4ff9a1b71fac700}\label{user_8h_af5c73c15fe3f86d1d4ff9a1b71fac700}} 
+\index{user.\+h@{user.\+h}!all\+\_\+user@{all\+\_\+user}}
+\index{all\+\_\+user@{all\+\_\+user}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{all\+\_\+user()}{all\_user()}}
+{\footnotesize\ttfamily void all\+\_\+user (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{\mbox{\hyperlink{struct__user__list}{ulist}} $\ast$$\ast$}]{list }\end{DoxyParamCaption})}
+
+
+
+restituisce lista utenti connessi 
+
+all\+\_\+user 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata dove cercare utente \\
+\hline
+{\em list} & lista dove salvare utenti \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{user_8h_afe383557cd7baba7d0c7b9040011bfe7}\label{user_8h_afe383557cd7baba7d0c7b9040011bfe7}} 
+\index{user.\+h@{user.\+h}!brutal\+\_\+logout@{brutal\+\_\+logout}}
+\index{brutal\+\_\+logout@{brutal\+\_\+logout}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{brutal\+\_\+logout()}{brutal\_logout()}}
+{\footnotesize\ttfamily int brutal\+\_\+logout (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{int}]{fd,  }\item[{int}]{epollfd,  }\item[{pthread\+\_\+mutex\+\_\+t $\ast$}]{mtx }\end{DoxyParamCaption})}
+
+
+
+disconnette utente dato il suo fd 
+
+brutal\+\_\+user 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui disconnettere utente \\
+\hline
+{\em fd} & descrittore della connessione relativo all\textquotesingle{}utente da disconnettere \\
+\hline
+{\em epollfd} & fd relativo all\textquotesingle{}istanza epoll in uso \\
+\hline
+{\em mtx} & mutex \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se la disconnessione e\textquotesingle{} avvenuta con successo, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a36d6a58bf0fef737c8461d3b6fe2b4ed}\label{user_8h_a36d6a58bf0fef737c8461d3b6fe2b4ed}} 
+\index{user.\+h@{user.\+h}!con\+\_\+user@{con\+\_\+user}}
+\index{con\+\_\+user@{con\+\_\+user}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{con\+\_\+user()}{con\_user()}}
+{\footnotesize\ttfamily int con\+\_\+user (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{nick,  }\item[{unsigned long}]{fd }\end{DoxyParamCaption})}
+
+
+
+connette utente 
+
+con\+\_\+user 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui connettere utente \\
+\hline
+{\em nick} & nome dell\textquotesingle{}utente da connettere \\
+\hline
+{\em fd} & fd relativo all\textquotesingle{}utente da connettere \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se la connessione e\textquotesingle{} avvenuta con successo, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a31406d7a99a36caa72b976ae2996796f}\label{user_8h_a31406d7a99a36caa72b976ae2996796f}} 
+\index{user.\+h@{user.\+h}!del\+\_\+group@{del\+\_\+group}}
+\index{del\+\_\+group@{del\+\_\+group}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{del\+\_\+group()}{del\_group()}}
+{\footnotesize\ttfamily void del\+\_\+group (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__group}{group}} $\ast$}]{gdata }\end{DoxyParamCaption})}
+
+
+
+elimina una struttura di tipo \mbox{\hyperlink{struct__group}{\+\_\+group}} 
+
+del\+\_\+group 
+\begin{DoxyParams}{Parametri}
+{\em gdata} & il gruppo da eliminare \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{user_8h_a69703738faca2131cb5714fa1fb8f8a1}\label{user_8h_a69703738faca2131cb5714fa1fb8f8a1}} 
+\index{user.\+h@{user.\+h}!del\+\_\+history@{del\+\_\+history}}
+\index{del\+\_\+history@{del\+\_\+history}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{del\+\_\+history()}{del\_history()}}
+{\footnotesize\ttfamily void del\+\_\+history (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{\mbox{\hyperlink{struct__history}{history}} $\ast$$\ast$}]{list }\end{DoxyParamCaption})}
+
+
+
+elimina history utente 
+
+del\+\_\+history 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui e\textquotesingle{} presente utente \\
+\hline
+{\em list} & lista da eliminare \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{user_8h_ad65a594ab75714463ba64596d36c0d0c}\label{user_8h_ad65a594ab75714463ba64596d36c0d0c}} 
+\index{user.\+h@{user.\+h}!del\+\_\+list@{del\+\_\+list}}
+\index{del\+\_\+list@{del\+\_\+list}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{del\+\_\+list()}{del\_list()}}
+{\footnotesize\ttfamily void del\+\_\+list (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__user__list}{ulist}} $\ast$$\ast$}]{list }\end{DoxyParamCaption})}
+
+
+
+elimina lista utenti connessi 
+
+del\+\_\+list 
+\begin{DoxyParams}{Parametri}
+{\em list} & lista da eliminare \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{user_8h_a2b5d2bb28b9c95159ae4c9650bd1bbfc}\label{user_8h_a2b5d2bb28b9c95159ae4c9650bd1bbfc}} 
+\index{user.\+h@{user.\+h}!del\+\_\+udata@{del\+\_\+udata}}
+\index{del\+\_\+udata@{del\+\_\+udata}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{del\+\_\+udata()}{del\_udata()}}
+{\footnotesize\ttfamily void del\+\_\+udata (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud }\end{DoxyParamCaption})}
+
+
+
+elimina la struttura per la gestione degli utenti 
+
+del\+\_\+udata 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata da eliminare \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{user_8h_acd3cb71d6292ec2a1ed584f4881ee357}\label{user_8h_acd3cb71d6292ec2a1ed584f4881ee357}} 
+\index{user.\+h@{user.\+h}!del\+\_\+user@{del\+\_\+user}}
+\index{del\+\_\+user@{del\+\_\+user}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{del\+\_\+user()}{del\_user()}}
+{\footnotesize\ttfamily int del\+\_\+user (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{nick }\end{DoxyParamCaption})}
+
+
+
+elimina utente 
+
+del\+\_\+user 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui eliminare utente \\
+\hline
+{\em nick} & nome dell\textquotesingle{}utente da eliminare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se l\textquotesingle{}eliminazione e\textquotesingle{} avvenuta con successo, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a5236c2601d5fe844ca3e70676ea0997e}\label{user_8h_a5236c2601d5fe844ca3e70676ea0997e}} 
+\index{user.\+h@{user.\+h}!del\+\_\+user\+\_\+group@{del\+\_\+user\+\_\+group}}
+\index{del\+\_\+user\+\_\+group@{del\+\_\+user\+\_\+group}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{del\+\_\+user\+\_\+group()}{del\_user\_group()}}
+{\footnotesize\ttfamily int del\+\_\+user\+\_\+group (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__group}{group}} $\ast$}]{gdata,  }\item[{\mbox{\hyperlink{struct__user}{user}} $\ast$}]{del }\end{DoxyParamCaption})}
+
+
+
+elimina un utente da un gruppo 
+
+del\+\_\+user\+\_\+group 
+\begin{DoxyParams}{Parametri}
+{\em gdata} & il gruppo in cui c\textquotesingle{}e\textquotesingle{} l\textquotesingle{}utente da rimuovere \\
+\hline
+{\em del} & utente da rimuovere dal gruppo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se utente e\textquotesingle{} stato eliminato correttamente, -\/1 in caso di errore 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a97ebeace5e433443dfbc1566475a246a}\label{user_8h_a97ebeace5e433443dfbc1566475a246a}} 
+\index{user.\+h@{user.\+h}!find\+\_\+group@{find\+\_\+group}}
+\index{find\+\_\+group@{find\+\_\+group}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{find\+\_\+group()}{find\_group()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct__group}{group}}$\ast$ find\+\_\+group (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{name }\end{DoxyParamCaption})}
+
+
+
+cerca un gruppo tra i gruppi creati 
+
+find\+\_\+group 
+\begin{DoxyParams}{Parametri}
+{\em ud} & struttura \+\_\+userdata dove e\textquotesingle{} presente hashmap con i gruppi \\
+\hline
+{\em name} & nome del gruppo da cercare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+puntatore alla struttura \mbox{\hyperlink{struct__group}{\+\_\+group}} relativo al gruppo cercato, N\+U\+LL altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_ac9e2beafc42bdb5158f33957d247f949}\label{user_8h_ac9e2beafc42bdb5158f33957d247f949}} 
+\index{user.\+h@{user.\+h}!find\+\_\+history@{find\+\_\+history}}
+\index{find\+\_\+history@{find\+\_\+history}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{find\+\_\+history()}{find\_history()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct__history}{history}}$\ast$ find\+\_\+history (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{nick }\end{DoxyParamCaption})}
+
+
+
+cerca history utente 
+
+find\+\_\+history 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui cercare history utente \\
+\hline
+{\em nick} & nome utente da cercare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+history se la history utente e\textquotesingle{} stata trovata, null altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a4ae20b98acc64359de1f8baa82b8b7b4}\label{user_8h_a4ae20b98acc64359de1f8baa82b8b7b4}} 
+\index{user.\+h@{user.\+h}!find\+\_\+user@{find\+\_\+user}}
+\index{find\+\_\+user@{find\+\_\+user}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{find\+\_\+user()}{find\_user()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct__user}{user}}$\ast$ find\+\_\+user (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{nick }\end{DoxyParamCaption})}
+
+
+
+cerca un utente 
+
+find\+\_\+user 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui cercare utente \\
+\hline
+{\em nick} & nome utente da cercare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+user se l\textquotesingle{}utente e\textquotesingle{} stato trovato, null altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_addec4d9e953b2ce565cdde67ec90699d}\label{user_8h_addec4d9e953b2ce565cdde67ec90699d}} 
+\index{user.\+h@{user.\+h}!find\+\_\+user\+\_\+group@{find\+\_\+user\+\_\+group}}
+\index{find\+\_\+user\+\_\+group@{find\+\_\+user\+\_\+group}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{find\+\_\+user\+\_\+group()}{find\_user\_group()}}
+{\footnotesize\ttfamily int find\+\_\+user\+\_\+group (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__group}{group}} $\ast$}]{gdata,  }\item[{char $\ast$}]{nick }\end{DoxyParamCaption})}
+
+
+
+verifica la presenza di un utente in un gruppo 
+
+find\+\_\+user\+\_\+group 
+\begin{DoxyParams}{Parametri}
+{\em gdata} & il gruppo in cui cercare l\textquotesingle{}utente \\
+\hline
+{\em nick} & nickname dell\textquotesingle{}utente da cercare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se utente e\textquotesingle{} stato trovato, -\/1 in caso di errore 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_ac5918076cf75292bc08642e0feffe613}\label{user_8h_ac5918076cf75292bc08642e0feffe613}} 
+\index{user.\+h@{user.\+h}!logout\+\_\+user@{logout\+\_\+user}}
+\index{logout\+\_\+user@{logout\+\_\+user}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{logout\+\_\+user()}{logout\_user()}}
+{\footnotesize\ttfamily int logout\+\_\+user (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{nick }\end{DoxyParamCaption})}
+
+
+
+disconnette utente 
+
+logout\+\_\+user 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui disconnettere utente \\
+\hline
+{\em nick} & nome dell\textquotesingle{}utente da disconnettere \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se la disconnessione e\textquotesingle{} avvenuta con successo, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a95bf7e7bf28b0b58de967ee0618abd09}\label{user_8h_a95bf7e7bf28b0b58de967ee0618abd09}} 
+\index{user.\+h@{user.\+h}!new\+\_\+group@{new\+\_\+group}}
+\index{new\+\_\+group@{new\+\_\+group}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{new\+\_\+group()}{new\_group()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct__group}{group}}$\ast$ new\+\_\+group (\begin{DoxyParamCaption}\item[{char $\ast$}]{name }\end{DoxyParamCaption})}
+
+
+
+crea una struttura di tipo \mbox{\hyperlink{struct__group}{\+\_\+group}} 
+
+new\+\_\+group 
+\begin{DoxyParams}{Parametri}
+{\em name} & il nome del gruppo da creare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+puntatore alla struttura \mbox{\hyperlink{struct__group}{\+\_\+group}} appena creata 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a22092737cd5a0895c1f57e90c786b83f}\label{user_8h_a22092737cd5a0895c1f57e90c786b83f}} 
+\index{user.\+h@{user.\+h}!new\+\_\+udata@{new\+\_\+udata}}
+\index{new\+\_\+udata@{new\+\_\+udata}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{new\+\_\+udata()}{new\_udata()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct__usersdata}{userdata}}$\ast$ new\+\_\+udata (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structconf}{conf}} $\ast$}]{cf,  }\item[{struct \mbox{\hyperlink{structstatistics}{statistics}} $\ast$}]{chatty\+Stats }\end{DoxyParamCaption})}
+
+
+
+crea la struttura per la gestione degli utenti 
+
+new\+\_\+udata 
+\begin{DoxyParams}{Parametri}
+{\em cf} & struttura contenente configurazioni \\
+\hline
+{\em chatty\+Stats} & struttura contenente statistiche \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+puntatore alla struttura userdata creata 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a0b3da9bc8bad80b9e45aabffbf47ffbd}\label{user_8h_a0b3da9bc8bad80b9e45aabffbf47ffbd}} 
+\index{user.\+h@{user.\+h}!reg\+\_\+user@{reg\+\_\+user}}
+\index{reg\+\_\+user@{reg\+\_\+user}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{reg\+\_\+user()}{reg\_user()}}
+{\footnotesize\ttfamily int reg\+\_\+user (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{nick }\end{DoxyParamCaption})}
+
+
+
+registra utente 
+
+reg\+\_\+user 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui aggiungere utente \\
+\hline
+{\em nick} & nome dell\textquotesingle{}utente da registrare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se la registrazione e\textquotesingle{} avvenuta con successo, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a9a0c20af8dbe611c25900fff4b393e09}\label{user_8h_a9a0c20af8dbe611c25900fff4b393e09}} 
+\index{user.\+h@{user.\+h}!reg\+\_\+user\+\_\+group@{reg\+\_\+user\+\_\+group}}
+\index{reg\+\_\+user\+\_\+group@{reg\+\_\+user\+\_\+group}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{reg\+\_\+user\+\_\+group()}{reg\_user\_group()}}
+{\footnotesize\ttfamily int reg\+\_\+user\+\_\+group (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__group}{group}} $\ast$}]{gdata,  }\item[{\mbox{\hyperlink{struct__user}{user}} $\ast$}]{new }\end{DoxyParamCaption})}
+
+
+
+aggiunge un utente ad un gruppo 
+
+reg\+\_\+user\+\_\+group 
+\begin{DoxyParams}{Parametri}
+{\em gdata} & il gruppo in cui aggiungere l\textquotesingle{}utente \\
+\hline
+{\em new} & utente da aggiungere al gruppo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se utente e\textquotesingle{} stato aggiunto correttamente, -\/1 in caso di errore 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_aece82f34fb4581299d6914ef871d886b}\label{user_8h_aece82f34fb4581299d6914ef871d886b}} 
+\index{user.\+h@{user.\+h}!save\+\_\+msg@{save\+\_\+msg}}
+\index{save\+\_\+msg@{save\+\_\+msg}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{save\+\_\+msg()}{save\_msg()}}
+{\footnotesize\ttfamily int save\+\_\+msg (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud,  }\item[{char $\ast$}]{nick,  }\item[{\mbox{\hyperlink{structmessage__t}{message\+\_\+t}} $\ast$}]{msg }\end{DoxyParamCaption})}
+
+
+
+salva msg nella history di un utente non connesso 
+
+save\+\_\+msg 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui e\textquotesingle{} presente utente \\
+\hline
+{\em nick} & nome utente del destinatario del msg \\
+\hline
+{\em msg} & msg da salvare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se la disconnessione e\textquotesingle{} avvenuta con successo, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{user_8h_a21a1f4faff772a417f2f48bf45bcc89c}\label{user_8h_a21a1f4faff772a417f2f48bf45bcc89c}} 
+\index{user.\+h@{user.\+h}!stats@{stats}}
+\index{stats@{stats}!user.\+h@{user.\+h}}
+\paragraph{\texorpdfstring{stats()}{stats()}}
+{\footnotesize\ttfamily void stats (\begin{DoxyParamCaption}\item[{int}]{reg,  }\item[{int}]{con,  }\item[{int}]{msg\+\_\+delivered,  }\item[{int}]{msg\+\_\+waiting,  }\item[{int}]{file\+\_\+delivered,  }\item[{int}]{file\+\_\+waiting,  }\item[{int}]{err,  }\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud }\end{DoxyParamCaption})}
+
+
+
+aggiorna statistiche 
+
+stats 
+\begin{DoxyParams}{Parametri}
+{\em ud} & puntatore alla struttura userdata in cui e\textquotesingle{} presente la struttura stats da aggiornare \\
+\hline
+\end{DoxyParams}

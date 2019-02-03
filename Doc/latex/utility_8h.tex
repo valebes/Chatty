@@ -1,0 +1,71 @@
+\hypertarget{utility_8h}{}\subsection{Riferimenti per il file utility.\+h}
+\label{utility_8h}\index{utility.\+h@{utility.\+h}}
+
+
+file contenente funzioni per la scrittura e lettura socket  
+
+
+{\ttfamily \#include $<$sys/types.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+\subsubsection*{Funzioni}
+\begin{DoxyCompactItemize}
+\item 
+ssize\+\_\+t \mbox{\hyperlink{utility_8h_ac9259628f4bca1f9d37d9d1f87a73b1b}{readn}} (int filedes, void $\ast$buff, size\+\_\+t nbytes)
+\begin{DoxyCompactList}\small\item\em legge fd \end{DoxyCompactList}\item 
+ssize\+\_\+t \mbox{\hyperlink{utility_8h_ac6671001233740b43906caff6bf25339}{writen}} (int filedes, const void $\ast$buff, size\+\_\+t nbytes)
+\begin{DoxyCompactList}\small\item\em scrive fd \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsubsection{Descrizione dettagliata}
+file contenente funzioni per la scrittura e lettura socket 
+
+\begin{DoxyAuthor}{Autore}
+Valerio Besozzi 543685 Si dichiara che il contenuto di questo file e\textquotesingle{} in ogni sua parte opera originale dell\textquotesingle{}autore 
+\end{DoxyAuthor}
+
+
+\subsubsection{Documentazione delle funzioni}
+\mbox{\Hypertarget{utility_8h_ac9259628f4bca1f9d37d9d1f87a73b1b}\label{utility_8h_ac9259628f4bca1f9d37d9d1f87a73b1b}} 
+\index{utility.\+h@{utility.\+h}!readn@{readn}}
+\index{readn@{readn}!utility.\+h@{utility.\+h}}
+\paragraph{\texorpdfstring{readn()}{readn()}}
+{\footnotesize\ttfamily ssize\+\_\+t readn (\begin{DoxyParamCaption}\item[{int}]{filedes,  }\item[{void $\ast$}]{buff,  }\item[{size\+\_\+t}]{nbytes }\end{DoxyParamCaption})}
+
+
+
+legge fd 
+
+readn 
+\begin{DoxyParams}{Parametri}
+{\em filedes} & fd da leggere \\
+\hline
+{\em buff} & puntatore al buffer dove scrivere quello che leggo \\
+\hline
+{\em nbytes} & bytes da leggere \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+bytes letti, -\/1 in caso di errore 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utility_8h_ac6671001233740b43906caff6bf25339}\label{utility_8h_ac6671001233740b43906caff6bf25339}} 
+\index{utility.\+h@{utility.\+h}!writen@{writen}}
+\index{writen@{writen}!utility.\+h@{utility.\+h}}
+\paragraph{\texorpdfstring{writen()}{writen()}}
+{\footnotesize\ttfamily ssize\+\_\+t writen (\begin{DoxyParamCaption}\item[{int}]{filedes,  }\item[{const void $\ast$}]{buff,  }\item[{size\+\_\+t}]{nbytes }\end{DoxyParamCaption})}
+
+
+
+scrive fd 
+
+writen 
+\begin{DoxyParams}{Parametri}
+{\em filedes} & fd in cui scrivere \\
+\hline
+{\em buff} & puntatore al buffer contenente quello che che scrivo \\
+\hline
+{\em nbytes} & bytes da scrivere \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+bytes scritti, -\/1 in caso di errore 
+\end{DoxyReturn}

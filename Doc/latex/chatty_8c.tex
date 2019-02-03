@@ -1,0 +1,83 @@
+\hypertarget{chatty_8c}{}\subsection{Riferimenti per il file chatty.\+c}
+\label{chatty_8c}\index{chatty.\+c@{chatty.\+c}}
+
+
+file principale del server chatterbox  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$sys/types.\+h$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$sys/un.\+h$>$}\newline
+{\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+{\ttfamily \#include $<$fcntl.\+h$>$}\newline
+{\ttfamily \#include $<$sys/mman.\+h$>$}\newline
+{\ttfamily \#include $<$sys/epoll.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}parser.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}stats.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}connections.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}task.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}tpool.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}message.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}user.\+h\char`\"{}}\newline
+\subsubsection*{Definizioni}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{chatty_8c_a3024ccd4a9af5109d24e6c57565d74a1}\label{chatty_8c_a3024ccd4a9af5109d24e6c57565d74a1}} 
+\#define {\bfseries \+\_\+\+P\+O\+S\+I\+X\+\_\+\+C\+\_\+\+S\+O\+U\+R\+CE}~200809L
+\item 
+\mbox{\Hypertarget{chatty_8c_ae42954bb8545d24e3e9dcde5920c9a0b}\label{chatty_8c_ae42954bb8545d24e3e9dcde5920c9a0b}} 
+\#define {\bfseries M\+A\+X\+\_\+\+E\+V\+E\+N\+TS}~60
+\end{DoxyCompactItemize}
+\subsubsection*{Funzioni}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{chatty_8c_a64d4bdb89afd5825451bd8b12ae64a3e}\label{chatty_8c_a64d4bdb89afd5825451bd8b12ae64a3e}} 
+void {\bfseries signals} ()
+\item 
+\mbox{\Hypertarget{chatty_8c_a1ac817bfeed2cc83598aa74059dd7aef}\label{chatty_8c_a1ac817bfeed2cc83598aa74059dd7aef}} 
+void {\bfseries stop\+\_\+server} ()
+\item 
+\mbox{\Hypertarget{chatty_8c_a82864de2258efa43feced47abc1beb94}\label{chatty_8c_a82864de2258efa43feced47abc1beb94}} 
+void {\bfseries get\+\_\+stats} ()
+\item 
+\mbox{\Hypertarget{chatty_8c_a9963c63eeaf50f60b0cf667b69fd1d8a}\label{chatty_8c_a9963c63eeaf50f60b0cf667b69fd1d8a}} 
+void $\ast$ {\bfseries print\+\_\+stats} (void $\ast$arg)
+\item 
+\mbox{\Hypertarget{chatty_8c_a0ddf1224851353fc92bfbff6f499fa97}\label{chatty_8c_a0ddf1224851353fc92bfbff6f499fa97}} 
+int {\bfseries main} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\subsubsection*{Variabili}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{chatty_8c_a6c0af9f2e97842405fb15ed952ef2976}\label{chatty_8c_a6c0af9f2e97842405fb15ed952ef2976}} 
+int {\bfseries stop} = 1
+\item 
+\mbox{\Hypertarget{chatty_8c_a5c6b2bbaa44b91388c6f59215a7325d3}\label{chatty_8c_a5c6b2bbaa44b91388c6f59215a7325d3}} 
+char $\ast$ {\bfseries statspath}
+\item 
+\mbox{\Hypertarget{chatty_8c_a17f628a85d54537228bb78477fdafab3}\label{chatty_8c_a17f628a85d54537228bb78477fdafab3}} 
+int {\bfseries alert} = 0
+\item 
+\mbox{\Hypertarget{chatty_8c_ad45e5ab717f3e6d6d9d11151da558c28}\label{chatty_8c_ad45e5ab717f3e6d6d9d11151da558c28}} 
+pthread\+\_\+mutex\+\_\+t $\ast$ {\bfseries stats\+\_\+mtx}
+\item 
+\mbox{\Hypertarget{chatty_8c_a9e4166354e886d074465ab1bb87ca0e2}\label{chatty_8c_a9e4166354e886d074465ab1bb87ca0e2}} 
+struct \mbox{\hyperlink{structstatistics}{statistics}} {\bfseries chatty\+Stats} = \{ 0,0,0,0,0,0,0 \}
+\item 
+\mbox{\Hypertarget{chatty_8c_af227f01f6d7d5da220fe0027d9d4a297}\label{chatty_8c_af227f01f6d7d5da220fe0027d9d4a297}} 
+\mbox{\hyperlink{structconf}{conf}} {\bfseries cf} = \{N\+U\+LL, 0, 0, 0, 0, 0, N\+U\+LL, N\+U\+LL\}
+\end{DoxyCompactItemize}
+
+
+\subsubsection{Descrizione dettagliata}
+file principale del server chatterbox 
+
+\begin{DoxyAuthor}{Autore}
+Valerio Besozzi 543685 Si dichiara che il contenuto di questo file e\textquotesingle{} in ogni sua parte opera originale dell\textquotesingle{}autore 
+\end{DoxyAuthor}

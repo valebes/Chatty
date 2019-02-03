@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.14"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>chatterbox:  File sorgente message.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(initResizable);
+/* @license-end */</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">chatterbox
+   &#160;<span id="projectnumber">2.0</span>
+   </div>
+   <div id="projectbrief">Progetto del corso di LSO 2017</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generato da Doxygen 1.8.14 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Cerca');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Cerca');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('message_8h_source.html','');});
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">message.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="message_8h.html">Vai alla documentazione di questo file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * chatterbox Progetto del corso di LSO 2017/2018</span></div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Dipartimento di Informatica Università di Pisa</span></div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * Docenti: Prencipe, Torquati</span></div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> *</span></div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> */</span></div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#ifndef MESSAGE_H_</span></div><div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#define MESSAGE_H_</span></div><div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div><div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &lt;assert.h&gt;</span></div><div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div><div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="config_8h.html">config.h</a>&gt;</span></div><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ops_8h.html">ops.h</a>&gt;</span></div><div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div><div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structmessage__hdr__t.html">   35</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div><div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="ops_8h.html#ac6fa1b34da8872e34c2936391332f44c">op_t</a> op;</div><div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">char</span> sender[MAX_NAME_LENGTH+1];</div><div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;} <a class="code" href="structmessage__hdr__t.html">message_hdr_t</a>;</div><div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div><div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="structmessage__data__hdr__t.html">   47</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div><div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">char</span> receiver[MAX_NAME_LENGTH+1];</div><div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> len;</div><div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;} <a class="code" href="structmessage__data__hdr__t.html">message_data_hdr_t</a>;</div><div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div><div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structmessage__data__t.html">   59</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div><div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <a class="code" href="structmessage__data__hdr__t.html">message_data_hdr_t</a> hdr;</div><div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordtype">char</span>               *buf;</div><div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;} <a class="code" href="structmessage__data__t.html">message_data_t</a>;</div><div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div><div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structmessage__t.html">   71</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div><div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <a class="code" href="structmessage__hdr__t.html">message_hdr_t</a> hdr;</div><div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <a class="code" href="structmessage__data__t.html">message_data_t</a> <a class="code" href="structdata.html">data</a>;</div><div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;} <a class="code" href="structmessage__t.html">message_t</a>;</div><div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div><div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">/* ------ funzioni di utilità ------- */</span></div><div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div><div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> setHeader(<a class="code" href="structmessage__hdr__t.html">message_hdr_t</a> *hdr, <a class="code" href="ops_8h.html#ac6fa1b34da8872e34c2936391332f44c">op_t</a> op, <span class="keywordtype">char</span> *sender) {</div><div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#if defined(MAKE_VALGRIND_HAPPY)</span></div><div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        memset((<span class="keywordtype">char</span>*)hdr, 0, <span class="keyword">sizeof</span>(<a class="code" href="structmessage__hdr__t.html">message_hdr_t</a>));</div><div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif</span></div><div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        hdr-&gt;op  = op;</div><div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        strncpy(hdr-&gt;sender, sender, strlen(sender)+1);</div><div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div><div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> setData(<a class="code" href="structmessage__data__t.html">message_data_t</a> *<a class="code" href="structdata.html">data</a>, <span class="keywordtype">char</span> *rcv, <span class="keyword">const</span> <span class="keywordtype">char</span> *buf, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> len) {</div><div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#if defined(MAKE_VALGRIND_HAPPY)</span></div><div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        memset((<span class="keywordtype">char</span>*)&amp;(<a class="code" href="structdata.html">data</a>-&gt;hdr), 0, <span class="keyword">sizeof</span>(<a class="code" href="structmessage__data__hdr__t.html">message_data_hdr_t</a>));</div><div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">#endif</span></div><div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div><div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        strncpy(<a class="code" href="structdata.html">data</a>-&gt;hdr.receiver, rcv, strlen(rcv)+1);</div><div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <a class="code" href="structdata.html">data</a>-&gt;hdr.len  = len;</div><div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <a class="code" href="structdata.html">data</a>-&gt;buf      = (<span class="keywordtype">char</span> *)buf;</div><div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div><div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div><div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <a class="code" href="structmessage__t.html">message_t</a> *new_msg(<a class="code" href="structmessage__t.html">message_t</a> *msg) {</div><div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <a class="code" href="structmessage__t.html">message_t</a> *<span class="keyword">new</span> = (<a class="code" href="structmessage__t.html">message_t</a> *)malloc(<span class="keyword">sizeof</span>(<a class="code" href="structmessage__t.html">message_t</a>));</div><div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">   #if defined(MAKE_VALGRIND_HAPPY)</span></div><div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        memset((<span class="keywordtype">char</span> *)<span class="keyword">new</span>, 0, <span class="keyword">sizeof</span>(<a class="code" href="structmessage__t.html">message_t</a>));</div><div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">   #endif</span></div><div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">new</span>-&gt;hdr.op = msg-&gt;hdr.op;</div><div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        strncpy(new-&gt;hdr.sender, msg-&gt;hdr.sender, MAX_NAME_LENGTH + 1);</div><div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div><div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keyword">new</span>-&gt;data.hdr.len = msg-&gt;data.hdr.len;</div><div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        strncpy(new-&gt;data.hdr.receiver, msg-&gt;data.hdr.receiver, MAX_NAME_LENGTH + 1);</div><div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div><div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keyword">new</span>-&gt;data.buf = (<span class="keywordtype">char</span> *)malloc(new-&gt;data.hdr.len * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div><div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor"> #if defined(MAKE_VALGRIND_HAPPY)</span></div><div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        memset(new-&gt;data.buf, 0, new-&gt;data.hdr.len * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div><div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor"> #endif</span></div><div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; <span class="keyword">new</span>-&gt;data.hdr.len; i++)</div><div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                new-&gt;data.buf[i] = msg-&gt;data.buf[i];</div><div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">new</span>;</div><div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;}</div><div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div><div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* MESSAGE_H_ */</span><span class="preprocessor"></span></div><div class="ttc" id="ops_8h_html_ac6fa1b34da8872e34c2936391332f44c"><div class="ttname"><a href="ops_8h.html#ac6fa1b34da8872e34c2936391332f44c">op_t</a></div><div class="ttdeci">op_t</div><div class="ttdef"><b>Definition:</b> ops.h:21</div></div>
+<div class="ttc" id="config_8h_html"><div class="ttname"><a href="config_8h.html">config.h</a></div><div class="ttdoc">File contenente alcune define con valori massimi utilizzabili. </div></div>
+<div class="ttc" id="structmessage__data__t_html"><div class="ttname"><a href="structmessage__data__t.html">message_data_t</a></div><div class="ttdef"><b>Definition:</b> message.h:59</div></div>
+<div class="ttc" id="ops_8h_html"><div class="ttname"><a href="ops_8h.html">ops.h</a></div><div class="ttdoc">Contiene i codici delle operazioni di richiesta e risposta. </div></div>
+<div class="ttc" id="structmessage__hdr__t_html"><div class="ttname"><a href="structmessage__hdr__t.html">message_hdr_t</a></div><div class="ttdef"><b>Definition:</b> message.h:35</div></div>
+<div class="ttc" id="structmessage__data__hdr__t_html"><div class="ttname"><a href="structmessage__data__hdr__t.html">message_data_hdr_t</a></div><div class="ttdef"><b>Definition:</b> message.h:47</div></div>
+<div class="ttc" id="structmessage__t_html"><div class="ttname"><a href="structmessage__t.html">message_t</a></div><div class="ttdef"><b>Definition:</b> message.h:71</div></div>
+<div class="ttc" id="structdata_html"><div class="ttname"><a href="structdata.html">data</a></div><div class="ttdoc">body del messaggio </div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="message_8h.html">message.h</a></li>
+    <li class="footer">Generato da
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
+  </ul>
+</div>
+</body>
+</html>

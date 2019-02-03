@@ -1,0 +1,48 @@
+\hypertarget{connections_8h_source}{}\subsection{connections.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00019 \textcolor{preprocessor}{#ifndef CONNECTIONS\_H\_}
+00020 \textcolor{preprocessor}{#define CONNECTIONS\_H\_}
+00021 
+00022 \textcolor{preprocessor}{#define MAX\_RETRIES     10}
+00023 \textcolor{preprocessor}{#define MAX\_SLEEPING     3}
+00024 \textcolor{preprocessor}{#if !defined(UNIX\_PATH\_MAX)}
+00025 \textcolor{preprocessor}{#define UNIX\_PATH\_MAX  64}
+00026 \textcolor{preprocessor}{#endif}
+00027 
+00028 \textcolor{preprocessor}{#define DEBUG 1}
+00029 
+00030 \textcolor{preprocessor}{#include <\mbox{\hyperlink{message_8h}{message.h}}>}
+00031 
+00043 \textcolor{keywordtype}{int} openConnection(\textcolor{keywordtype}{char}* path, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} ntimes, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} secs);
+00044 
+00045 \textcolor{comment}{// -------- server side -----}
+00056 \textcolor{comment}{}\textcolor{keywordtype}{int} readHeader(\textcolor{keywordtype}{long} connfd, \mbox{\hyperlink{structmessage__hdr__t}{message\_hdr\_t}} *hdr);
+00067 \textcolor{keywordtype}{int} readData(\textcolor{keywordtype}{long} fd, \mbox{\hyperlink{structmessage__data__t}{message\_data\_t}} *\mbox{\hyperlink{structdata}{data}});
+00068 
+00079 \textcolor{keywordtype}{int} readMsg(\textcolor{keywordtype}{long} fd, \mbox{\hyperlink{structmessage__t}{message\_t}} *msg);
+00080 
+00081 \textcolor{comment}{/* da completare da parte dello studente con altri metodi di interfaccia */}
+00082 
+00083 
+00084 \textcolor{comment}{// ------- client side ------}
+00094 \textcolor{comment}{}\textcolor{keywordtype}{int} sendRequest(\textcolor{keywordtype}{long} fd, \mbox{\hyperlink{structmessage__t}{message\_t}} *msg);
+00095 
+00105 \textcolor{keywordtype}{int} sendData(\textcolor{keywordtype}{long} fd, \mbox{\hyperlink{structmessage__data__t}{message\_data\_t}} *msg);
+00106 
+00107 
+00108 \textcolor{comment}{/* da completare da parte dello studente con eventuali altri metodi di interfaccia */}
+00109 
+00119 \textcolor{keywordtype}{int} sendHeader(\textcolor{keywordtype}{long} fd, \mbox{\hyperlink{structmessage__hdr__t}{message\_hdr\_t}} *hdr);
+00120 
+00121 \textcolor{keywordtype}{void} setnonblock(\textcolor{keywordtype}{int} socket);
+00122 
+00123 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* CONNECTIONS\_H\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

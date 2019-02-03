@@ -1,0 +1,37 @@
+\hypertarget{struct__task__manager}{}\subsection{Riferimenti per la struct \+\_\+task\+\_\+manager}
+\label{struct__task__manager}\index{\+\_\+task\+\_\+manager@{\+\_\+task\+\_\+manager}}
+
+
+struttura per la gestione dei task  
+
+
+
+
+{\ttfamily \#include $<$task.\+h$>$}
+
+\subsubsection*{Campi}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{struct__task__manager_a0eff048e3a19b6bbe261b4af3019c28f}\label{struct__task__manager_a0eff048e3a19b6bbe261b4af3019c28f}} 
+pthread\+\_\+mutex\+\_\+t $\ast$ {\bfseries mtx\+\_\+poll}
+\item 
+\mbox{\Hypertarget{struct__task__manager_a78372105c15b092832027a7d223b20d9}\label{struct__task__manager_a78372105c15b092832027a7d223b20d9}} 
+pthread\+\_\+mutex\+\_\+t $\ast$ {\bfseries mtx\+\_\+tm}
+\item 
+\mbox{\Hypertarget{struct__task__manager_a41c0a9b36e9ab3042298273439780497}\label{struct__task__manager_a41c0a9b36e9ab3042298273439780497}} 
+int {\bfseries epollfd}
+\item 
+\mbox{\Hypertarget{struct__task__manager_a12be6d72a39e0d75f4c6bc53a77e87f9}\label{struct__task__manager_a12be6d72a39e0d75f4c6bc53a77e87f9}} 
+\mbox{\hyperlink{struct__job}{job}} $\ast$ {\bfseries jobs}
+\item 
+\mbox{\Hypertarget{struct__task__manager_a0188a9da724158bd8994425ec7b374ca}\label{struct__task__manager_a0188a9da724158bd8994425ec7b374ca}} 
+\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ {\bfseries ud}
+\end{DoxyCompactItemize}
+
+
+\subsubsection{Descrizione dettagliata}
+struttura per la gestione dei task 
+
+La documentazione per questa struct è stata generata a partire dal seguente file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{task_8h}{task.\+h}}\end{DoxyCompactItemize}

@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.14"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>chatterbox: Riferimenti per il file tpool.c</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(initResizable);
+/* @license-end */</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">chatterbox
+   &#160;<span id="projectnumber">2.0</span>
+   </div>
+   <div id="projectbrief">Progetto del corso di LSO 2017</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generato da Doxygen 1.8.14 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Cerca');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Cerca');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('tpool_8c.html','');});
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Strutture dati</a> &#124;
+<a href="#typedef-members">Ridefinizioni di tipo (typedef)</a> &#124;
+<a href="#func-members">Funzioni</a>  </div>
+  <div class="headertitle">
+<div class="title">Riferimenti per il file tpool.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>contiene implementazioni funzioni per la creazione, eliminazione e gestione del threadpool  
+<a href="#details">Continua...</a></p>
+<div class="textblock"><code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
+<code>#include &lt;errno.h&gt;</code><br />
+<code>#include &lt;unistd.h&gt;</code><br />
+<code>#include &lt;<a class="el" href="tpool_8h_source.html">tpool.h</a>&gt;</code><br />
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Strutture dati</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__task.html">_task</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__t__pool.html">_t_pool</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Ridefinizioni di tipo (typedef)</h2></td></tr>
+<tr class="memitem:aa6c8f49bda45e63912e798a0cc315026"><td class="memItemLeft" align="right" valign="top"><a id="aa6c8f49bda45e63912e798a0cc315026"></a>
+typedef struct <a class="el" href="struct__task.html">_task</a>&#160;</td><td class="memItemRight" valign="bottom"><b>task</b></td></tr>
+<tr class="separator:aa6c8f49bda45e63912e798a0cc315026"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Funzioni</h2></td></tr>
+<tr class="memitem:ae4fbc3e65b0049350b393b4f234e510c"><td class="memItemLeft" align="right" valign="top"><a id="ae4fbc3e65b0049350b393b4f234e510c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>tpool_free</b> (<a class="el" href="struct__t__pool.html">t_pool</a> *pool)</td></tr>
+<tr class="separator:ae4fbc3e65b0049350b393b4f234e510c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a6833ae78127320ec5027debf11a524"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct__t__pool.html">t_pool</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tpool_8c.html#a3a6833ae78127320ec5027debf11a524">tpool_create</a> (int nthreads, int dim_coda)</td></tr>
+<tr class="memdesc:a3a6833ae78127320ec5027debf11a524"><td class="mdescLeft">&#160;</td><td class="mdescRight">crea threadpool  <a href="#a3a6833ae78127320ec5027debf11a524">Continua...</a><br /></td></tr>
+<tr class="separator:a3a6833ae78127320ec5027debf11a524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a358d0acd03f8339ce5dcc6bc8ff91922"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tpool_8c.html#a358d0acd03f8339ce5dcc6bc8ff91922">tpool_add</a> (<a class="el" href="struct__t__pool.html">t_pool</a> *pool, int(*fun)(<a class="el" href="struct__job.html">job</a> *), void *arg)</td></tr>
+<tr class="memdesc:a358d0acd03f8339ce5dcc6bc8ff91922"><td class="mdescLeft">&#160;</td><td class="mdescRight">aggiunge task  <a href="#a358d0acd03f8339ce5dcc6bc8ff91922">Continua...</a><br /></td></tr>
+<tr class="separator:a358d0acd03f8339ce5dcc6bc8ff91922"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36eff49591584172a8062630e2edbae5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tpool_8c.html#a36eff49591584172a8062630e2edbae5">tpool_delete</a> (<a class="el" href="struct__t__pool.html">t_pool</a> *pool)</td></tr>
+<tr class="memdesc:a36eff49591584172a8062630e2edbae5"><td class="mdescLeft">&#160;</td><td class="mdescRight">elimina threadpool  <a href="#a36eff49591584172a8062630e2edbae5">Continua...</a><br /></td></tr>
+<tr class="separator:a36eff49591584172a8062630e2edbae5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Descrizione dettagliata</h2>
+<div class="textblock"><p>contiene implementazioni funzioni per la creazione, eliminazione e gestione del threadpool </p>
+<dl class="section author"><dt>Autore</dt><dd>Valerio Besozzi 543685 Si dichiara che il contenuto di questo file e' in ogni sua parte opera originale dell'autore </dd></dl>
+</div><h2 class="groupheader">Documentazione delle funzioni</h2>
+<a id="a358d0acd03f8339ce5dcc6bc8ff91922"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a358d0acd03f8339ce5dcc6bc8ff91922">&#9670;&nbsp;</a></span>tpool_add()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int tpool_add </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__t__pool.html">t_pool</a> *&#160;</td>
+          <td class="paramname"><em>pool</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int(*)(<a class="el" href="struct__job.html">job</a> *)&#160;</td>
+          <td class="paramname"><em>fun</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>aggiunge task </p>
+<p>tpool_add </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pool</td><td>puntatore alla struttura t_pool in cui aggiungere task </td></tr>
+    <tr><td class="paramname">(*fun)(job</td><td>*) funzione da chiamare </td></tr>
+    <tr><td class="paramname">arg</td><td>argomento per la funzione da chiamare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se il task e' stato aggiunto correttamente, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="a3a6833ae78127320ec5027debf11a524"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a6833ae78127320ec5027debf11a524">&#9670;&nbsp;</a></span>tpool_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct__t__pool.html">t_pool</a>* tpool_create </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nthreads</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>max_con</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>crea threadpool </p>
+<p>tpool_create </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nthreads</td><td>numero thread da creare </td></tr>
+    <tr><td class="paramname">max_con</td><td>numero massimo connessioni </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>puntatore alla struttura t_pool creata </dd></dl>
+
+</div>
+</div>
+<a id="a36eff49591584172a8062630e2edbae5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36eff49591584172a8062630e2edbae5">&#9670;&nbsp;</a></span>tpool_delete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int tpool_delete </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__t__pool.html">t_pool</a> *&#160;</td>
+          <td class="paramname"><em>pool</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>elimina threadpool </p>
+<p>tpool_delete </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pool</td><td>puntatore alla struttura t_pool da eliminare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se il threadpool e' stato eliminato, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="tpool_8c.html">tpool.c</a></li>
+    <li class="footer">Generato da
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
+  </ul>
+</div>
+</body>
+</html>

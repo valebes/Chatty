@@ -1,0 +1,1222 @@
+\hypertarget{uthash_8h_source}{}\subsection{uthash.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{Copyright (c) 2003-2018, Troy D. Hanson     http://troydhanson.github.com/uthash/}
+00003 \textcolor{comment}{All rights reserved.}
+00004 \textcolor{comment}{}
+00005 \textcolor{comment}{Redistribution and use in source and binary forms, with or without}
+00006 \textcolor{comment}{modification, are permitted provided that the following conditions are met:}
+00007 \textcolor{comment}{}
+00008 \textcolor{comment}{    * Redistributions of source code must retain the above copyright}
+00009 \textcolor{comment}{      notice, this list of conditions and the following disclaimer.}
+00010 \textcolor{comment}{}
+00011 \textcolor{comment}{THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS}
+00012 \textcolor{comment}{IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED}
+00013 \textcolor{comment}{TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A}
+00014 \textcolor{comment}{PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER}
+00015 \textcolor{comment}{OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,}
+00016 \textcolor{comment}{EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,}
+00017 \textcolor{comment}{PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR}
+00018 \textcolor{comment}{PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF}
+00019 \textcolor{comment}{LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING}
+00020 \textcolor{comment}{NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS}
+00021 \textcolor{comment}{SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}
+00022 \textcolor{comment}{*/}
+00023 
+00024 \textcolor{preprocessor}{#ifndef UTHASH\_H}
+00025 \textcolor{preprocessor}{#define UTHASH\_H}
+00026 
+00027 \textcolor{preprocessor}{#define UTHASH\_VERSION 2.0.2}
+00028 
+00029 \textcolor{preprocessor}{#include <string.h>}   \textcolor{comment}{/* memcmp, memset, strlen */}
+00030 \textcolor{preprocessor}{#include <stddef.h>}   \textcolor{comment}{/* ptrdiff\_t */}
+00031 \textcolor{preprocessor}{#include <stdlib.h>}   \textcolor{comment}{/* exit */}
+00032 
+00033 \textcolor{comment}{/* These macros use decltype or the earlier \_\_typeof GNU extension.}
+00034 \textcolor{comment}{   As decltype is only available in newer compilers (VS2010 or gcc 4.3+}
+00035 \textcolor{comment}{   when compiling c++ source) this code uses whatever method is needed}
+00036 \textcolor{comment}{   or, for VS2008 where neither is available, uses casting workarounds. */}
+00037 \textcolor{preprocessor}{#if !defined(DECLTYPE) && !defined(NO\_DECLTYPE)}
+00038 \textcolor{preprocessor}{#if defined(\_MSC\_VER)   }\textcolor{comment}{/* MS compiler */}\textcolor{preprocessor}{}
+00039 \textcolor{preprocessor}{#if \_MSC\_VER >= 1600 && defined(\_\_cplusplus)  }\textcolor{comment}{/* VS2010 or newer in C++ mode */}\textcolor{preprocessor}{}
+00040 \textcolor{preprocessor}{#define DECLTYPE(x) (decltype(x))}
+00041 \textcolor{preprocessor}{#else                   }\textcolor{comment}{/* VS2008 or older (or VS2010 in C mode) */}\textcolor{preprocessor}{}
+00042 \textcolor{preprocessor}{#define NO\_DECLTYPE}
+00043 \textcolor{preprocessor}{#endif}
+00044 \textcolor{preprocessor}{#elif defined(\_\_BORLANDC\_\_) || defined(\_\_ICCARM\_\_) || defined(\_\_LCC\_\_) || defined(\_\_WATCOMC\_\_)}
+00045 \textcolor{preprocessor}{#define NO\_DECLTYPE}
+00046 \textcolor{preprocessor}{#else                   }\textcolor{comment}{/* GNU, Sun and other compilers */}\textcolor{preprocessor}{}
+00047 \textcolor{preprocessor}{#define DECLTYPE(x) (\_\_typeof(x))}
+00048 \textcolor{preprocessor}{#endif}
+00049 \textcolor{preprocessor}{#endif}
+00050 
+00051 \textcolor{preprocessor}{#ifdef NO\_DECLTYPE}
+00052 \textcolor{preprocessor}{#define DECLTYPE(x)}
+00053 \textcolor{preprocessor}{#define DECLTYPE\_ASSIGN(dst,src)                                                 \(\backslash\)}
+00054 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00055 \textcolor{preprocessor}{  char **\_da\_dst = (char**)(&(dst));                                             \(\backslash\)}
+00056 \textcolor{preprocessor}{  *\_da\_dst = (char*)(src);                                                       \(\backslash\)}
+00057 \textcolor{preprocessor}{\} while (0)}
+00058 \textcolor{preprocessor}{#else}
+00059 \textcolor{preprocessor}{#define DECLTYPE\_ASSIGN(dst,src)                                                 \(\backslash\)}
+00060 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00061 \textcolor{preprocessor}{  (dst) = DECLTYPE(dst)(src);                                                    \(\backslash\)}
+00062 \textcolor{preprocessor}{\} while (0)}
+00063 \textcolor{preprocessor}{#endif}
+00064 
+00065 \textcolor{comment}{/* a number of the hash function use uint32\_t which isn't defined on Pre VS2010 */}
+00066 \textcolor{preprocessor}{#if defined(\_WIN32)}
+00067 \textcolor{preprocessor}{#if defined(\_MSC\_VER) && \_MSC\_VER >= 1600}
+00068 \textcolor{preprocessor}{#include <stdint.h>}
+00069 \textcolor{preprocessor}{#elif defined(\_\_WATCOMC\_\_) || defined(\_\_MINGW32\_\_) || defined(\_\_CYGWIN\_\_)}
+00070 \textcolor{preprocessor}{#include <stdint.h>}
+00071 \textcolor{preprocessor}{#else}
+00072 \textcolor{keyword}{typedef} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} uint32\_t;
+00073 \textcolor{keyword}{typedef} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} uint8\_t;
+00074 \textcolor{preprocessor}{#endif}
+00075 \textcolor{preprocessor}{#elif defined(\_\_GNUC\_\_) && !defined(\_\_VXWORKS\_\_)}
+00076 \textcolor{preprocessor}{#include <stdint.h>}
+00077 \textcolor{preprocessor}{#else}
+00078 \textcolor{keyword}{typedef} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} uint32\_t;
+00079 \textcolor{keyword}{typedef} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{char} uint8\_t;
+00080 \textcolor{preprocessor}{#endif}
+00081 
+00082 \textcolor{preprocessor}{#ifndef uthash\_malloc}
+00083 \textcolor{preprocessor}{#define uthash\_malloc(sz) malloc(sz)      }\textcolor{comment}{/* malloc fcn                      */}\textcolor{preprocessor}{}
+00084 \textcolor{preprocessor}{#endif}
+00085 \textcolor{preprocessor}{#ifndef uthash\_free}
+00086 \textcolor{preprocessor}{#define uthash\_free(ptr,sz) free(ptr)     }\textcolor{comment}{/* free fcn                        */}\textcolor{preprocessor}{}
+00087 \textcolor{preprocessor}{#endif}
+00088 \textcolor{preprocessor}{#ifndef uthash\_bzero}
+00089 \textcolor{preprocessor}{#define uthash\_bzero(a,n) memset(a,'\(\backslash\)0',n)}
+00090 \textcolor{preprocessor}{#endif}
+00091 \textcolor{preprocessor}{#ifndef uthash\_memcmp}
+00092 \textcolor{preprocessor}{#define uthash\_memcmp(a,b,n) memcmp(a,b,n)}
+00093 \textcolor{preprocessor}{#endif}
+00094 \textcolor{preprocessor}{#ifndef uthash\_strlen}
+00095 \textcolor{preprocessor}{#define uthash\_strlen(s) strlen(s)}
+00096 \textcolor{preprocessor}{#endif}
+00097 
+00098 \textcolor{preprocessor}{#ifndef uthash\_noexpand\_fyi}
+00099 \textcolor{preprocessor}{#define uthash\_noexpand\_fyi(tbl)          }\textcolor{comment}{/* can be defined to log noexpand  */}\textcolor{preprocessor}{}
+00100 \textcolor{preprocessor}{#endif}
+00101 \textcolor{preprocessor}{#ifndef uthash\_expand\_fyi}
+00102 \textcolor{preprocessor}{#define uthash\_expand\_fyi(tbl)            }\textcolor{comment}{/* can be defined to log expands   */}\textcolor{preprocessor}{}
+00103 \textcolor{preprocessor}{#endif}
+00104 
+00105 \textcolor{preprocessor}{#ifndef HASH\_NONFATAL\_OOM}
+00106 \textcolor{preprocessor}{#define HASH\_NONFATAL\_OOM 0}
+00107 \textcolor{preprocessor}{#endif}
+00108 
+00109 \textcolor{preprocessor}{#if HASH\_NONFATAL\_OOM}
+00110 \textcolor{comment}{/* malloc failures can be recovered from */}
+00111 
+00112 \textcolor{preprocessor}{#ifndef uthash\_nonfatal\_oom}
+00113 \textcolor{preprocessor}{#define uthash\_nonfatal\_oom(obj) do \{\} while (0)    }\textcolor{comment}{/* non-fatal OOM error */}\textcolor{preprocessor}{}
+00114 \textcolor{preprocessor}{#endif}
+00115 
+00116 \textcolor{preprocessor}{#define HASH\_RECORD\_OOM(oomed) do \{ (oomed) = 1; \} while (0)}
+00117 \textcolor{preprocessor}{#define IF\_HASH\_NONFATAL\_OOM(x) x}
+00118 
+00119 \textcolor{preprocessor}{#else}
+00120 \textcolor{comment}{/* malloc failures result in lost memory, hash tables are unusable */}
+00121 
+00122 \textcolor{preprocessor}{#ifndef uthash\_fatal}
+00123 \textcolor{preprocessor}{#define uthash\_fatal(msg) exit(-1)        }\textcolor{comment}{/* fatal OOM error */}\textcolor{preprocessor}{}
+00124 \textcolor{preprocessor}{#endif}
+00125 
+00126 \textcolor{preprocessor}{#define HASH\_RECORD\_OOM(oomed) uthash\_fatal("out of memory")}
+00127 \textcolor{preprocessor}{#define IF\_HASH\_NONFATAL\_OOM(x)}
+00128 
+00129 \textcolor{preprocessor}{#endif}
+00130 
+00131 \textcolor{comment}{/* initial number of buckets */}
+00132 \textcolor{preprocessor}{#define HASH\_INITIAL\_NUM\_BUCKETS 32U     }\textcolor{comment}{/* initial number of buckets        */}\textcolor{preprocessor}{}
+00133 \textcolor{preprocessor}{#define HASH\_INITIAL\_NUM\_BUCKETS\_LOG2 5U }\textcolor{comment}{/* lg2 of initial number of buckets */}\textcolor{preprocessor}{}
+00134 \textcolor{preprocessor}{#define HASH\_BKT\_CAPACITY\_THRESH 10U     }\textcolor{comment}{/* expand when bucket count reaches */}\textcolor{preprocessor}{}
+00135 
+00136 \textcolor{comment}{/* calculate the element whose hash handle address is hhp */}
+00137 \textcolor{preprocessor}{#define ELMT\_FROM\_HH(tbl,hhp) ((void*)(((char*)(hhp)) - ((tbl)->hho)))}
+00138 \textcolor{comment}{/* calculate the hash handle from element address elp */}
+00139 \textcolor{preprocessor}{#define HH\_FROM\_ELMT(tbl,elp) ((UT\_hash\_handle *)(((char*)(elp)) + ((tbl)->hho)))}
+00140 
+00141 \textcolor{preprocessor}{#define HASH\_ROLLBACK\_BKT(hh, head, itemptrhh)                                   \(\backslash\)}
+00142 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00143 \textcolor{preprocessor}{  struct UT\_hash\_handle *\_hd\_hh\_item = (itemptrhh);                              \(\backslash\)}
+00144 \textcolor{preprocessor}{  unsigned \_hd\_bkt;                                                              \(\backslash\)}
+00145 \textcolor{preprocessor}{  HASH\_TO\_BKT(\_hd\_hh\_item->hashv, (head)->hh.tbl->num\_buckets, \_hd\_bkt);         \(\backslash\)}
+00146 \textcolor{preprocessor}{  (head)->hh.tbl->buckets[\_hd\_bkt].count++;                                      \(\backslash\)}
+00147 \textcolor{preprocessor}{  \_hd\_hh\_item->hh\_next = NULL;                                                   \(\backslash\)}
+00148 \textcolor{preprocessor}{  \_hd\_hh\_item->hh\_prev = NULL;                                                   \(\backslash\)}
+00149 \textcolor{preprocessor}{\} while (0)}
+00150 
+00151 \textcolor{preprocessor}{#define HASH\_VALUE(keyptr,keylen,hashv)                                          \(\backslash\)}
+00152 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00153 \textcolor{preprocessor}{  HASH\_FCN(keyptr, keylen, hashv);                                               \(\backslash\)}
+00154 \textcolor{preprocessor}{\} while (0)}
+00155 
+00156 \textcolor{preprocessor}{#define HASH\_FIND\_BYHASHVALUE(hh,head,keyptr,keylen,hashval,out)                 \(\backslash\)}
+00157 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00158 \textcolor{preprocessor}{  (out) = NULL;                                                                  \(\backslash\)}
+00159 \textcolor{preprocessor}{  if (head) \{                                                                    \(\backslash\)}
+00160 \textcolor{preprocessor}{    unsigned \_hf\_bkt;                                                            \(\backslash\)}
+00161 \textcolor{preprocessor}{    HASH\_TO\_BKT(hashval, (head)->hh.tbl->num\_buckets, \_hf\_bkt);                  \(\backslash\)}
+00162 \textcolor{preprocessor}{    if (HASH\_BLOOM\_TEST((head)->hh.tbl, hashval) != 0) \{                         \(\backslash\)}
+00163 \textcolor{preprocessor}{      HASH\_FIND\_IN\_BKT((head)->hh.tbl, hh, (head)->hh.tbl->buckets[ \_hf\_bkt ], keyptr, keylen, hashval,
+       out); \(\backslash\)}
+00164 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00165 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00166 \textcolor{preprocessor}{\} while (0)}
+00167 
+00168 \textcolor{preprocessor}{#define HASH\_FIND(hh,head,keyptr,keylen,out)                                     \(\backslash\)}
+00169 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00170 \textcolor{preprocessor}{  unsigned \_hf\_hashv;                                                            \(\backslash\)}
+00171 \textcolor{preprocessor}{  HASH\_VALUE(keyptr, keylen, \_hf\_hashv);                                         \(\backslash\)}
+00172 \textcolor{preprocessor}{  HASH\_FIND\_BYHASHVALUE(hh, head, keyptr, keylen, \_hf\_hashv, out);               \(\backslash\)}
+00173 \textcolor{preprocessor}{\} while (0)}
+00174 
+00175 \textcolor{preprocessor}{#ifdef HASH\_BLOOM}
+00176 \textcolor{preprocessor}{#define HASH\_BLOOM\_BITLEN (1UL << HASH\_BLOOM)}
+00177 \textcolor{preprocessor}{#define HASH\_BLOOM\_BYTELEN (HASH\_BLOOM\_BITLEN/8UL) + (((HASH\_BLOOM\_BITLEN%8UL)!=0UL) ? 1UL : 0UL)}
+00178 \textcolor{preprocessor}{#define HASH\_BLOOM\_MAKE(tbl,oomed)                                               \(\backslash\)}
+00179 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00180 \textcolor{preprocessor}{  (tbl)->bloom\_nbits = HASH\_BLOOM;                                               \(\backslash\)}
+00181 \textcolor{preprocessor}{  (tbl)->bloom\_bv = (uint8\_t*)uthash\_malloc(HASH\_BLOOM\_BYTELEN);                 \(\backslash\)}
+00182 \textcolor{preprocessor}{  if (!(tbl)->bloom\_bv) \{                                                        \(\backslash\)}
+00183 \textcolor{preprocessor}{    HASH\_RECORD\_OOM(oomed);                                                      \(\backslash\)}
+00184 \textcolor{preprocessor}{  \} else \{                                                                       \(\backslash\)}
+00185 \textcolor{preprocessor}{    uthash\_bzero((tbl)->bloom\_bv, HASH\_BLOOM\_BYTELEN);                           \(\backslash\)}
+00186 \textcolor{preprocessor}{    (tbl)->bloom\_sig = HASH\_BLOOM\_SIGNATURE;                                     \(\backslash\)}
+00187 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00188 \textcolor{preprocessor}{\} while (0)}
+00189 
+00190 \textcolor{preprocessor}{#define HASH\_BLOOM\_FREE(tbl)                                                     \(\backslash\)}
+00191 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00192 \textcolor{preprocessor}{  uthash\_free((tbl)->bloom\_bv, HASH\_BLOOM\_BYTELEN);                              \(\backslash\)}
+00193 \textcolor{preprocessor}{\} while (0)}
+00194 
+00195 \textcolor{preprocessor}{#define HASH\_BLOOM\_BITSET(bv,idx) (bv[(idx)/8U] |= (1U << ((idx)%8U)))}
+00196 \textcolor{preprocessor}{#define HASH\_BLOOM\_BITTEST(bv,idx) (bv[(idx)/8U] & (1U << ((idx)%8U)))}
+00197 
+00198 \textcolor{preprocessor}{#define HASH\_BLOOM\_ADD(tbl,hashv)                                                \(\backslash\)}
+00199 \textcolor{preprocessor}{  HASH\_BLOOM\_BITSET((tbl)->bloom\_bv, ((hashv) & (uint32\_t)((1UL << (tbl)->bloom\_nbits) - 1U)))}
+00200 
+00201 \textcolor{preprocessor}{#define HASH\_BLOOM\_TEST(tbl,hashv)                                               \(\backslash\)}
+00202 \textcolor{preprocessor}{  HASH\_BLOOM\_BITTEST((tbl)->bloom\_bv, ((hashv) & (uint32\_t)((1UL << (tbl)->bloom\_nbits) - 1U)))}
+00203 
+00204 \textcolor{preprocessor}{#else}
+00205 \textcolor{preprocessor}{#define HASH\_BLOOM\_MAKE(tbl,oomed)}
+00206 \textcolor{preprocessor}{#define HASH\_BLOOM\_FREE(tbl)}
+00207 \textcolor{preprocessor}{#define HASH\_BLOOM\_ADD(tbl,hashv)}
+00208 \textcolor{preprocessor}{#define HASH\_BLOOM\_TEST(tbl,hashv) (1)}
+00209 \textcolor{preprocessor}{#define HASH\_BLOOM\_BYTELEN 0U}
+00210 \textcolor{preprocessor}{#endif}
+00211 
+00212 \textcolor{preprocessor}{#define HASH\_MAKE\_TABLE(hh,head,oomed)                                           \(\backslash\)}
+00213 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00214 \textcolor{preprocessor}{  (head)->hh.tbl = (UT\_hash\_table*)uthash\_malloc(sizeof(UT\_hash\_table));         \(\backslash\)}
+00215 \textcolor{preprocessor}{  if (!(head)->hh.tbl) \{                                                         \(\backslash\)}
+00216 \textcolor{preprocessor}{    HASH\_RECORD\_OOM(oomed);                                                      \(\backslash\)}
+00217 \textcolor{preprocessor}{  \} else \{                                                                       \(\backslash\)}
+00218 \textcolor{preprocessor}{    uthash\_bzero((head)->hh.tbl, sizeof(UT\_hash\_table));                         \(\backslash\)}
+00219 \textcolor{preprocessor}{    (head)->hh.tbl->tail = &((head)->hh);                                        \(\backslash\)}
+00220 \textcolor{preprocessor}{    (head)->hh.tbl->num\_buckets = HASH\_INITIAL\_NUM\_BUCKETS;                      \(\backslash\)}
+00221 \textcolor{preprocessor}{    (head)->hh.tbl->log2\_num\_buckets = HASH\_INITIAL\_NUM\_BUCKETS\_LOG2;            \(\backslash\)}
+00222 \textcolor{preprocessor}{    (head)->hh.tbl->hho = (char*)(&(head)->hh) - (char*)(head);                  \(\backslash\)}
+00223 \textcolor{preprocessor}{    (head)->hh.tbl->buckets = (UT\_hash\_bucket*)uthash\_malloc(                    \(\backslash\)}
+00224 \textcolor{preprocessor}{        HASH\_INITIAL\_NUM\_BUCKETS * sizeof(struct UT\_hash\_bucket));               \(\backslash\)}
+00225 \textcolor{preprocessor}{    (head)->hh.tbl->signature = HASH\_SIGNATURE;                                  \(\backslash\)}
+00226 \textcolor{preprocessor}{    if (!(head)->hh.tbl->buckets) \{                                              \(\backslash\)}
+00227 \textcolor{preprocessor}{      HASH\_RECORD\_OOM(oomed);                                                    \(\backslash\)}
+00228 \textcolor{preprocessor}{      uthash\_free((head)->hh.tbl, sizeof(UT\_hash\_table));                        \(\backslash\)}
+00229 \textcolor{preprocessor}{    \} else \{                                                                     \(\backslash\)}
+00230 \textcolor{preprocessor}{      uthash\_bzero((head)->hh.tbl->buckets,                                      \(\backslash\)}
+00231 \textcolor{preprocessor}{          HASH\_INITIAL\_NUM\_BUCKETS * sizeof(struct UT\_hash\_bucket));             \(\backslash\)}
+00232 \textcolor{preprocessor}{      HASH\_BLOOM\_MAKE((head)->hh.tbl, oomed);                                    \(\backslash\)}
+00233 \textcolor{preprocessor}{      IF\_HASH\_NONFATAL\_OOM(                                                      \(\backslash\)}
+00234 \textcolor{preprocessor}{        if (oomed) \{                                                             \(\backslash\)}
+00235 \textcolor{preprocessor}{          uthash\_free((head)->hh.tbl->buckets,                                   \(\backslash\)}
+00236 \textcolor{preprocessor}{              HASH\_INITIAL\_NUM\_BUCKETS*sizeof(struct UT\_hash\_bucket));           \(\backslash\)}
+00237 \textcolor{preprocessor}{          uthash\_free((head)->hh.tbl, sizeof(UT\_hash\_table));                    \(\backslash\)}
+00238 \textcolor{preprocessor}{        \}                                                                        \(\backslash\)}
+00239 \textcolor{preprocessor}{      )                                                                          \(\backslash\)}
+00240 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00241 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00242 \textcolor{preprocessor}{\} while (0)}
+00243 
+00244 \textcolor{preprocessor}{#define HASH\_REPLACE\_BYHASHVALUE\_INORDER(hh,head,fieldname,keylen\_in,hashval,add,replaced,cmpfcn) \(\backslash\)}
+00245 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00246 \textcolor{preprocessor}{  (replaced) = NULL;                                                             \(\backslash\)}
+00247 \textcolor{preprocessor}{  HASH\_FIND\_BYHASHVALUE(hh, head, &((add)->fieldname), keylen\_in, hashval, replaced); \(\backslash\)}
+00248 \textcolor{preprocessor}{  if (replaced) \{                                                                \(\backslash\)}
+00249 \textcolor{preprocessor}{    HASH\_DELETE(hh, head, replaced);                                             \(\backslash\)}
+00250 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00251 \textcolor{preprocessor}{  HASH\_ADD\_KEYPTR\_BYHASHVALUE\_INORDER(hh, head, &((add)->fieldname), keylen\_in, hashval, add, cmpfcn); \(\backslash\)}
+00252 \textcolor{preprocessor}{\} while (0)}
+00253 
+00254 \textcolor{preprocessor}{#define HASH\_REPLACE\_BYHASHVALUE(hh,head,fieldname,keylen\_in,hashval,add,replaced) \(\backslash\)}
+00255 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00256 \textcolor{preprocessor}{  (replaced) = NULL;                                                             \(\backslash\)}
+00257 \textcolor{preprocessor}{  HASH\_FIND\_BYHASHVALUE(hh, head, &((add)->fieldname), keylen\_in, hashval, replaced); \(\backslash\)}
+00258 \textcolor{preprocessor}{  if (replaced) \{                                                                \(\backslash\)}
+00259 \textcolor{preprocessor}{    HASH\_DELETE(hh, head, replaced);                                             \(\backslash\)}
+00260 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00261 \textcolor{preprocessor}{  HASH\_ADD\_KEYPTR\_BYHASHVALUE(hh, head, &((add)->fieldname), keylen\_in, hashval, add); \(\backslash\)}
+00262 \textcolor{preprocessor}{\} while (0)}
+00263 
+00264 \textcolor{preprocessor}{#define HASH\_REPLACE(hh,head,fieldname,keylen\_in,add,replaced)                   \(\backslash\)}
+00265 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00266 \textcolor{preprocessor}{  unsigned \_hr\_hashv;                                                            \(\backslash\)}
+00267 \textcolor{preprocessor}{  HASH\_VALUE(&((add)->fieldname), keylen\_in, \_hr\_hashv);                         \(\backslash\)}
+00268 \textcolor{preprocessor}{  HASH\_REPLACE\_BYHASHVALUE(hh, head, fieldname, keylen\_in, \_hr\_hashv, add, replaced); \(\backslash\)}
+00269 \textcolor{preprocessor}{\} while (0)}
+00270 
+00271 \textcolor{preprocessor}{#define HASH\_REPLACE\_INORDER(hh,head,fieldname,keylen\_in,add,replaced,cmpfcn)    \(\backslash\)}
+00272 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00273 \textcolor{preprocessor}{  unsigned \_hr\_hashv;                                                            \(\backslash\)}
+00274 \textcolor{preprocessor}{  HASH\_VALUE(&((add)->fieldname), keylen\_in, \_hr\_hashv);                         \(\backslash\)}
+00275 \textcolor{preprocessor}{  HASH\_REPLACE\_BYHASHVALUE\_INORDER(hh, head, fieldname, keylen\_in, \_hr\_hashv, add, replaced, cmpfcn); \(\backslash\)}
+00276 \textcolor{preprocessor}{\} while (0)}
+00277 
+00278 \textcolor{preprocessor}{#define HASH\_APPEND\_LIST(hh, head, add)                                          \(\backslash\)}
+00279 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00280 \textcolor{preprocessor}{  (add)->hh.next = NULL;                                                         \(\backslash\)}
+00281 \textcolor{preprocessor}{  (add)->hh.prev = ELMT\_FROM\_HH((head)->hh.tbl, (head)->hh.tbl->tail);           \(\backslash\)}
+00282 \textcolor{preprocessor}{  (head)->hh.tbl->tail->next = (add);                                            \(\backslash\)}
+00283 \textcolor{preprocessor}{  (head)->hh.tbl->tail = &((add)->hh);                                           \(\backslash\)}
+00284 \textcolor{preprocessor}{\} while (0)}
+00285 
+00286 \textcolor{preprocessor}{#define HASH\_AKBI\_INNER\_LOOP(hh,head,add,cmpfcn)                                 \(\backslash\)}
+00287 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00288 \textcolor{preprocessor}{  do \{                                                                           \(\backslash\)}
+00289 \textcolor{preprocessor}{    if (cmpfcn(DECLTYPE(head)(\_hs\_iter), add) > 0) \{                             \(\backslash\)}
+00290 \textcolor{preprocessor}{      break;                                                                     \(\backslash\)}
+00291 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00292 \textcolor{preprocessor}{  \} while ((\_hs\_iter = HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_iter)->next));           \(\backslash\)}
+00293 \textcolor{preprocessor}{\} while (0)}
+00294 
+00295 \textcolor{preprocessor}{#ifdef NO\_DECLTYPE}
+00296 \textcolor{preprocessor}{#undef HASH\_AKBI\_INNER\_LOOP}
+00297 \textcolor{preprocessor}{#define HASH\_AKBI\_INNER\_LOOP(hh,head,add,cmpfcn)                                 \(\backslash\)}
+00298 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00299 \textcolor{preprocessor}{  char *\_hs\_saved\_head = (char*)(head);                                          \(\backslash\)}
+00300 \textcolor{preprocessor}{  do \{                                                                           \(\backslash\)}
+00301 \textcolor{preprocessor}{    DECLTYPE\_ASSIGN(head, \_hs\_iter);                                             \(\backslash\)}
+00302 \textcolor{preprocessor}{    if (cmpfcn(head, add) > 0) \{                                                 \(\backslash\)}
+00303 \textcolor{preprocessor}{      DECLTYPE\_ASSIGN(head, \_hs\_saved\_head);                                     \(\backslash\)}
+00304 \textcolor{preprocessor}{      break;                                                                     \(\backslash\)}
+00305 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00306 \textcolor{preprocessor}{    DECLTYPE\_ASSIGN(head, \_hs\_saved\_head);                                       \(\backslash\)}
+00307 \textcolor{preprocessor}{  \} while ((\_hs\_iter = HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_iter)->next));           \(\backslash\)}
+00308 \textcolor{preprocessor}{\} while (0)}
+00309 \textcolor{preprocessor}{#endif}
+00310 
+00311 \textcolor{preprocessor}{#if HASH\_NONFATAL\_OOM}
+00312 
+00313 \textcolor{preprocessor}{#define HASH\_ADD\_TO\_TABLE(hh,head,keyptr,keylen\_in,hashval,add,oomed)            \(\backslash\)}
+00314 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00315 \textcolor{preprocessor}{  if (!(oomed)) \{                                                                \(\backslash\)}
+00316 \textcolor{preprocessor}{    unsigned \_ha\_bkt;                                                            \(\backslash\)}
+00317 \textcolor{preprocessor}{    (head)->hh.tbl->num\_items++;                                                 \(\backslash\)}
+00318 \textcolor{preprocessor}{    HASH\_TO\_BKT(hashval, (head)->hh.tbl->num\_buckets, \_ha\_bkt);                  \(\backslash\)}
+00319 \textcolor{preprocessor}{    HASH\_ADD\_TO\_BKT((head)->hh.tbl->buckets[\_ha\_bkt], hh, &(add)->hh, oomed);    \(\backslash\)}
+00320 \textcolor{preprocessor}{    if (oomed) \{                                                                 \(\backslash\)}
+00321 \textcolor{preprocessor}{      HASH\_ROLLBACK\_BKT(hh, head, &(add)->hh);                                   \(\backslash\)}
+00322 \textcolor{preprocessor}{      HASH\_DELETE\_HH(hh, head, &(add)->hh);                                      \(\backslash\)}
+00323 \textcolor{preprocessor}{      (add)->hh.tbl = NULL;                                                      \(\backslash\)}
+00324 \textcolor{preprocessor}{      uthash\_nonfatal\_oom(add);                                                  \(\backslash\)}
+00325 \textcolor{preprocessor}{    \} else \{                                                                     \(\backslash\)}
+00326 \textcolor{preprocessor}{      HASH\_BLOOM\_ADD((head)->hh.tbl, hashval);                                   \(\backslash\)}
+00327 \textcolor{preprocessor}{      HASH\_EMIT\_KEY(hh, head, keyptr, keylen\_in);                                \(\backslash\)}
+00328 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00329 \textcolor{preprocessor}{  \} else \{                                                                       \(\backslash\)}
+00330 \textcolor{preprocessor}{    (add)->hh.tbl = NULL;                                                        \(\backslash\)}
+00331 \textcolor{preprocessor}{    uthash\_nonfatal\_oom(add);                                                    \(\backslash\)}
+00332 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00333 \textcolor{preprocessor}{\} while (0)}
+00334 
+00335 \textcolor{preprocessor}{#else}
+00336 
+00337 \textcolor{preprocessor}{#define HASH\_ADD\_TO\_TABLE(hh,head,keyptr,keylen\_in,hashval,add,oomed)            \(\backslash\)}
+00338 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00339 \textcolor{preprocessor}{  unsigned \_ha\_bkt;                                                              \(\backslash\)}
+00340 \textcolor{preprocessor}{  (head)->hh.tbl->num\_items++;                                                   \(\backslash\)}
+00341 \textcolor{preprocessor}{  HASH\_TO\_BKT(hashval, (head)->hh.tbl->num\_buckets, \_ha\_bkt);                    \(\backslash\)}
+00342 \textcolor{preprocessor}{  HASH\_ADD\_TO\_BKT((head)->hh.tbl->buckets[\_ha\_bkt], hh, &(add)->hh, oomed);      \(\backslash\)}
+00343 \textcolor{preprocessor}{  HASH\_BLOOM\_ADD((head)->hh.tbl, hashval);                                       \(\backslash\)}
+00344 \textcolor{preprocessor}{  HASH\_EMIT\_KEY(hh, head, keyptr, keylen\_in);                                    \(\backslash\)}
+00345 \textcolor{preprocessor}{\} while (0)}
+00346 
+00347 \textcolor{preprocessor}{#endif}
+00348 
+00349 
+00350 \textcolor{preprocessor}{#define HASH\_ADD\_KEYPTR\_BYHASHVALUE\_INORDER(hh,head,keyptr,keylen\_in,hashval,add,cmpfcn) \(\backslash\)}
+00351 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00352 \textcolor{preprocessor}{  IF\_HASH\_NONFATAL\_OOM( int \_ha\_oomed = 0; )                                     \(\backslash\)}
+00353 \textcolor{preprocessor}{  (add)->hh.hashv = (hashval);                                                   \(\backslash\)}
+00354 \textcolor{preprocessor}{  (add)->hh.key = (char*) (keyptr);                                              \(\backslash\)}
+00355 \textcolor{preprocessor}{  (add)->hh.keylen = (unsigned) (keylen\_in);                                     \(\backslash\)}
+00356 \textcolor{preprocessor}{  if (!(head)) \{                                                                 \(\backslash\)}
+00357 \textcolor{preprocessor}{    (add)->hh.next = NULL;                                                       \(\backslash\)}
+00358 \textcolor{preprocessor}{    (add)->hh.prev = NULL;                                                       \(\backslash\)}
+00359 \textcolor{preprocessor}{    HASH\_MAKE\_TABLE(hh, add, \_ha\_oomed);                                         \(\backslash\)}
+00360 \textcolor{preprocessor}{    IF\_HASH\_NONFATAL\_OOM( if (!\_ha\_oomed) \{ )                                    \(\backslash\)}
+00361 \textcolor{preprocessor}{      (head) = (add);                                                            \(\backslash\)}
+00362 \textcolor{preprocessor}{    IF\_HASH\_NONFATAL\_OOM( \} )                                                    \(\backslash\)}
+00363 \textcolor{preprocessor}{  \} else \{                                                                       \(\backslash\)}
+00364 \textcolor{preprocessor}{    void *\_hs\_iter = (head);                                                     \(\backslash\)}
+00365 \textcolor{preprocessor}{    (add)->hh.tbl = (head)->hh.tbl;                                              \(\backslash\)}
+00366 \textcolor{preprocessor}{    HASH\_AKBI\_INNER\_LOOP(hh, head, add, cmpfcn);                                 \(\backslash\)}
+00367 \textcolor{preprocessor}{    if (\_hs\_iter) \{                                                              \(\backslash\)}
+00368 \textcolor{preprocessor}{      (add)->hh.next = \_hs\_iter;                                                 \(\backslash\)}
+00369 \textcolor{preprocessor}{      if (((add)->hh.prev = HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_iter)->prev)) \{     \(\backslash\)}
+00370 \textcolor{preprocessor}{        HH\_FROM\_ELMT((head)->hh.tbl, (add)->hh.prev)->next = (add);              \(\backslash\)}
+00371 \textcolor{preprocessor}{      \} else \{                                                                   \(\backslash\)}
+00372 \textcolor{preprocessor}{        (head) = (add);                                                          \(\backslash\)}
+00373 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+00374 \textcolor{preprocessor}{      HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_iter)->prev = (add);                      \(\backslash\)}
+00375 \textcolor{preprocessor}{    \} else \{                                                                     \(\backslash\)}
+00376 \textcolor{preprocessor}{      HASH\_APPEND\_LIST(hh, head, add);                                           \(\backslash\)}
+00377 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00378 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00379 \textcolor{preprocessor}{  HASH\_ADD\_TO\_TABLE(hh, head, keyptr, keylen\_in, hashval, add, \_ha\_oomed);       \(\backslash\)}
+00380 \textcolor{preprocessor}{  HASH\_FSCK(hh, head, "HASH\_ADD\_KEYPTR\_BYHASHVALUE\_INORDER");                    \(\backslash\)}
+00381 \textcolor{preprocessor}{\} while (0)}
+00382 
+00383 \textcolor{preprocessor}{#define HASH\_ADD\_KEYPTR\_INORDER(hh,head,keyptr,keylen\_in,add,cmpfcn)             \(\backslash\)}
+00384 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00385 \textcolor{preprocessor}{  unsigned \_hs\_hashv;                                                            \(\backslash\)}
+00386 \textcolor{preprocessor}{  HASH\_VALUE(keyptr, keylen\_in, \_hs\_hashv);                                      \(\backslash\)}
+00387 \textcolor{preprocessor}{  HASH\_ADD\_KEYPTR\_BYHASHVALUE\_INORDER(hh, head, keyptr, keylen\_in, \_hs\_hashv, add, cmpfcn); \(\backslash\)}
+00388 \textcolor{preprocessor}{\} while (0)}
+00389 
+00390 \textcolor{preprocessor}{#define HASH\_ADD\_BYHASHVALUE\_INORDER(hh,head,fieldname,keylen\_in,hashval,add,cmpfcn) \(\backslash\)}
+00391 \textcolor{preprocessor}{  HASH\_ADD\_KEYPTR\_BYHASHVALUE\_INORDER(hh, head, &((add)->fieldname), keylen\_in, hashval, add, cmpfcn)}
+00392 
+00393 \textcolor{preprocessor}{#define HASH\_ADD\_INORDER(hh,head,fieldname,keylen\_in,add,cmpfcn)                 \(\backslash\)}
+00394 \textcolor{preprocessor}{  HASH\_ADD\_KEYPTR\_INORDER(hh, head, &((add)->fieldname), keylen\_in, add, cmpfcn)}
+00395 
+00396 \textcolor{preprocessor}{#define HASH\_ADD\_KEYPTR\_BYHASHVALUE(hh,head,keyptr,keylen\_in,hashval,add)        \(\backslash\)}
+00397 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00398 \textcolor{preprocessor}{  IF\_HASH\_NONFATAL\_OOM( int \_ha\_oomed = 0; )                                     \(\backslash\)}
+00399 \textcolor{preprocessor}{  (add)->hh.hashv = (hashval);                                                   \(\backslash\)}
+00400 \textcolor{preprocessor}{  (add)->hh.key = (char*) (keyptr);                                              \(\backslash\)}
+00401 \textcolor{preprocessor}{  (add)->hh.keylen = (unsigned) (keylen\_in);                                     \(\backslash\)}
+00402 \textcolor{preprocessor}{  if (!(head)) \{                                                                 \(\backslash\)}
+00403 \textcolor{preprocessor}{    (add)->hh.next = NULL;                                                       \(\backslash\)}
+00404 \textcolor{preprocessor}{    (add)->hh.prev = NULL;                                                       \(\backslash\)}
+00405 \textcolor{preprocessor}{    HASH\_MAKE\_TABLE(hh, add, \_ha\_oomed);                                         \(\backslash\)}
+00406 \textcolor{preprocessor}{    IF\_HASH\_NONFATAL\_OOM( if (!\_ha\_oomed) \{ )                                    \(\backslash\)}
+00407 \textcolor{preprocessor}{      (head) = (add);                                                            \(\backslash\)}
+00408 \textcolor{preprocessor}{    IF\_HASH\_NONFATAL\_OOM( \} )                                                    \(\backslash\)}
+00409 \textcolor{preprocessor}{  \} else \{                                                                       \(\backslash\)}
+00410 \textcolor{preprocessor}{    (add)->hh.tbl = (head)->hh.tbl;                                              \(\backslash\)}
+00411 \textcolor{preprocessor}{    HASH\_APPEND\_LIST(hh, head, add);                                             \(\backslash\)}
+00412 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00413 \textcolor{preprocessor}{  HASH\_ADD\_TO\_TABLE(hh, head, keyptr, keylen\_in, hashval, add, \_ha\_oomed);       \(\backslash\)}
+00414 \textcolor{preprocessor}{  HASH\_FSCK(hh, head, "HASH\_ADD\_KEYPTR\_BYHASHVALUE");                            \(\backslash\)}
+00415 \textcolor{preprocessor}{\} while (0)}
+00416 
+00417 \textcolor{preprocessor}{#define HASH\_ADD\_KEYPTR(hh,head,keyptr,keylen\_in,add)                            \(\backslash\)}
+00418 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00419 \textcolor{preprocessor}{  unsigned \_ha\_hashv;                                                            \(\backslash\)}
+00420 \textcolor{preprocessor}{  HASH\_VALUE(keyptr, keylen\_in, \_ha\_hashv);                                      \(\backslash\)}
+00421 \textcolor{preprocessor}{  HASH\_ADD\_KEYPTR\_BYHASHVALUE(hh, head, keyptr, keylen\_in, \_ha\_hashv, add);      \(\backslash\)}
+00422 \textcolor{preprocessor}{\} while (0)}
+00423 
+00424 \textcolor{preprocessor}{#define HASH\_ADD\_BYHASHVALUE(hh,head,fieldname,keylen\_in,hashval,add)            \(\backslash\)}
+00425 \textcolor{preprocessor}{  HASH\_ADD\_KEYPTR\_BYHASHVALUE(hh, head, &((add)->fieldname), keylen\_in, hashval, add)}
+00426 
+00427 \textcolor{preprocessor}{#define HASH\_ADD(hh,head,fieldname,keylen\_in,add)                                \(\backslash\)}
+00428 \textcolor{preprocessor}{  HASH\_ADD\_KEYPTR(hh, head, &((add)->fieldname), keylen\_in, add)}
+00429 
+00430 \textcolor{preprocessor}{#define HASH\_TO\_BKT(hashv,num\_bkts,bkt)                                          \(\backslash\)}
+00431 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00432 \textcolor{preprocessor}{  bkt = ((hashv) & ((num\_bkts) - 1U));                                           \(\backslash\)}
+00433 \textcolor{preprocessor}{\} while (0)}
+00434 
+00435 \textcolor{comment}{/* delete "delptr" from the hash table.}
+00436 \textcolor{comment}{ * "the usual" patch-up process for the app-order doubly-linked-list.}
+00437 \textcolor{comment}{ * The use of \_hd\_hh\_del below deserves special explanation.}
+00438 \textcolor{comment}{ * These used to be expressed using (delptr) but that led to a bug}
+00439 \textcolor{comment}{ * if someone used the same symbol for the head and deletee, like}
+00440 \textcolor{comment}{ *  HASH\_DELETE(hh,users,users);}
+00441 \textcolor{comment}{ * We want that to work, but by changing the head (users) below}
+00442 \textcolor{comment}{ * we were forfeiting our ability to further refer to the deletee (users)}
+00443 \textcolor{comment}{ * in the patch-up process. Solution: use scratch space to}
+00444 \textcolor{comment}{ * copy the deletee pointer, then the latter references are via that}
+00445 \textcolor{comment}{ * scratch pointer rather than through the repointed (users) symbol.}
+00446 \textcolor{comment}{ */}
+00447 \textcolor{preprocessor}{#define HASH\_DELETE(hh,head,delptr)                                              \(\backslash\)}
+00448 \textcolor{preprocessor}{    HASH\_DELETE\_HH(hh, head, &(delptr)->hh)}
+00449 
+00450 \textcolor{preprocessor}{#define HASH\_DELETE\_HH(hh,head,delptrhh)                                         \(\backslash\)}
+00451 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00452 \textcolor{preprocessor}{  struct UT\_hash\_handle *\_hd\_hh\_del = (delptrhh);                                \(\backslash\)}
+00453 \textcolor{preprocessor}{  if ((\_hd\_hh\_del->prev == NULL) && (\_hd\_hh\_del->next == NULL)) \{                \(\backslash\)}
+00454 \textcolor{preprocessor}{    HASH\_BLOOM\_FREE((head)->hh.tbl);                                             \(\backslash\)}
+00455 \textcolor{preprocessor}{    uthash\_free((head)->hh.tbl->buckets,                                         \(\backslash\)}
+00456 \textcolor{preprocessor}{                (head)->hh.tbl->num\_buckets * sizeof(struct UT\_hash\_bucket));    \(\backslash\)}
+00457 \textcolor{preprocessor}{    uthash\_free((head)->hh.tbl, sizeof(UT\_hash\_table));                          \(\backslash\)}
+00458 \textcolor{preprocessor}{    (head) = NULL;                                                               \(\backslash\)}
+00459 \textcolor{preprocessor}{  \} else \{                                                                       \(\backslash\)}
+00460 \textcolor{preprocessor}{    unsigned \_hd\_bkt;                                                            \(\backslash\)}
+00461 \textcolor{preprocessor}{    if (\_hd\_hh\_del == (head)->hh.tbl->tail) \{                                    \(\backslash\)}
+00462 \textcolor{preprocessor}{      (head)->hh.tbl->tail = HH\_FROM\_ELMT((head)->hh.tbl, \_hd\_hh\_del->prev);     \(\backslash\)}
+00463 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00464 \textcolor{preprocessor}{    if (\_hd\_hh\_del->prev != NULL) \{                                              \(\backslash\)}
+00465 \textcolor{preprocessor}{      HH\_FROM\_ELMT((head)->hh.tbl, \_hd\_hh\_del->prev)->next = \_hd\_hh\_del->next;   \(\backslash\)}
+00466 \textcolor{preprocessor}{    \} else \{                                                                     \(\backslash\)}
+00467 \textcolor{preprocessor}{      DECLTYPE\_ASSIGN(head, \_hd\_hh\_del->next);                                   \(\backslash\)}
+00468 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00469 \textcolor{preprocessor}{    if (\_hd\_hh\_del->next != NULL) \{                                              \(\backslash\)}
+00470 \textcolor{preprocessor}{      HH\_FROM\_ELMT((head)->hh.tbl, \_hd\_hh\_del->next)->prev = \_hd\_hh\_del->prev;   \(\backslash\)}
+00471 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00472 \textcolor{preprocessor}{    HASH\_TO\_BKT(\_hd\_hh\_del->hashv, (head)->hh.tbl->num\_buckets, \_hd\_bkt);        \(\backslash\)}
+00473 \textcolor{preprocessor}{    HASH\_DEL\_IN\_BKT((head)->hh.tbl->buckets[\_hd\_bkt], \_hd\_hh\_del);               \(\backslash\)}
+00474 \textcolor{preprocessor}{    (head)->hh.tbl->num\_items--;                                                 \(\backslash\)}
+00475 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00476 \textcolor{preprocessor}{  HASH\_FSCK(hh, head, "HASH\_DELETE\_HH");                                         \(\backslash\)}
+00477 \textcolor{preprocessor}{\} while (0)}
+00478 
+00479 \textcolor{comment}{/* convenience forms of HASH\_FIND/HASH\_ADD/HASH\_DEL */}
+00480 \textcolor{preprocessor}{#define HASH\_FIND\_STR(head,findstr,out)                                          \(\backslash\)}
+00481 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00482 \textcolor{preprocessor}{    unsigned \_uthash\_hfstr\_keylen = (unsigned)uthash\_strlen(findstr);            \(\backslash\)}
+00483 \textcolor{preprocessor}{    HASH\_FIND(hh, head, findstr, \_uthash\_hfstr\_keylen, out);                     \(\backslash\)}
+00484 \textcolor{preprocessor}{\} while (0)}
+00485 \textcolor{preprocessor}{#define HASH\_ADD\_STR(head,strfield,add)                                          \(\backslash\)}
+00486 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00487 \textcolor{preprocessor}{    unsigned \_uthash\_hastr\_keylen = (unsigned)uthash\_strlen((add)->strfield);    \(\backslash\)}
+00488 \textcolor{preprocessor}{    HASH\_ADD(hh, head, strfield[0], \_uthash\_hastr\_keylen, add);                  \(\backslash\)}
+00489 \textcolor{preprocessor}{\} while (0)}
+00490 \textcolor{preprocessor}{#define HASH\_REPLACE\_STR(head,strfield,add,replaced)                             \(\backslash\)}
+00491 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00492 \textcolor{preprocessor}{    unsigned \_uthash\_hrstr\_keylen = (unsigned)uthash\_strlen((add)->strfield);    \(\backslash\)}
+00493 \textcolor{preprocessor}{    HASH\_REPLACE(hh, head, strfield[0], \_uthash\_hrstr\_keylen, add, replaced);    \(\backslash\)}
+00494 \textcolor{preprocessor}{\} while (0)}
+00495 \textcolor{preprocessor}{#define HASH\_FIND\_INT(head,findint,out)                                          \(\backslash\)}
+00496 \textcolor{preprocessor}{    HASH\_FIND(hh,head,findint,sizeof(int),out)}
+00497 \textcolor{preprocessor}{#define HASH\_ADD\_INT(head,intfield,add)                                          \(\backslash\)}
+00498 \textcolor{preprocessor}{    HASH\_ADD(hh,head,intfield,sizeof(int),add)}
+00499 \textcolor{preprocessor}{#define HASH\_REPLACE\_INT(head,intfield,add,replaced)                             \(\backslash\)}
+00500 \textcolor{preprocessor}{    HASH\_REPLACE(hh,head,intfield,sizeof(int),add,replaced)}
+00501 \textcolor{preprocessor}{#define HASH\_FIND\_PTR(head,findptr,out)                                          \(\backslash\)}
+00502 \textcolor{preprocessor}{    HASH\_FIND(hh,head,findptr,sizeof(void *),out)}
+00503 \textcolor{preprocessor}{#define HASH\_ADD\_PTR(head,ptrfield,add)                                          \(\backslash\)}
+00504 \textcolor{preprocessor}{    HASH\_ADD(hh,head,ptrfield,sizeof(void *),add)}
+00505 \textcolor{preprocessor}{#define HASH\_REPLACE\_PTR(head,ptrfield,add,replaced)                             \(\backslash\)}
+00506 \textcolor{preprocessor}{    HASH\_REPLACE(hh,head,ptrfield,sizeof(void *),add,replaced)}
+00507 \textcolor{preprocessor}{#define HASH\_DEL(head,delptr)                                                    \(\backslash\)}
+00508 \textcolor{preprocessor}{    HASH\_DELETE(hh,head,delptr)}
+00509 
+00510 \textcolor{comment}{/* HASH\_FSCK checks hash integrity on every add/delete when HASH\_DEBUG is defined.}
+00511 \textcolor{comment}{ * This is for uthash developer only; it compiles away if HASH\_DEBUG isn't defined.}
+00512 \textcolor{comment}{ */}
+00513 \textcolor{preprocessor}{#ifdef HASH\_DEBUG}
+00514 \textcolor{preprocessor}{#define HASH\_OOPS(...) do \{ fprintf(stderr,\_\_VA\_ARGS\_\_); exit(-1); \} while (0)}
+00515 \textcolor{preprocessor}{#define HASH\_FSCK(hh,head,where)                                                 \(\backslash\)}
+00516 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00517 \textcolor{preprocessor}{  struct UT\_hash\_handle *\_thh;                                                   \(\backslash\)}
+00518 \textcolor{preprocessor}{  if (head) \{                                                                    \(\backslash\)}
+00519 \textcolor{preprocessor}{    unsigned \_bkt\_i;                                                             \(\backslash\)}
+00520 \textcolor{preprocessor}{    unsigned \_count = 0;                                                         \(\backslash\)}
+00521 \textcolor{preprocessor}{    char *\_prev;                                                                 \(\backslash\)}
+00522 \textcolor{preprocessor}{    for (\_bkt\_i = 0; \_bkt\_i < (head)->hh.tbl->num\_buckets; ++\_bkt\_i) \{           \(\backslash\)}
+00523 \textcolor{preprocessor}{      unsigned \_bkt\_count = 0;                                                   \(\backslash\)}
+00524 \textcolor{preprocessor}{      \_thh = (head)->hh.tbl->buckets[\_bkt\_i].hh\_head;                            \(\backslash\)}
+00525 \textcolor{preprocessor}{      \_prev = NULL;                                                              \(\backslash\)}
+00526 \textcolor{preprocessor}{      while (\_thh) \{                                                             \(\backslash\)}
+00527 \textcolor{preprocessor}{        if (\_prev != (char*)(\_thh->hh\_prev)) \{                                   \(\backslash\)}
+00528 \textcolor{preprocessor}{          HASH\_OOPS("%s: invalid hh\_prev %p, actual %p\(\backslash\)n",                       \(\backslash\)}
+00529 \textcolor{preprocessor}{              (where), (void*)\_thh->hh\_prev, (void*)\_prev);                      \(\backslash\)}
+00530 \textcolor{preprocessor}{        \}                                                                        \(\backslash\)}
+00531 \textcolor{preprocessor}{        \_bkt\_count++;                                                            \(\backslash\)}
+00532 \textcolor{preprocessor}{        \_prev = (char*)(\_thh);                                                   \(\backslash\)}
+00533 \textcolor{preprocessor}{        \_thh = \_thh->hh\_next;                                                    \(\backslash\)}
+00534 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+00535 \textcolor{preprocessor}{      \_count += \_bkt\_count;                                                      \(\backslash\)}
+00536 \textcolor{preprocessor}{      if ((head)->hh.tbl->buckets[\_bkt\_i].count !=  \_bkt\_count) \{                \(\backslash\)}
+00537 \textcolor{preprocessor}{        HASH\_OOPS("%s: invalid bucket count %u, actual %u\(\backslash\)n",                    \(\backslash\)}
+00538 \textcolor{preprocessor}{            (where), (head)->hh.tbl->buckets[\_bkt\_i].count, \_bkt\_count);         \(\backslash\)}
+00539 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+00540 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00541 \textcolor{preprocessor}{    if (\_count != (head)->hh.tbl->num\_items) \{                                   \(\backslash\)}
+00542 \textcolor{preprocessor}{      HASH\_OOPS("%s: invalid hh item count %u, actual %u\(\backslash\)n",                     \(\backslash\)}
+00543 \textcolor{preprocessor}{          (where), (head)->hh.tbl->num\_items, \_count);                           \(\backslash\)}
+00544 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00545 \textcolor{preprocessor}{    \_count = 0;                                                                  \(\backslash\)}
+00546 \textcolor{preprocessor}{    \_prev = NULL;                                                                \(\backslash\)}
+00547 \textcolor{preprocessor}{    \_thh =  &(head)->hh;                                                         \(\backslash\)}
+00548 \textcolor{preprocessor}{    while (\_thh) \{                                                               \(\backslash\)}
+00549 \textcolor{preprocessor}{      \_count++;                                                                  \(\backslash\)}
+00550 \textcolor{preprocessor}{      if (\_prev != (char*)\_thh->prev) \{                                          \(\backslash\)}
+00551 \textcolor{preprocessor}{        HASH\_OOPS("%s: invalid prev %p, actual %p\(\backslash\)n",                            \(\backslash\)}
+00552 \textcolor{preprocessor}{            (where), (void*)\_thh->prev, (void*)\_prev);                           \(\backslash\)}
+00553 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+00554 \textcolor{preprocessor}{      \_prev = (char*)ELMT\_FROM\_HH((head)->hh.tbl, \_thh);                         \(\backslash\)}
+00555 \textcolor{preprocessor}{      \_thh = (\_thh->next ? HH\_FROM\_ELMT((head)->hh.tbl, \_thh->next) : NULL);     \(\backslash\)}
+00556 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00557 \textcolor{preprocessor}{    if (\_count != (head)->hh.tbl->num\_items) \{                                   \(\backslash\)}
+00558 \textcolor{preprocessor}{      HASH\_OOPS("%s: invalid app item count %u, actual %u\(\backslash\)n",                    \(\backslash\)}
+00559 \textcolor{preprocessor}{          (where), (head)->hh.tbl->num\_items, \_count);                           \(\backslash\)}
+00560 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00561 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00562 \textcolor{preprocessor}{\} while (0)}
+00563 \textcolor{preprocessor}{#else}
+00564 \textcolor{preprocessor}{#define HASH\_FSCK(hh,head,where)}
+00565 \textcolor{preprocessor}{#endif}
+00566 
+00567 \textcolor{comment}{/* When compiled with -DHASH\_EMIT\_KEYS, length-prefixed keys are emitted to}
+00568 \textcolor{comment}{ * the descriptor to which this macro is defined for tuning the hash function.}
+00569 \textcolor{comment}{ * The app can #include <unistd.h> to get the prototype for write(2). */}
+00570 \textcolor{preprocessor}{#ifdef HASH\_EMIT\_KEYS}
+00571 \textcolor{preprocessor}{#define HASH\_EMIT\_KEY(hh,head,keyptr,fieldlen)                                   \(\backslash\)}
+00572 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00573 \textcolor{preprocessor}{  unsigned \_klen = fieldlen;                                                     \(\backslash\)}
+00574 \textcolor{preprocessor}{  write(HASH\_EMIT\_KEYS, &\_klen, sizeof(\_klen));                                  \(\backslash\)}
+00575 \textcolor{preprocessor}{  write(HASH\_EMIT\_KEYS, keyptr, (unsigned long)fieldlen);                        \(\backslash\)}
+00576 \textcolor{preprocessor}{\} while (0)}
+00577 \textcolor{preprocessor}{#else}
+00578 \textcolor{preprocessor}{#define HASH\_EMIT\_KEY(hh,head,keyptr,fieldlen)}
+00579 \textcolor{preprocessor}{#endif}
+00580 
+00581 \textcolor{comment}{/* default to Jenkin's hash unless overridden e.g. DHASH\_FUNCTION=HASH\_SAX */}
+00582 \textcolor{preprocessor}{#ifdef HASH\_FUNCTION}
+00583 \textcolor{preprocessor}{#define HASH\_FCN HASH\_FUNCTION}
+00584 \textcolor{preprocessor}{#else}
+00585 \textcolor{preprocessor}{#define HASH\_FCN HASH\_JEN}
+00586 \textcolor{preprocessor}{#endif}
+00587 
+00588 \textcolor{comment}{/* The Bernstein hash function, used in Perl prior to v5.6. Note (x<<5+x)=x*33. */}
+00589 \textcolor{preprocessor}{#define HASH\_BER(key,keylen,hashv)                                               \(\backslash\)}
+00590 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00591 \textcolor{preprocessor}{  unsigned \_hb\_keylen = (unsigned)keylen;                                        \(\backslash\)}
+00592 \textcolor{preprocessor}{  const unsigned char *\_hb\_key = (const unsigned char*)(key);                    \(\backslash\)}
+00593 \textcolor{preprocessor}{  (hashv) = 0;                                                                   \(\backslash\)}
+00594 \textcolor{preprocessor}{  while (\_hb\_keylen-- != 0U) \{                                                   \(\backslash\)}
+00595 \textcolor{preprocessor}{    (hashv) = (((hashv) << 5) + (hashv)) + *\_hb\_key++;                           \(\backslash\)}
+00596 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00597 \textcolor{preprocessor}{\} while (0)}
+00598 
+00599 
+00600 \textcolor{comment}{/* SAX/FNV/OAT/JEN hash functions are macro variants of those listed at}
+00601 \textcolor{comment}{ * http://eternallyconfuzzled.com/tuts/algorithms/jsw\_tut\_hashing.aspx */}
+00602 \textcolor{preprocessor}{#define HASH\_SAX(key,keylen,hashv)                                               \(\backslash\)}
+00603 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00604 \textcolor{preprocessor}{  unsigned \_sx\_i;                                                                \(\backslash\)}
+00605 \textcolor{preprocessor}{  const unsigned char *\_hs\_key = (const unsigned char*)(key);                    \(\backslash\)}
+00606 \textcolor{preprocessor}{  hashv = 0;                                                                     \(\backslash\)}
+00607 \textcolor{preprocessor}{  for (\_sx\_i=0; \_sx\_i < keylen; \_sx\_i++) \{                                       \(\backslash\)}
+00608 \textcolor{preprocessor}{    hashv ^= (hashv << 5) + (hashv >> 2) + \_hs\_key[\_sx\_i];                       \(\backslash\)}
+00609 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00610 \textcolor{preprocessor}{\} while (0)}
+00611 \textcolor{comment}{/* FNV-1a variation */}
+00612 \textcolor{preprocessor}{#define HASH\_FNV(key,keylen,hashv)                                               \(\backslash\)}
+00613 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00614 \textcolor{preprocessor}{  unsigned \_fn\_i;                                                                \(\backslash\)}
+00615 \textcolor{preprocessor}{  const unsigned char *\_hf\_key = (const unsigned char*)(key);                    \(\backslash\)}
+00616 \textcolor{preprocessor}{  (hashv) = 2166136261U;                                                         \(\backslash\)}
+00617 \textcolor{preprocessor}{  for (\_fn\_i=0; \_fn\_i < keylen; \_fn\_i++) \{                                       \(\backslash\)}
+00618 \textcolor{preprocessor}{    hashv = hashv ^ \_hf\_key[\_fn\_i];                                              \(\backslash\)}
+00619 \textcolor{preprocessor}{    hashv = hashv * 16777619U;                                                   \(\backslash\)}
+00620 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00621 \textcolor{preprocessor}{\} while (0)}
+00622 
+00623 \textcolor{preprocessor}{#define HASH\_OAT(key,keylen,hashv)                                               \(\backslash\)}
+00624 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00625 \textcolor{preprocessor}{  unsigned \_ho\_i;                                                                \(\backslash\)}
+00626 \textcolor{preprocessor}{  const unsigned char *\_ho\_key=(const unsigned char*)(key);                      \(\backslash\)}
+00627 \textcolor{preprocessor}{  hashv = 0;                                                                     \(\backslash\)}
+00628 \textcolor{preprocessor}{  for(\_ho\_i=0; \_ho\_i < keylen; \_ho\_i++) \{                                        \(\backslash\)}
+00629 \textcolor{preprocessor}{      hashv += \_ho\_key[\_ho\_i];                                                   \(\backslash\)}
+00630 \textcolor{preprocessor}{      hashv += (hashv << 10);                                                    \(\backslash\)}
+00631 \textcolor{preprocessor}{      hashv ^= (hashv >> 6);                                                     \(\backslash\)}
+00632 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00633 \textcolor{preprocessor}{  hashv += (hashv << 3);                                                         \(\backslash\)}
+00634 \textcolor{preprocessor}{  hashv ^= (hashv >> 11);                                                        \(\backslash\)}
+00635 \textcolor{preprocessor}{  hashv += (hashv << 15);                                                        \(\backslash\)}
+00636 \textcolor{preprocessor}{\} while (0)}
+00637 
+00638 \textcolor{preprocessor}{#define HASH\_JEN\_MIX(a,b,c)                                                      \(\backslash\)}
+00639 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00640 \textcolor{preprocessor}{  a -= b; a -= c; a ^= ( c >> 13 );                                              \(\backslash\)}
+00641 \textcolor{preprocessor}{  b -= c; b -= a; b ^= ( a << 8 );                                               \(\backslash\)}
+00642 \textcolor{preprocessor}{  c -= a; c -= b; c ^= ( b >> 13 );                                              \(\backslash\)}
+00643 \textcolor{preprocessor}{  a -= b; a -= c; a ^= ( c >> 12 );                                              \(\backslash\)}
+00644 \textcolor{preprocessor}{  b -= c; b -= a; b ^= ( a << 16 );                                              \(\backslash\)}
+00645 \textcolor{preprocessor}{  c -= a; c -= b; c ^= ( b >> 5 );                                               \(\backslash\)}
+00646 \textcolor{preprocessor}{  a -= b; a -= c; a ^= ( c >> 3 );                                               \(\backslash\)}
+00647 \textcolor{preprocessor}{  b -= c; b -= a; b ^= ( a << 10 );                                              \(\backslash\)}
+00648 \textcolor{preprocessor}{  c -= a; c -= b; c ^= ( b >> 15 );                                              \(\backslash\)}
+00649 \textcolor{preprocessor}{\} while (0)}
+00650 
+00651 \textcolor{preprocessor}{#define HASH\_JEN(key,keylen,hashv)                                               \(\backslash\)}
+00652 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00653 \textcolor{preprocessor}{  unsigned \_hj\_i,\_hj\_j,\_hj\_k;                                                    \(\backslash\)}
+00654 \textcolor{preprocessor}{  unsigned const char *\_hj\_key=(unsigned const char*)(key);                      \(\backslash\)}
+00655 \textcolor{preprocessor}{  hashv = 0xfeedbeefu;                                                           \(\backslash\)}
+00656 \textcolor{preprocessor}{  \_hj\_i = \_hj\_j = 0x9e3779b9u;                                                   \(\backslash\)}
+00657 \textcolor{preprocessor}{  \_hj\_k = (unsigned)(keylen);                                                    \(\backslash\)}
+00658 \textcolor{preprocessor}{  while (\_hj\_k >= 12U) \{                                                         \(\backslash\)}
+00659 \textcolor{preprocessor}{    \_hj\_i +=    (\_hj\_key[0] + ( (unsigned)\_hj\_key[1] << 8 )                      \(\backslash\)}
+00660 \textcolor{preprocessor}{        + ( (unsigned)\_hj\_key[2] << 16 )                                         \(\backslash\)}
+00661 \textcolor{preprocessor}{        + ( (unsigned)\_hj\_key[3] << 24 ) );                                      \(\backslash\)}
+00662 \textcolor{preprocessor}{    \_hj\_j +=    (\_hj\_key[4] + ( (unsigned)\_hj\_key[5] << 8 )                      \(\backslash\)}
+00663 \textcolor{preprocessor}{        + ( (unsigned)\_hj\_key[6] << 16 )                                         \(\backslash\)}
+00664 \textcolor{preprocessor}{        + ( (unsigned)\_hj\_key[7] << 24 ) );                                      \(\backslash\)}
+00665 \textcolor{preprocessor}{    hashv += (\_hj\_key[8] + ( (unsigned)\_hj\_key[9] << 8 )                         \(\backslash\)}
+00666 \textcolor{preprocessor}{        + ( (unsigned)\_hj\_key[10] << 16 )                                        \(\backslash\)}
+00667 \textcolor{preprocessor}{        + ( (unsigned)\_hj\_key[11] << 24 ) );                                     \(\backslash\)}
+00668 \textcolor{preprocessor}{                                                                                 \(\backslash\)}
+00669 \textcolor{preprocessor}{     HASH\_JEN\_MIX(\_hj\_i, \_hj\_j, hashv);                                          \(\backslash\)}
+00670 \textcolor{preprocessor}{                                                                                 \(\backslash\)}
+00671 \textcolor{preprocessor}{     \_hj\_key += 12;                                                              \(\backslash\)}
+00672 \textcolor{preprocessor}{     \_hj\_k -= 12U;                                                               \(\backslash\)}
+00673 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00674 \textcolor{preprocessor}{  hashv += (unsigned)(keylen);                                                   \(\backslash\)}
+00675 \textcolor{preprocessor}{  switch ( \_hj\_k ) \{                                                             \(\backslash\)}
+00676 \textcolor{preprocessor}{    case 11: hashv += ( (unsigned)\_hj\_key[10] << 24 ); }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00677 \textcolor{preprocessor}{    case 10: hashv += ( (unsigned)\_hj\_key[9] << 16 );  }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00678 \textcolor{preprocessor}{    case 9:  hashv += ( (unsigned)\_hj\_key[8] << 8 );   }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00679 \textcolor{preprocessor}{    case 8:  \_hj\_j += ( (unsigned)\_hj\_key[7] << 24 );  }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00680 \textcolor{preprocessor}{    case 7:  \_hj\_j += ( (unsigned)\_hj\_key[6] << 16 );  }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00681 \textcolor{preprocessor}{    case 6:  \_hj\_j += ( (unsigned)\_hj\_key[5] << 8 );   }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00682 \textcolor{preprocessor}{    case 5:  \_hj\_j += \_hj\_key[4];                      }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00683 \textcolor{preprocessor}{    case 4:  \_hj\_i += ( (unsigned)\_hj\_key[3] << 24 );  }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00684 \textcolor{preprocessor}{    case 3:  \_hj\_i += ( (unsigned)\_hj\_key[2] << 16 );  }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00685 \textcolor{preprocessor}{    case 2:  \_hj\_i += ( (unsigned)\_hj\_key[1] << 8 );   }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{         \(\backslash\)}
+00686 \textcolor{preprocessor}{    case 1:  \_hj\_i += \_hj\_key[0];                                                \(\backslash\)}
+00687 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00688 \textcolor{preprocessor}{  HASH\_JEN\_MIX(\_hj\_i, \_hj\_j, hashv);                                             \(\backslash\)}
+00689 \textcolor{preprocessor}{\} while (0)}
+00690 
+00691 \textcolor{comment}{/* The Paul Hsieh hash function */}
+00692 \textcolor{preprocessor}{#undef get16bits}
+00693 \textcolor{preprocessor}{#if (defined(\_\_GNUC\_\_) && defined(\_\_i386\_\_)) || defined(\_\_WATCOMC\_\_)             \(\backslash\)}
+00694 \textcolor{preprocessor}{  || defined(\_MSC\_VER) || defined (\_\_BORLANDC\_\_) || defined (\_\_TURBOC\_\_)}
+00695 \textcolor{preprocessor}{#define get16bits(d) (*((const uint16\_t *) (d)))}
+00696 \textcolor{preprocessor}{#endif}
+00697 
+00698 \textcolor{preprocessor}{#if !defined (get16bits)}
+00699 \textcolor{preprocessor}{#define get16bits(d) ((((uint32\_t)(((const uint8\_t *)(d))[1])) << 8)             \(\backslash\)}
+00700 \textcolor{preprocessor}{                       +(uint32\_t)(((const uint8\_t *)(d))[0]) )}
+00701 \textcolor{preprocessor}{#endif}
+00702 \textcolor{preprocessor}{#define HASH\_SFH(key,keylen,hashv)                                               \(\backslash\)}
+00703 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00704 \textcolor{preprocessor}{  unsigned const char *\_sfh\_key=(unsigned const char*)(key);                     \(\backslash\)}
+00705 \textcolor{preprocessor}{  uint32\_t \_sfh\_tmp, \_sfh\_len = (uint32\_t)keylen;                                \(\backslash\)}
+00706 \textcolor{preprocessor}{                                                                                 \(\backslash\)}
+00707 \textcolor{preprocessor}{  unsigned \_sfh\_rem = \_sfh\_len & 3U;                                             \(\backslash\)}
+00708 \textcolor{preprocessor}{  \_sfh\_len >>= 2;                                                                \(\backslash\)}
+00709 \textcolor{preprocessor}{  hashv = 0xcafebabeu;                                                           \(\backslash\)}
+00710 \textcolor{preprocessor}{                                                                                 \(\backslash\)}
+00711 \textcolor{preprocessor}{  }\textcolor{comment}{/* Main loop */}\textcolor{preprocessor}{                                                                \(\backslash\)}
+00712 \textcolor{preprocessor}{  for (;\_sfh\_len > 0U; \_sfh\_len--) \{                                             \(\backslash\)}
+00713 \textcolor{preprocessor}{    hashv    += get16bits (\_sfh\_key);                                            \(\backslash\)}
+00714 \textcolor{preprocessor}{    \_sfh\_tmp  = ((uint32\_t)(get16bits (\_sfh\_key+2)) << 11) ^ hashv;              \(\backslash\)}
+00715 \textcolor{preprocessor}{    hashv     = (hashv << 16) ^ \_sfh\_tmp;                                        \(\backslash\)}
+00716 \textcolor{preprocessor}{    \_sfh\_key += 2U*sizeof (uint16\_t);                                            \(\backslash\)}
+00717 \textcolor{preprocessor}{    hashv    += hashv >> 11;                                                     \(\backslash\)}
+00718 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00719 \textcolor{preprocessor}{                                                                                 \(\backslash\)}
+00720 \textcolor{preprocessor}{  }\textcolor{comment}{/* Handle end cases */}\textcolor{preprocessor}{                                                         \(\backslash\)}
+00721 \textcolor{preprocessor}{  switch (\_sfh\_rem) \{                                                            \(\backslash\)}
+00722 \textcolor{preprocessor}{    case 3: hashv += get16bits (\_sfh\_key);                                       \(\backslash\)}
+00723 \textcolor{preprocessor}{            hashv ^= hashv << 16;                                                \(\backslash\)}
+00724 \textcolor{preprocessor}{            hashv ^= (uint32\_t)(\_sfh\_key[sizeof (uint16\_t)]) << 18;              \(\backslash\)}
+00725 \textcolor{preprocessor}{            hashv += hashv >> 11;                                                \(\backslash\)}
+00726 \textcolor{preprocessor}{            break;                                                               \(\backslash\)}
+00727 \textcolor{preprocessor}{    case 2: hashv += get16bits (\_sfh\_key);                                       \(\backslash\)}
+00728 \textcolor{preprocessor}{            hashv ^= hashv << 11;                                                \(\backslash\)}
+00729 \textcolor{preprocessor}{            hashv += hashv >> 17;                                                \(\backslash\)}
+00730 \textcolor{preprocessor}{            break;                                                               \(\backslash\)}
+00731 \textcolor{preprocessor}{    case 1: hashv += *\_sfh\_key;                                                  \(\backslash\)}
+00732 \textcolor{preprocessor}{            hashv ^= hashv << 10;                                                \(\backslash\)}
+00733 \textcolor{preprocessor}{            hashv += hashv >> 1;                                                 \(\backslash\)}
+00734 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00735 \textcolor{preprocessor}{                                                                                 \(\backslash\)}
+00736 \textcolor{preprocessor}{  }\textcolor{comment}{/* Force "avalanching" of final 127 bits */}\textcolor{preprocessor}{                                    \(\backslash\)}
+00737 \textcolor{preprocessor}{  hashv ^= hashv << 3;                                                           \(\backslash\)}
+00738 \textcolor{preprocessor}{  hashv += hashv >> 5;                                                           \(\backslash\)}
+00739 \textcolor{preprocessor}{  hashv ^= hashv << 4;                                                           \(\backslash\)}
+00740 \textcolor{preprocessor}{  hashv += hashv >> 17;                                                          \(\backslash\)}
+00741 \textcolor{preprocessor}{  hashv ^= hashv << 25;                                                          \(\backslash\)}
+00742 \textcolor{preprocessor}{  hashv += hashv >> 6;                                                           \(\backslash\)}
+00743 \textcolor{preprocessor}{\} while (0)}
+00744 
+00745 \textcolor{preprocessor}{#ifdef HASH\_USING\_NO\_STRICT\_ALIASING}
+00746 \textcolor{comment}{/* The MurmurHash exploits some CPU's (x86,x86\_64) tolerance for unaligned reads.}
+00747 \textcolor{comment}{ * For other types of CPU's (e.g. Sparc) an unaligned read causes a bus error.}
+00748 \textcolor{comment}{ * MurmurHash uses the faster approach only on CPU's where we know it's safe.}
+00749 \textcolor{comment}{ *}
+00750 \textcolor{comment}{ * Note the preprocessor built-in defines can be emitted using:}
+00751 \textcolor{comment}{ *}
+00752 \textcolor{comment}{ *   gcc -m64 -dM -E - < /dev/null                  (on gcc)}
+00753 \textcolor{comment}{ *   cc -## a.c (where a.c is a simple test file)   (Sun Studio)}
+00754 \textcolor{comment}{ */}
+00755 \textcolor{preprocessor}{#if (defined(\_\_i386\_\_) || defined(\_\_x86\_64\_\_)  || defined(\_M\_IX86))}
+00756 \textcolor{preprocessor}{#define MUR\_GETBLOCK(p,i) p[i]}
+00757 \textcolor{preprocessor}{#else }\textcolor{comment}{/* non intel */}\textcolor{preprocessor}{}
+00758 \textcolor{preprocessor}{#define MUR\_PLUS0\_ALIGNED(p) (((unsigned long)p & 3UL) == 0UL)}
+00759 \textcolor{preprocessor}{#define MUR\_PLUS1\_ALIGNED(p) (((unsigned long)p & 3UL) == 1UL)}
+00760 \textcolor{preprocessor}{#define MUR\_PLUS2\_ALIGNED(p) (((unsigned long)p & 3UL) == 2UL)}
+00761 \textcolor{preprocessor}{#define MUR\_PLUS3\_ALIGNED(p) (((unsigned long)p & 3UL) == 3UL)}
+00762 \textcolor{preprocessor}{#define WP(p) ((uint32\_t*)((unsigned long)(p) & ~3UL))}
+00763 \textcolor{preprocessor}{#if (defined(\_\_BIG\_ENDIAN\_\_) || defined(SPARC) || defined(\_\_ppc\_\_) || defined(\_\_ppc64\_\_))}
+00764 \textcolor{preprocessor}{#define MUR\_THREE\_ONE(p) ((((*WP(p))&0x00ffffff) << 8) | (((*(WP(p)+1))&0xff000000) >> 24))}
+00765 \textcolor{preprocessor}{#define MUR\_TWO\_TWO(p)   ((((*WP(p))&0x0000ffff) <<16) | (((*(WP(p)+1))&0xffff0000) >> 16))}
+00766 \textcolor{preprocessor}{#define MUR\_ONE\_THREE(p) ((((*WP(p))&0x000000ff) <<24) | (((*(WP(p)+1))&0xffffff00) >>  8))}
+00767 \textcolor{preprocessor}{#else }\textcolor{comment}{/* assume little endian non-intel */}\textcolor{preprocessor}{}
+00768 \textcolor{preprocessor}{#define MUR\_THREE\_ONE(p) ((((*WP(p))&0xffffff00) >> 8) | (((*(WP(p)+1))&0x000000ff) << 24))}
+00769 \textcolor{preprocessor}{#define MUR\_TWO\_TWO(p)   ((((*WP(p))&0xffff0000) >>16) | (((*(WP(p)+1))&0x0000ffff) << 16))}
+00770 \textcolor{preprocessor}{#define MUR\_ONE\_THREE(p) ((((*WP(p))&0xff000000) >>24) | (((*(WP(p)+1))&0x00ffffff) <<  8))}
+00771 \textcolor{preprocessor}{#endif}
+00772 \textcolor{preprocessor}{#define MUR\_GETBLOCK(p,i) (MUR\_PLUS0\_ALIGNED(p) ? ((p)[i]) :           \(\backslash\)}
+00773 \textcolor{preprocessor}{                            (MUR\_PLUS1\_ALIGNED(p) ? MUR\_THREE\_ONE(p) : \(\backslash\)}
+00774 \textcolor{preprocessor}{                             (MUR\_PLUS2\_ALIGNED(p) ? MUR\_TWO\_TWO(p) :  \(\backslash\)}
+00775 \textcolor{preprocessor}{                                                      MUR\_ONE\_THREE(p))))}
+00776 \textcolor{preprocessor}{#endif}
+00777 \textcolor{preprocessor}{#define MUR\_ROTL32(x,r) (((x) << (r)) | ((x) >> (32 - (r))))}
+00778 \textcolor{preprocessor}{#define MUR\_FMIX(\_h) \(\backslash\)}
+00779 \textcolor{preprocessor}{do \{                 \(\backslash\)}
+00780 \textcolor{preprocessor}{  \_h ^= \_h >> 16;    \(\backslash\)}
+00781 \textcolor{preprocessor}{  \_h *= 0x85ebca6bu; \(\backslash\)}
+00782 \textcolor{preprocessor}{  \_h ^= \_h >> 13;    \(\backslash\)}
+00783 \textcolor{preprocessor}{  \_h *= 0xc2b2ae35u; \(\backslash\)}
+00784 \textcolor{preprocessor}{  \_h ^= \_h >> 16;    \(\backslash\)}
+00785 \textcolor{preprocessor}{\} while (0)}
+00786 
+00787 \textcolor{preprocessor}{#define HASH\_MUR(key,keylen,hashv)                                     \(\backslash\)}
+00788 \textcolor{preprocessor}{do \{                                                                   \(\backslash\)}
+00789 \textcolor{preprocessor}{  const uint8\_t *\_mur\_data = (const uint8\_t*)(key);                    \(\backslash\)}
+00790 \textcolor{preprocessor}{  const int \_mur\_nblocks = (int)(keylen) / 4;                          \(\backslash\)}
+00791 \textcolor{preprocessor}{  uint32\_t \_mur\_h1 = 0xf88D5353u;                                      \(\backslash\)}
+00792 \textcolor{preprocessor}{  uint32\_t \_mur\_c1 = 0xcc9e2d51u;                                      \(\backslash\)}
+00793 \textcolor{preprocessor}{  uint32\_t \_mur\_c2 = 0x1b873593u;                                      \(\backslash\)}
+00794 \textcolor{preprocessor}{  uint32\_t \_mur\_k1 = 0;                                                \(\backslash\)}
+00795 \textcolor{preprocessor}{  const uint8\_t *\_mur\_tail;                                            \(\backslash\)}
+00796 \textcolor{preprocessor}{  const uint32\_t *\_mur\_blocks = (const uint32\_t*)(\_mur\_data+(\_mur\_nblocks*4)); \(\backslash\)}
+00797 \textcolor{preprocessor}{  int \_mur\_i;                                                          \(\backslash\)}
+00798 \textcolor{preprocessor}{  for (\_mur\_i = -\_mur\_nblocks; \_mur\_i != 0; \_mur\_i++) \{                \(\backslash\)}
+00799 \textcolor{preprocessor}{    \_mur\_k1 = MUR\_GETBLOCK(\_mur\_blocks,\_mur\_i);                        \(\backslash\)}
+00800 \textcolor{preprocessor}{    \_mur\_k1 *= \_mur\_c1;                                                \(\backslash\)}
+00801 \textcolor{preprocessor}{    \_mur\_k1 = MUR\_ROTL32(\_mur\_k1,15);                                  \(\backslash\)}
+00802 \textcolor{preprocessor}{    \_mur\_k1 *= \_mur\_c2;                                                \(\backslash\)}
+00803 \textcolor{preprocessor}{                                                                       \(\backslash\)}
+00804 \textcolor{preprocessor}{    \_mur\_h1 ^= \_mur\_k1;                                                \(\backslash\)}
+00805 \textcolor{preprocessor}{    \_mur\_h1 = MUR\_ROTL32(\_mur\_h1,13);                                  \(\backslash\)}
+00806 \textcolor{preprocessor}{    \_mur\_h1 = (\_mur\_h1*5U) + 0xe6546b64u;                              \(\backslash\)}
+00807 \textcolor{preprocessor}{  \}                                                                    \(\backslash\)}
+00808 \textcolor{preprocessor}{  \_mur\_tail = (const uint8\_t*)(\_mur\_data + (\_mur\_nblocks*4));          \(\backslash\)}
+00809 \textcolor{preprocessor}{  \_mur\_k1=0;                                                           \(\backslash\)}
+00810 \textcolor{preprocessor}{  switch ((keylen) & 3U) \{                                             \(\backslash\)}
+00811 \textcolor{preprocessor}{    case 0: break;                                                     \(\backslash\)}
+00812 \textcolor{preprocessor}{    case 3: \_mur\_k1 ^= (uint32\_t)\_mur\_tail[2] << 16; }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{ \(\backslash\)}
+00813 \textcolor{preprocessor}{    case 2: \_mur\_k1 ^= (uint32\_t)\_mur\_tail[1] << 8;  }\textcolor{comment}{/* FALLTHROUGH */}\textcolor{preprocessor}{ \(\backslash\)}
+00814 \textcolor{preprocessor}{    case 1: \_mur\_k1 ^= (uint32\_t)\_mur\_tail[0];                         \(\backslash\)}
+00815 \textcolor{preprocessor}{    \_mur\_k1 *= \_mur\_c1;                                                \(\backslash\)}
+00816 \textcolor{preprocessor}{    \_mur\_k1 = MUR\_ROTL32(\_mur\_k1,15);                                  \(\backslash\)}
+00817 \textcolor{preprocessor}{    \_mur\_k1 *= \_mur\_c2;                                                \(\backslash\)}
+00818 \textcolor{preprocessor}{    \_mur\_h1 ^= \_mur\_k1;                                                \(\backslash\)}
+00819 \textcolor{preprocessor}{  \}                                                                    \(\backslash\)}
+00820 \textcolor{preprocessor}{  \_mur\_h1 ^= (uint32\_t)(keylen);                                       \(\backslash\)}
+00821 \textcolor{preprocessor}{  MUR\_FMIX(\_mur\_h1);                                                   \(\backslash\)}
+00822 \textcolor{preprocessor}{  hashv = \_mur\_h1;                                                     \(\backslash\)}
+00823 \textcolor{preprocessor}{\} while (0)}
+00824 \textcolor{preprocessor}{#endif  }\textcolor{comment}{/* HASH\_USING\_NO\_STRICT\_ALIASING */}\textcolor{preprocessor}{}
+00825 
+00826 \textcolor{comment}{/* iterate over items in a known bucket to find desired item */}
+00827 \textcolor{preprocessor}{#define HASH\_FIND\_IN\_BKT(tbl,hh,head,keyptr,keylen\_in,hashval,out)               \(\backslash\)}
+00828 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00829 \textcolor{preprocessor}{  if ((head).hh\_head != NULL) \{                                                  \(\backslash\)}
+00830 \textcolor{preprocessor}{    DECLTYPE\_ASSIGN(out, ELMT\_FROM\_HH(tbl, (head).hh\_head));                     \(\backslash\)}
+00831 \textcolor{preprocessor}{  \} else \{                                                                       \(\backslash\)}
+00832 \textcolor{preprocessor}{    (out) = NULL;                                                                \(\backslash\)}
+00833 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00834 \textcolor{preprocessor}{  while ((out) != NULL) \{                                                        \(\backslash\)}
+00835 \textcolor{preprocessor}{    if ((out)->hh.hashv == (hashval) && (out)->hh.keylen == (keylen\_in)) \{       \(\backslash\)}
+00836 \textcolor{preprocessor}{      if (uthash\_memcmp((out)->hh.key, keyptr, keylen\_in) == 0) \{                \(\backslash\)}
+00837 \textcolor{preprocessor}{        break;                                                                   \(\backslash\)}
+00838 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+00839 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00840 \textcolor{preprocessor}{    if ((out)->hh.hh\_next != NULL) \{                                             \(\backslash\)}
+00841 \textcolor{preprocessor}{      DECLTYPE\_ASSIGN(out, ELMT\_FROM\_HH(tbl, (out)->hh.hh\_next));                \(\backslash\)}
+00842 \textcolor{preprocessor}{    \} else \{                                                                     \(\backslash\)}
+00843 \textcolor{preprocessor}{      (out) = NULL;                                                              \(\backslash\)}
+00844 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00845 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00846 \textcolor{preprocessor}{\} while (0)}
+00847 
+00848 \textcolor{comment}{/* add an item to a bucket  */}
+00849 \textcolor{preprocessor}{#define HASH\_ADD\_TO\_BKT(head,hh,addhh,oomed)                                     \(\backslash\)}
+00850 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00851 \textcolor{preprocessor}{  UT\_hash\_bucket *\_ha\_head = &(head);                                            \(\backslash\)}
+00852 \textcolor{preprocessor}{  \_ha\_head->count++;                                                             \(\backslash\)}
+00853 \textcolor{preprocessor}{  (addhh)->hh\_next = \_ha\_head->hh\_head;                                          \(\backslash\)}
+00854 \textcolor{preprocessor}{  (addhh)->hh\_prev = NULL;                                                       \(\backslash\)}
+00855 \textcolor{preprocessor}{  if (\_ha\_head->hh\_head != NULL) \{                                               \(\backslash\)}
+00856 \textcolor{preprocessor}{    \_ha\_head->hh\_head->hh\_prev = (addhh);                                        \(\backslash\)}
+00857 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00858 \textcolor{preprocessor}{  \_ha\_head->hh\_head = (addhh);                                                   \(\backslash\)}
+00859 \textcolor{preprocessor}{  if ((\_ha\_head->count >= ((\_ha\_head->expand\_mult + 1U) * HASH\_BKT\_CAPACITY\_THRESH)) \(\backslash\)}
+00860 \textcolor{preprocessor}{      && !(addhh)->tbl->noexpand) \{                                              \(\backslash\)}
+00861 \textcolor{preprocessor}{    HASH\_EXPAND\_BUCKETS(addhh,(addhh)->tbl, oomed);                              \(\backslash\)}
+00862 \textcolor{preprocessor}{    IF\_HASH\_NONFATAL\_OOM(                                                        \(\backslash\)}
+00863 \textcolor{preprocessor}{      if (oomed) \{                                                               \(\backslash\)}
+00864 \textcolor{preprocessor}{        HASH\_DEL\_IN\_BKT(head,addhh);                                             \(\backslash\)}
+00865 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+00866 \textcolor{preprocessor}{    )                                                                            \(\backslash\)}
+00867 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00868 \textcolor{preprocessor}{\} while (0)}
+00869 
+00870 \textcolor{comment}{/* remove an item from a given bucket */}
+00871 \textcolor{preprocessor}{#define HASH\_DEL\_IN\_BKT(head,delhh)                                              \(\backslash\)}
+00872 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00873 \textcolor{preprocessor}{  UT\_hash\_bucket *\_hd\_head = &(head);                                            \(\backslash\)}
+00874 \textcolor{preprocessor}{  \_hd\_head->count--;                                                             \(\backslash\)}
+00875 \textcolor{preprocessor}{  if (\_hd\_head->hh\_head == (delhh)) \{                                            \(\backslash\)}
+00876 \textcolor{preprocessor}{    \_hd\_head->hh\_head = (delhh)->hh\_next;                                        \(\backslash\)}
+00877 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00878 \textcolor{preprocessor}{  if ((delhh)->hh\_prev) \{                                                        \(\backslash\)}
+00879 \textcolor{preprocessor}{    (delhh)->hh\_prev->hh\_next = (delhh)->hh\_next;                                \(\backslash\)}
+00880 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00881 \textcolor{preprocessor}{  if ((delhh)->hh\_next) \{                                                        \(\backslash\)}
+00882 \textcolor{preprocessor}{    (delhh)->hh\_next->hh\_prev = (delhh)->hh\_prev;                                \(\backslash\)}
+00883 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00884 \textcolor{preprocessor}{\} while (0)}
+00885 
+00886 \textcolor{comment}{/* Bucket expansion has the effect of doubling the number of buckets}
+00887 \textcolor{comment}{ * and redistributing the items into the new buckets. Ideally the}
+00888 \textcolor{comment}{ * items will distribute more or less evenly into the new buckets}
+00889 \textcolor{comment}{ * (the extent to which this is true is a measure of the quality of}
+00890 \textcolor{comment}{ * the hash function as it applies to the key domain).}
+00891 \textcolor{comment}{ *}
+00892 \textcolor{comment}{ * With the items distributed into more buckets, the chain length}
+00893 \textcolor{comment}{ * (item count) in each bucket is reduced. Thus by expanding buckets}
+00894 \textcolor{comment}{ * the hash keeps a bound on the chain length. This bounded chain}
+00895 \textcolor{comment}{ * length is the essence of how a hash provides constant time lookup.}
+00896 \textcolor{comment}{ *}
+00897 \textcolor{comment}{ * The calculation of tbl->ideal\_chain\_maxlen below deserves some}
+00898 \textcolor{comment}{ * explanation. First, keep in mind that we're calculating the ideal}
+00899 \textcolor{comment}{ * maximum chain length based on the *new* (doubled) bucket count.}
+00900 \textcolor{comment}{ * In fractions this is just n/b (n=number of items,b=new num buckets).}
+00901 \textcolor{comment}{ * Since the ideal chain length is an integer, we want to calculate}
+00902 \textcolor{comment}{ * ceil(n/b). We don't depend on floating point arithmetic in this}
+00903 \textcolor{comment}{ * hash, so to calculate ceil(n/b) with integers we could write}
+00904 \textcolor{comment}{ *}
+00905 \textcolor{comment}{ *      ceil(n/b) = (n/b) + ((n%b)?1:0)}
+00906 \textcolor{comment}{ *}
+00907 \textcolor{comment}{ * and in fact a previous version of this hash did just that.}
+00908 \textcolor{comment}{ * But now we have improved things a bit by recognizing that b is}
+00909 \textcolor{comment}{ * always a power of two. We keep its base 2 log handy (call it lb),}
+00910 \textcolor{comment}{ * so now we can write this with a bit shift and logical AND:}
+00911 \textcolor{comment}{ *}
+00912 \textcolor{comment}{ *      ceil(n/b) = (n>>lb) + ( (n & (b-1)) ? 1:0)}
+00913 \textcolor{comment}{ *}
+00914 \textcolor{comment}{ */}
+00915 \textcolor{preprocessor}{#define HASH\_EXPAND\_BUCKETS(hh,tbl,oomed)                                        \(\backslash\)}
+00916 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00917 \textcolor{preprocessor}{  unsigned \_he\_bkt;                                                              \(\backslash\)}
+00918 \textcolor{preprocessor}{  unsigned \_he\_bkt\_i;                                                            \(\backslash\)}
+00919 \textcolor{preprocessor}{  struct UT\_hash\_handle *\_he\_thh, *\_he\_hh\_nxt;                                   \(\backslash\)}
+00920 \textcolor{preprocessor}{  UT\_hash\_bucket *\_he\_new\_buckets, *\_he\_newbkt;                                  \(\backslash\)}
+00921 \textcolor{preprocessor}{  \_he\_new\_buckets = (UT\_hash\_bucket*)uthash\_malloc(                              \(\backslash\)}
+00922 \textcolor{preprocessor}{           2UL * (tbl)->num\_buckets * sizeof(struct UT\_hash\_bucket));            \(\backslash\)}
+00923 \textcolor{preprocessor}{  if (!\_he\_new\_buckets) \{                                                        \(\backslash\)}
+00924 \textcolor{preprocessor}{    HASH\_RECORD\_OOM(oomed);                                                      \(\backslash\)}
+00925 \textcolor{preprocessor}{  \} else \{                                                                       \(\backslash\)}
+00926 \textcolor{preprocessor}{    uthash\_bzero(\_he\_new\_buckets,                                                \(\backslash\)}
+00927 \textcolor{preprocessor}{        2UL * (tbl)->num\_buckets * sizeof(struct UT\_hash\_bucket));               \(\backslash\)}
+00928 \textcolor{preprocessor}{    (tbl)->ideal\_chain\_maxlen =                                                  \(\backslash\)}
+00929 \textcolor{preprocessor}{       ((tbl)->num\_items >> ((tbl)->log2\_num\_buckets+1U)) +                      \(\backslash\)}
+00930 \textcolor{preprocessor}{       ((((tbl)->num\_items & (((tbl)->num\_buckets*2U)-1U)) != 0U) ? 1U : 0U);    \(\backslash\)}
+00931 \textcolor{preprocessor}{    (tbl)->nonideal\_items = 0;                                                   \(\backslash\)}
+00932 \textcolor{preprocessor}{    for (\_he\_bkt\_i = 0; \_he\_bkt\_i < (tbl)->num\_buckets; \_he\_bkt\_i++) \{           \(\backslash\)}
+00933 \textcolor{preprocessor}{      \_he\_thh = (tbl)->buckets[ \_he\_bkt\_i ].hh\_head;                             \(\backslash\)}
+00934 \textcolor{preprocessor}{      while (\_he\_thh != NULL) \{                                                  \(\backslash\)}
+00935 \textcolor{preprocessor}{        \_he\_hh\_nxt = \_he\_thh->hh\_next;                                           \(\backslash\)}
+00936 \textcolor{preprocessor}{        HASH\_TO\_BKT(\_he\_thh->hashv, (tbl)->num\_buckets * 2U, \_he\_bkt);           \(\backslash\)}
+00937 \textcolor{preprocessor}{        \_he\_newbkt = &(\_he\_new\_buckets[\_he\_bkt]);                                \(\backslash\)}
+00938 \textcolor{preprocessor}{        if (++(\_he\_newbkt->count) > (tbl)->ideal\_chain\_maxlen) \{                 \(\backslash\)}
+00939 \textcolor{preprocessor}{          (tbl)->nonideal\_items++;                                               \(\backslash\)}
+00940 \textcolor{preprocessor}{          \_he\_newbkt->expand\_mult = \_he\_newbkt->count / (tbl)->ideal\_chain\_maxlen; \(\backslash\)}
+00941 \textcolor{preprocessor}{        \}                                                                        \(\backslash\)}
+00942 \textcolor{preprocessor}{        \_he\_thh->hh\_prev = NULL;                                                 \(\backslash\)}
+00943 \textcolor{preprocessor}{        \_he\_thh->hh\_next = \_he\_newbkt->hh\_head;                                  \(\backslash\)}
+00944 \textcolor{preprocessor}{        if (\_he\_newbkt->hh\_head != NULL) \{                                       \(\backslash\)}
+00945 \textcolor{preprocessor}{          \_he\_newbkt->hh\_head->hh\_prev = \_he\_thh;                                \(\backslash\)}
+00946 \textcolor{preprocessor}{        \}                                                                        \(\backslash\)}
+00947 \textcolor{preprocessor}{        \_he\_newbkt->hh\_head = \_he\_thh;                                           \(\backslash\)}
+00948 \textcolor{preprocessor}{        \_he\_thh = \_he\_hh\_nxt;                                                    \(\backslash\)}
+00949 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+00950 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00951 \textcolor{preprocessor}{    uthash\_free((tbl)->buckets, (tbl)->num\_buckets * sizeof(struct UT\_hash\_bucket)); \(\backslash\)}
+00952 \textcolor{preprocessor}{    (tbl)->num\_buckets *= 2U;                                                    \(\backslash\)}
+00953 \textcolor{preprocessor}{    (tbl)->log2\_num\_buckets++;                                                   \(\backslash\)}
+00954 \textcolor{preprocessor}{    (tbl)->buckets = \_he\_new\_buckets;                                            \(\backslash\)}
+00955 \textcolor{preprocessor}{    (tbl)->ineff\_expands = ((tbl)->nonideal\_items > ((tbl)->num\_items >> 1)) ?   \(\backslash\)}
+00956 \textcolor{preprocessor}{        ((tbl)->ineff\_expands+1U) : 0U;                                          \(\backslash\)}
+00957 \textcolor{preprocessor}{    if ((tbl)->ineff\_expands > 1U) \{                                             \(\backslash\)}
+00958 \textcolor{preprocessor}{      (tbl)->noexpand = 1;                                                       \(\backslash\)}
+00959 \textcolor{preprocessor}{      uthash\_noexpand\_fyi(tbl);                                                  \(\backslash\)}
+00960 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+00961 \textcolor{preprocessor}{    uthash\_expand\_fyi(tbl);                                                      \(\backslash\)}
+00962 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+00963 \textcolor{preprocessor}{\} while (0)}
+00964 
+00965 
+00966 \textcolor{comment}{/* This is an adaptation of Simon Tatham's O(n log(n)) mergesort */}
+00967 \textcolor{comment}{/* Note that HASH\_SORT assumes the hash handle name to be hh.}
+00968 \textcolor{comment}{ * HASH\_SRT was added to allow the hash handle name to be passed in. */}
+00969 \textcolor{preprocessor}{#define HASH\_SORT(head,cmpfcn) HASH\_SRT(hh,head,cmpfcn)}
+00970 \textcolor{preprocessor}{#define HASH\_SRT(hh,head,cmpfcn)                                                 \(\backslash\)}
+00971 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+00972 \textcolor{preprocessor}{  unsigned \_hs\_i;                                                                \(\backslash\)}
+00973 \textcolor{preprocessor}{  unsigned \_hs\_looping,\_hs\_nmerges,\_hs\_insize,\_hs\_psize,\_hs\_qsize;               \(\backslash\)}
+00974 \textcolor{preprocessor}{  struct UT\_hash\_handle *\_hs\_p, *\_hs\_q, *\_hs\_e, *\_hs\_list, *\_hs\_tail;            \(\backslash\)}
+00975 \textcolor{preprocessor}{  if (head != NULL) \{                                                            \(\backslash\)}
+00976 \textcolor{preprocessor}{    \_hs\_insize = 1;                                                              \(\backslash\)}
+00977 \textcolor{preprocessor}{    \_hs\_looping = 1;                                                             \(\backslash\)}
+00978 \textcolor{preprocessor}{    \_hs\_list = &((head)->hh);                                                    \(\backslash\)}
+00979 \textcolor{preprocessor}{    while (\_hs\_looping != 0U) \{                                                  \(\backslash\)}
+00980 \textcolor{preprocessor}{      \_hs\_p = \_hs\_list;                                                          \(\backslash\)}
+00981 \textcolor{preprocessor}{      \_hs\_list = NULL;                                                           \(\backslash\)}
+00982 \textcolor{preprocessor}{      \_hs\_tail = NULL;                                                           \(\backslash\)}
+00983 \textcolor{preprocessor}{      \_hs\_nmerges = 0;                                                           \(\backslash\)}
+00984 \textcolor{preprocessor}{      while (\_hs\_p != NULL) \{                                                    \(\backslash\)}
+00985 \textcolor{preprocessor}{        \_hs\_nmerges++;                                                           \(\backslash\)}
+00986 \textcolor{preprocessor}{        \_hs\_q = \_hs\_p;                                                           \(\backslash\)}
+00987 \textcolor{preprocessor}{        \_hs\_psize = 0;                                                           \(\backslash\)}
+00988 \textcolor{preprocessor}{        for (\_hs\_i = 0; \_hs\_i < \_hs\_insize; ++\_hs\_i) \{                           \(\backslash\)}
+00989 \textcolor{preprocessor}{          \_hs\_psize++;                                                           \(\backslash\)}
+00990 \textcolor{preprocessor}{          \_hs\_q = ((\_hs\_q->next != NULL) ?                                       \(\backslash\)}
+00991 \textcolor{preprocessor}{            HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_q->next) : NULL);                   \(\backslash\)}
+00992 \textcolor{preprocessor}{          if (\_hs\_q == NULL) \{                                                   \(\backslash\)}
+00993 \textcolor{preprocessor}{            break;                                                               \(\backslash\)}
+00994 \textcolor{preprocessor}{          \}                                                                      \(\backslash\)}
+00995 \textcolor{preprocessor}{        \}                                                                        \(\backslash\)}
+00996 \textcolor{preprocessor}{        \_hs\_qsize = \_hs\_insize;                                                  \(\backslash\)}
+00997 \textcolor{preprocessor}{        while ((\_hs\_psize != 0U) || ((\_hs\_qsize != 0U) && (\_hs\_q != NULL))) \{    \(\backslash\)}
+00998 \textcolor{preprocessor}{          if (\_hs\_psize == 0U) \{                                                 \(\backslash\)}
+00999 \textcolor{preprocessor}{            \_hs\_e = \_hs\_q;                                                       \(\backslash\)}
+01000 \textcolor{preprocessor}{            \_hs\_q = ((\_hs\_q->next != NULL) ?                                     \(\backslash\)}
+01001 \textcolor{preprocessor}{              HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_q->next) : NULL);                 \(\backslash\)}
+01002 \textcolor{preprocessor}{            \_hs\_qsize--;                                                         \(\backslash\)}
+01003 \textcolor{preprocessor}{          \} else if ((\_hs\_qsize == 0U) || (\_hs\_q == NULL)) \{                     \(\backslash\)}
+01004 \textcolor{preprocessor}{            \_hs\_e = \_hs\_p;                                                       \(\backslash\)}
+01005 \textcolor{preprocessor}{            if (\_hs\_p != NULL) \{                                                 \(\backslash\)}
+01006 \textcolor{preprocessor}{              \_hs\_p = ((\_hs\_p->next != NULL) ?                                   \(\backslash\)}
+01007 \textcolor{preprocessor}{                HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_p->next) : NULL);               \(\backslash\)}
+01008 \textcolor{preprocessor}{            \}                                                                    \(\backslash\)}
+01009 \textcolor{preprocessor}{            \_hs\_psize--;                                                         \(\backslash\)}
+01010 \textcolor{preprocessor}{          \} else if ((cmpfcn(                                                    \(\backslash\)}
+01011 \textcolor{preprocessor}{                DECLTYPE(head)(ELMT\_FROM\_HH((head)->hh.tbl, \_hs\_p)),             \(\backslash\)}
+01012 \textcolor{preprocessor}{                DECLTYPE(head)(ELMT\_FROM\_HH((head)->hh.tbl, \_hs\_q))              \(\backslash\)}
+01013 \textcolor{preprocessor}{                )) <= 0) \{                                                       \(\backslash\)}
+01014 \textcolor{preprocessor}{            \_hs\_e = \_hs\_p;                                                       \(\backslash\)}
+01015 \textcolor{preprocessor}{            if (\_hs\_p != NULL) \{                                                 \(\backslash\)}
+01016 \textcolor{preprocessor}{              \_hs\_p = ((\_hs\_p->next != NULL) ?                                   \(\backslash\)}
+01017 \textcolor{preprocessor}{                HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_p->next) : NULL);               \(\backslash\)}
+01018 \textcolor{preprocessor}{            \}                                                                    \(\backslash\)}
+01019 \textcolor{preprocessor}{            \_hs\_psize--;                                                         \(\backslash\)}
+01020 \textcolor{preprocessor}{          \} else \{                                                               \(\backslash\)}
+01021 \textcolor{preprocessor}{            \_hs\_e = \_hs\_q;                                                       \(\backslash\)}
+01022 \textcolor{preprocessor}{            \_hs\_q = ((\_hs\_q->next != NULL) ?                                     \(\backslash\)}
+01023 \textcolor{preprocessor}{              HH\_FROM\_ELMT((head)->hh.tbl, \_hs\_q->next) : NULL);                 \(\backslash\)}
+01024 \textcolor{preprocessor}{            \_hs\_qsize--;                                                         \(\backslash\)}
+01025 \textcolor{preprocessor}{          \}                                                                      \(\backslash\)}
+01026 \textcolor{preprocessor}{          if ( \_hs\_tail != NULL ) \{                                              \(\backslash\)}
+01027 \textcolor{preprocessor}{            \_hs\_tail->next = ((\_hs\_e != NULL) ?                                  \(\backslash\)}
+01028 \textcolor{preprocessor}{              ELMT\_FROM\_HH((head)->hh.tbl, \_hs\_e) : NULL);                       \(\backslash\)}
+01029 \textcolor{preprocessor}{          \} else \{                                                               \(\backslash\)}
+01030 \textcolor{preprocessor}{            \_hs\_list = \_hs\_e;                                                    \(\backslash\)}
+01031 \textcolor{preprocessor}{          \}                                                                      \(\backslash\)}
+01032 \textcolor{preprocessor}{          if (\_hs\_e != NULL) \{                                                   \(\backslash\)}
+01033 \textcolor{preprocessor}{            \_hs\_e->prev = ((\_hs\_tail != NULL) ?                                  \(\backslash\)}
+01034 \textcolor{preprocessor}{              ELMT\_FROM\_HH((head)->hh.tbl, \_hs\_tail) : NULL);                    \(\backslash\)}
+01035 \textcolor{preprocessor}{          \}                                                                      \(\backslash\)}
+01036 \textcolor{preprocessor}{          \_hs\_tail = \_hs\_e;                                                      \(\backslash\)}
+01037 \textcolor{preprocessor}{        \}                                                                        \(\backslash\)}
+01038 \textcolor{preprocessor}{        \_hs\_p = \_hs\_q;                                                           \(\backslash\)}
+01039 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+01040 \textcolor{preprocessor}{      if (\_hs\_tail != NULL) \{                                                    \(\backslash\)}
+01041 \textcolor{preprocessor}{        \_hs\_tail->next = NULL;                                                   \(\backslash\)}
+01042 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+01043 \textcolor{preprocessor}{      if (\_hs\_nmerges <= 1U) \{                                                   \(\backslash\)}
+01044 \textcolor{preprocessor}{        \_hs\_looping = 0;                                                         \(\backslash\)}
+01045 \textcolor{preprocessor}{        (head)->hh.tbl->tail = \_hs\_tail;                                         \(\backslash\)}
+01046 \textcolor{preprocessor}{        DECLTYPE\_ASSIGN(head, ELMT\_FROM\_HH((head)->hh.tbl, \_hs\_list));           \(\backslash\)}
+01047 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+01048 \textcolor{preprocessor}{      \_hs\_insize *= 2U;                                                          \(\backslash\)}
+01049 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+01050 \textcolor{preprocessor}{    HASH\_FSCK(hh, head, "HASH\_SRT");                                             \(\backslash\)}
+01051 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+01052 \textcolor{preprocessor}{\} while (0)}
+01053 
+01054 \textcolor{comment}{/* This function selects items from one hash into another hash.}
+01055 \textcolor{comment}{ * The end result is that the selected items have dual presence}
+01056 \textcolor{comment}{ * in both hashes. There is no copy of the items made; rather}
+01057 \textcolor{comment}{ * they are added into the new hash through a secondary hash}
+01058 \textcolor{comment}{ * hash handle that must be present in the structure. */}
+01059 \textcolor{preprocessor}{#define HASH\_SELECT(hh\_dst, dst, hh\_src, src, cond)                              \(\backslash\)}
+01060 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+01061 \textcolor{preprocessor}{  unsigned \_src\_bkt, \_dst\_bkt;                                                   \(\backslash\)}
+01062 \textcolor{preprocessor}{  void *\_last\_elt = NULL, *\_elt;                                                 \(\backslash\)}
+01063 \textcolor{preprocessor}{  UT\_hash\_handle *\_src\_hh, *\_dst\_hh, *\_last\_elt\_hh=NULL;                         \(\backslash\)}
+01064 \textcolor{preprocessor}{  ptrdiff\_t \_dst\_hho = ((char*)(&(dst)->hh\_dst) - (char*)(dst));                 \(\backslash\)}
+01065 \textcolor{preprocessor}{  if ((src) != NULL) \{                                                           \(\backslash\)}
+01066 \textcolor{preprocessor}{    for (\_src\_bkt=0; \_src\_bkt < (src)->hh\_src.tbl->num\_buckets; \_src\_bkt++) \{    \(\backslash\)}
+01067 \textcolor{preprocessor}{      for (\_src\_hh = (src)->hh\_src.tbl->buckets[\_src\_bkt].hh\_head;               \(\backslash\)}
+01068 \textcolor{preprocessor}{        \_src\_hh != NULL;                                                         \(\backslash\)}
+01069 \textcolor{preprocessor}{        \_src\_hh = \_src\_hh->hh\_next) \{                                            \(\backslash\)}
+01070 \textcolor{preprocessor}{        \_elt = ELMT\_FROM\_HH((src)->hh\_src.tbl, \_src\_hh);                         \(\backslash\)}
+01071 \textcolor{preprocessor}{        if (cond(\_elt)) \{                                                        \(\backslash\)}
+01072 \textcolor{preprocessor}{          IF\_HASH\_NONFATAL\_OOM( int \_hs\_oomed = 0; )                             \(\backslash\)}
+01073 \textcolor{preprocessor}{          \_dst\_hh = (UT\_hash\_handle*)(((char*)\_elt) + \_dst\_hho);                 \(\backslash\)}
+01074 \textcolor{preprocessor}{          \_dst\_hh->key = \_src\_hh->key;                                           \(\backslash\)}
+01075 \textcolor{preprocessor}{          \_dst\_hh->keylen = \_src\_hh->keylen;                                     \(\backslash\)}
+01076 \textcolor{preprocessor}{          \_dst\_hh->hashv = \_src\_hh->hashv;                                       \(\backslash\)}
+01077 \textcolor{preprocessor}{          \_dst\_hh->prev = \_last\_elt;                                             \(\backslash\)}
+01078 \textcolor{preprocessor}{          \_dst\_hh->next = NULL;                                                  \(\backslash\)}
+01079 \textcolor{preprocessor}{          if (\_last\_elt\_hh != NULL) \{                                            \(\backslash\)}
+01080 \textcolor{preprocessor}{            \_last\_elt\_hh->next = \_elt;                                           \(\backslash\)}
+01081 \textcolor{preprocessor}{          \}                                                                      \(\backslash\)}
+01082 \textcolor{preprocessor}{          if ((dst) == NULL) \{                                                   \(\backslash\)}
+01083 \textcolor{preprocessor}{            DECLTYPE\_ASSIGN(dst, \_elt);                                          \(\backslash\)}
+01084 \textcolor{preprocessor}{            HASH\_MAKE\_TABLE(hh\_dst, dst, \_hs\_oomed);                             \(\backslash\)}
+01085 \textcolor{preprocessor}{            IF\_HASH\_NONFATAL\_OOM(                                                \(\backslash\)}
+01086 \textcolor{preprocessor}{              if (\_hs\_oomed) \{                                                   \(\backslash\)}
+01087 \textcolor{preprocessor}{                uthash\_nonfatal\_oom(\_elt);                                       \(\backslash\)}
+01088 \textcolor{preprocessor}{                (dst) = NULL;                                                    \(\backslash\)}
+01089 \textcolor{preprocessor}{                continue;                                                        \(\backslash\)}
+01090 \textcolor{preprocessor}{              \}                                                                  \(\backslash\)}
+01091 \textcolor{preprocessor}{            )                                                                    \(\backslash\)}
+01092 \textcolor{preprocessor}{          \} else \{                                                               \(\backslash\)}
+01093 \textcolor{preprocessor}{            \_dst\_hh->tbl = (dst)->hh\_dst.tbl;                                    \(\backslash\)}
+01094 \textcolor{preprocessor}{          \}                                                                      \(\backslash\)}
+01095 \textcolor{preprocessor}{          HASH\_TO\_BKT(\_dst\_hh->hashv, \_dst\_hh->tbl->num\_buckets, \_dst\_bkt);      \(\backslash\)}
+01096 \textcolor{preprocessor}{          HASH\_ADD\_TO\_BKT(\_dst\_hh->tbl->buckets[\_dst\_bkt], hh\_dst, \_dst\_hh, \_hs\_oomed); \(\backslash\)}
+01097 \textcolor{preprocessor}{          (dst)->hh\_dst.tbl->num\_items++;                                        \(\backslash\)}
+01098 \textcolor{preprocessor}{          IF\_HASH\_NONFATAL\_OOM(                                                  \(\backslash\)}
+01099 \textcolor{preprocessor}{            if (\_hs\_oomed) \{                                                     \(\backslash\)}
+01100 \textcolor{preprocessor}{              HASH\_ROLLBACK\_BKT(hh\_dst, dst, \_dst\_hh);                           \(\backslash\)}
+01101 \textcolor{preprocessor}{              HASH\_DELETE\_HH(hh\_dst, dst, \_dst\_hh);                              \(\backslash\)}
+01102 \textcolor{preprocessor}{              \_dst\_hh->tbl = NULL;                                               \(\backslash\)}
+01103 \textcolor{preprocessor}{              uthash\_nonfatal\_oom(\_elt);                                         \(\backslash\)}
+01104 \textcolor{preprocessor}{              continue;                                                          \(\backslash\)}
+01105 \textcolor{preprocessor}{            \}                                                                    \(\backslash\)}
+01106 \textcolor{preprocessor}{          )                                                                      \(\backslash\)}
+01107 \textcolor{preprocessor}{          HASH\_BLOOM\_ADD(\_dst\_hh->tbl, \_dst\_hh->hashv);                          \(\backslash\)}
+01108 \textcolor{preprocessor}{          \_last\_elt = \_elt;                                                      \(\backslash\)}
+01109 \textcolor{preprocessor}{          \_last\_elt\_hh = \_dst\_hh;                                                \(\backslash\)}
+01110 \textcolor{preprocessor}{        \}                                                                        \(\backslash\)}
+01111 \textcolor{preprocessor}{      \}                                                                          \(\backslash\)}
+01112 \textcolor{preprocessor}{    \}                                                                            \(\backslash\)}
+01113 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+01114 \textcolor{preprocessor}{  HASH\_FSCK(hh\_dst, dst, "HASH\_SELECT");                                         \(\backslash\)}
+01115 \textcolor{preprocessor}{\} while (0)}
+01116 
+01117 \textcolor{preprocessor}{#define HASH\_CLEAR(hh,head)                                                      \(\backslash\)}
+01118 \textcolor{preprocessor}{do \{                                                                             \(\backslash\)}
+01119 \textcolor{preprocessor}{  if ((head) != NULL) \{                                                          \(\backslash\)}
+01120 \textcolor{preprocessor}{    HASH\_BLOOM\_FREE((head)->hh.tbl);                                             \(\backslash\)}
+01121 \textcolor{preprocessor}{    uthash\_free((head)->hh.tbl->buckets,                                         \(\backslash\)}
+01122 \textcolor{preprocessor}{                (head)->hh.tbl->num\_buckets*sizeof(struct UT\_hash\_bucket));      \(\backslash\)}
+01123 \textcolor{preprocessor}{    uthash\_free((head)->hh.tbl, sizeof(UT\_hash\_table));                          \(\backslash\)}
+01124 \textcolor{preprocessor}{    (head) = NULL;                                                               \(\backslash\)}
+01125 \textcolor{preprocessor}{  \}                                                                              \(\backslash\)}
+01126 \textcolor{preprocessor}{\} while (0)}
+01127 
+01128 \textcolor{preprocessor}{#define HASH\_OVERHEAD(hh,head)                                                   \(\backslash\)}
+01129 \textcolor{preprocessor}{ (((head) != NULL) ? (                                                           \(\backslash\)}
+01130 \textcolor{preprocessor}{ (size\_t)(((head)->hh.tbl->num\_items   * sizeof(UT\_hash\_handle))   +             \(\backslash\)}
+01131 \textcolor{preprocessor}{          ((head)->hh.tbl->num\_buckets * sizeof(UT\_hash\_bucket))   +             \(\backslash\)}
+01132 \textcolor{preprocessor}{           sizeof(UT\_hash\_table)                                   +             \(\backslash\)}
+01133 \textcolor{preprocessor}{           (HASH\_BLOOM\_BYTELEN))) : 0U)}
+01134 
+01135 \textcolor{preprocessor}{#ifdef NO\_DECLTYPE}
+01136 \textcolor{preprocessor}{#define HASH\_ITER(hh,head,el,tmp)                                                \(\backslash\)}
+01137 \textcolor{preprocessor}{for(((el)=(head)), ((*(char**)(&(tmp)))=(char*)((head!=NULL)?(head)->hh.next:NULL)); \(\backslash\)}
+01138 \textcolor{preprocessor}{  (el) != NULL; ((el)=(tmp)), ((*(char**)(&(tmp)))=(char*)((tmp!=NULL)?(tmp)->hh.next:NULL)))}
+01139 \textcolor{preprocessor}{#else}
+01140 \textcolor{preprocessor}{#define HASH\_ITER(hh,head,el,tmp)                                                \(\backslash\)}
+01141 \textcolor{preprocessor}{for(((el)=(head)), ((tmp)=DECLTYPE(el)((head!=NULL)?(head)->hh.next:NULL));      \(\backslash\)}
+01142 \textcolor{preprocessor}{  (el) != NULL; ((el)=(tmp)), ((tmp)=DECLTYPE(el)((tmp!=NULL)?(tmp)->hh.next:NULL)))}
+01143 \textcolor{preprocessor}{#endif}
+01144 
+01145 \textcolor{comment}{/* obtain a count of items in the hash */}
+01146 \textcolor{preprocessor}{#define HASH\_COUNT(head) HASH\_CNT(hh,head)}
+01147 \textcolor{preprocessor}{#define HASH\_CNT(hh,head) ((head != NULL)?((head)->hh.tbl->num\_items):0U)}
+01148 
+\Hypertarget{uthash_8h_source_l01149}\mbox{\hyperlink{structUT__hash__bucket}{01149}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structUT__hash__bucket}{UT\_hash\_bucket}} \{
+01150    \textcolor{keyword}{struct }\mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} *hh\_head;
+01151    \textcolor{keywordtype}{unsigned} count;
+01152 
+01153    \textcolor{comment}{/* expand\_mult is normally set to 0. In this situation, the max chain length}
+01154 \textcolor{comment}{    * threshold is enforced at its default value, HASH\_BKT\_CAPACITY\_THRESH. (If}
+01155 \textcolor{comment}{    * the bucket's chain exceeds this length, bucket expansion is triggered).}
+01156 \textcolor{comment}{    * However, setting expand\_mult to a non-zero value delays bucket expansion}
+01157 \textcolor{comment}{    * (that would be triggered by additions to this particular bucket)}
+01158 \textcolor{comment}{    * until its chain length reaches a *multiple* of HASH\_BKT\_CAPACITY\_THRESH.}
+01159 \textcolor{comment}{    * (The multiplier is simply expand\_mult+1). The whole idea of this}
+01160 \textcolor{comment}{    * multiplier is to reduce bucket expansions, since they are expensive, in}
+01161 \textcolor{comment}{    * situations where we know that a particular bucket tends to be overused.}
+01162 \textcolor{comment}{    * It is better to let its chain length grow to a longer yet-still-bounded}
+01163 \textcolor{comment}{    * value, than to do an O(n) bucket expansion too often.}
+01164 \textcolor{comment}{    */}
+01165    \textcolor{keywordtype}{unsigned} expand\_mult;
+01166 
+01167 \} \mbox{\hyperlink{structUT__hash__bucket}{UT\_hash\_bucket}};
+01168 
+01169 \textcolor{comment}{/* random signature used only to find hash tables in external analysis */}
+01170 \textcolor{preprocessor}{#define HASH\_SIGNATURE 0xa0111fe1u}
+01171 \textcolor{preprocessor}{#define HASH\_BLOOM\_SIGNATURE 0xb12220f2u}
+01172 
+\Hypertarget{uthash_8h_source_l01173}\mbox{\hyperlink{structUT__hash__table}{01173}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structUT__hash__table}{UT\_hash\_table}} \{
+01174    \mbox{\hyperlink{structUT__hash__bucket}{UT\_hash\_bucket}} *buckets;
+01175    \textcolor{keywordtype}{unsigned} num\_buckets, log2\_num\_buckets;
+01176    \textcolor{keywordtype}{unsigned} num\_items;
+01177    \textcolor{keyword}{struct }\mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} *tail; \textcolor{comment}{/* tail hh in app order, for fast append    */}
+01178    ptrdiff\_t hho; \textcolor{comment}{/* hash handle offset (byte pos of hash handle in element */}
+01179 
+01180    \textcolor{comment}{/* in an ideal situation (all buckets used equally), no bucket would have}
+01181 \textcolor{comment}{    * more than ceil(#items/#buckets) items. that's the ideal chain length. */}
+01182    \textcolor{keywordtype}{unsigned} ideal\_chain\_maxlen;
+01183 
+01184    \textcolor{comment}{/* nonideal\_items is the number of items in the hash whose chain position}
+01185 \textcolor{comment}{    * exceeds the ideal chain maxlen. these items pay the penalty for an uneven}
+01186 \textcolor{comment}{    * hash distribution; reaching them in a chain traversal takes >ideal steps */}
+01187    \textcolor{keywordtype}{unsigned} nonideal\_items;
+01188 
+01189    \textcolor{comment}{/* ineffective expands occur when a bucket doubling was performed, but}
+01190 \textcolor{comment}{    * afterward, more than half the items in the hash had nonideal chain}
+01191 \textcolor{comment}{    * positions. If this happens on two consecutive expansions we inhibit any}
+01192 \textcolor{comment}{    * further expansion, as it's not helping; this happens when the hash}
+01193 \textcolor{comment}{    * function isn't a good fit for the key domain. When expansion is inhibited}
+01194 \textcolor{comment}{    * the hash will still work, albeit no longer in constant time. */}
+01195    \textcolor{keywordtype}{unsigned} ineff\_expands, noexpand;
+01196 
+01197    uint32\_t signature; \textcolor{comment}{/* used only to find hash tables in external analysis */}
+01198 \textcolor{preprocessor}{#ifdef HASH\_BLOOM}
+01199    uint32\_t bloom\_sig; \textcolor{comment}{/* used only to test bloom exists in external analysis */}
+01200    uint8\_t *bloom\_bv;
+01201    uint8\_t bloom\_nbits;
+01202 \textcolor{preprocessor}{#endif}
+01203 
+01204 \} \mbox{\hyperlink{structUT__hash__table}{UT\_hash\_table}};
+01205 
+\Hypertarget{uthash_8h_source_l01206}\mbox{\hyperlink{structUT__hash__handle}{01206}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} \{
+01207    \textcolor{keyword}{struct }\mbox{\hyperlink{structUT__hash__table}{UT\_hash\_table}} *tbl;
+01208    \textcolor{keywordtype}{void} *prev;                       \textcolor{comment}{/* prev element in app order      */}
+01209    \textcolor{keywordtype}{void} *next;                       \textcolor{comment}{/* next element in app order      */}
+01210    \textcolor{keyword}{struct }\mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} *hh\_prev;   \textcolor{comment}{/* previous hh in bucket order    */}
+01211    \textcolor{keyword}{struct }\mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} *hh\_next;   \textcolor{comment}{/* next hh in bucket order        */}
+01212    \textcolor{keywordtype}{void} *key;                        \textcolor{comment}{/* ptr to enclosing struct's key  */}
+01213    \textcolor{keywordtype}{unsigned} keylen;                  \textcolor{comment}{/* enclosing struct's key len     */}
+01214    \textcolor{keywordtype}{unsigned} hashv;                   \textcolor{comment}{/* result of hash-fcn(key)        */}
+01215 \} \mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}};
+01216 
+01217 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* UTHASH\_H */}\textcolor{preprocessor}{}
+\end{DoxyCode}

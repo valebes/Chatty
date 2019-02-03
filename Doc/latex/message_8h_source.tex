@@ -1,0 +1,81 @@
+\hypertarget{message_8h_source}{}\subsection{message.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017/2018}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00019 \textcolor{preprocessor}{#ifndef MESSAGE\_H\_}
+00020 \textcolor{preprocessor}{#define MESSAGE\_H\_}
+00021 
+00022 \textcolor{preprocessor}{#include <stdlib.h>}
+00023 \textcolor{preprocessor}{#include <assert.h>}
+00024 \textcolor{preprocessor}{#include <string.h>}
+00025 \textcolor{preprocessor}{#include <\mbox{\hyperlink{config_8h}{config.h}}>}
+00026 \textcolor{preprocessor}{#include <\mbox{\hyperlink{ops_8h}{ops.h}}>}
+00027 
+\Hypertarget{message_8h_source_l00035}\mbox{\hyperlink{structmessage__hdr__t}{00035}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\{
+00036         \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44c}{op\_t}} op;
+00037         \textcolor{keywordtype}{char} sender[MAX\_NAME\_LENGTH+1];
+00038 \} \mbox{\hyperlink{structmessage__hdr__t}{message\_hdr\_t}};
+00039 
+\Hypertarget{message_8h_source_l00047}\mbox{\hyperlink{structmessage__data__hdr__t}{00047}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\{
+00048         \textcolor{keywordtype}{char} receiver[MAX\_NAME\_LENGTH+1];
+00049         \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} len;
+00050 \} \mbox{\hyperlink{structmessage__data__hdr__t}{message\_data\_hdr\_t}};
+00051 
+\Hypertarget{message_8h_source_l00059}\mbox{\hyperlink{structmessage__data__t}{00059}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\{
+00060         \mbox{\hyperlink{structmessage__data__hdr__t}{message\_data\_hdr\_t}} hdr;
+00061         \textcolor{keywordtype}{char}               *buf;
+00062 \} \mbox{\hyperlink{structmessage__data__t}{message\_data\_t}};
+00063 
+\Hypertarget{message_8h_source_l00071}\mbox{\hyperlink{structmessage__t}{00071}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\{
+00072         \mbox{\hyperlink{structmessage__hdr__t}{message\_hdr\_t}} hdr;
+00073         \mbox{\hyperlink{structmessage__data__t}{message\_data\_t}} \mbox{\hyperlink{structdata}{data}};
+00074 \} \mbox{\hyperlink{structmessage__t}{message\_t}};
+00075 
+00076 \textcolor{comment}{/* ------ funzioni di utilità ------- */}
+00077 
+00086 \textcolor{keyword}{static} \textcolor{keyword}{inline} \textcolor{keywordtype}{void} setHeader(\mbox{\hyperlink{structmessage__hdr__t}{message\_hdr\_t}} *hdr, \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44c}{op\_t}} op, \textcolor{keywordtype}{char} *sender) \{
+00087 \textcolor{preprocessor}{#if defined(MAKE\_VALGRIND\_HAPPY)}
+00088         memset((\textcolor{keywordtype}{char}*)hdr, 0, \textcolor{keyword}{sizeof}(\mbox{\hyperlink{structmessage__hdr__t}{message\_hdr\_t}}));
+00089 \textcolor{preprocessor}{#endif}
+00090         hdr->op  = op;
+00091         strncpy(hdr->sender, sender, strlen(sender)+1);
+00092 \}
+00102 \textcolor{keyword}{static} \textcolor{keyword}{inline} \textcolor{keywordtype}{void} setData(\mbox{\hyperlink{structmessage__data__t}{message\_data\_t}} *\mbox{\hyperlink{structdata}{data}}, \textcolor{keywordtype}{char} *rcv, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *buf, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}
+       len) \{
+00103 \textcolor{preprocessor}{#if defined(MAKE\_VALGRIND\_HAPPY)}
+00104         memset((\textcolor{keywordtype}{char}*)&(\mbox{\hyperlink{structdata}{data}}->hdr), 0, \textcolor{keyword}{sizeof}(\mbox{\hyperlink{structmessage__data__hdr__t}{message\_data\_hdr\_t}}));
+00105 \textcolor{preprocessor}{#endif}
+00106 
+00107         strncpy(\mbox{\hyperlink{structdata}{data}}->hdr.receiver, rcv, strlen(rcv)+1);
+00108         \mbox{\hyperlink{structdata}{data}}->hdr.len  = len;
+00109         \mbox{\hyperlink{structdata}{data}}->buf      = (\textcolor{keywordtype}{char} *)buf;
+00110 \}
+00111 
+00119 \textcolor{keyword}{static} \textcolor{keyword}{inline} \mbox{\hyperlink{structmessage__t}{message\_t}} *new\_msg(\mbox{\hyperlink{structmessage__t}{message\_t}} *msg) \{
+00120         \mbox{\hyperlink{structmessage__t}{message\_t}} *\textcolor{keyword}{new} = (\mbox{\hyperlink{structmessage__t}{message\_t}} *)malloc(\textcolor{keyword}{sizeof}(\mbox{\hyperlink{structmessage__t}{message\_t}}));
+00121 \textcolor{preprocessor}{   #if defined(MAKE\_VALGRIND\_HAPPY)}
+00122         memset((\textcolor{keywordtype}{char} *)\textcolor{keyword}{new}, 0, \textcolor{keyword}{sizeof}(\mbox{\hyperlink{structmessage__t}{message\_t}}));
+00123 \textcolor{preprocessor}{   #endif}
+00124         \textcolor{keyword}{new}->hdr.op = msg->hdr.op;
+00125         strncpy(new->hdr.sender, msg->hdr.sender, MAX\_NAME\_LENGTH + 1);
+00126 
+00127         \textcolor{keyword}{new}->data.hdr.len = msg->data.hdr.len;
+00128         strncpy(new->data.hdr.receiver, msg->data.hdr.receiver, MAX\_NAME\_LENGTH + 1);
+00129 
+00130         \textcolor{keyword}{new}->data.buf = (\textcolor{keywordtype}{char} *)malloc(new->data.hdr.len * \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{char}));
+00131 \textcolor{preprocessor}{ #if defined(MAKE\_VALGRIND\_HAPPY)}
+00132         memset(new->data.buf, 0, new->data.hdr.len * \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{char}));
+00133 \textcolor{preprocessor}{ #endif}
+00134         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < \textcolor{keyword}{new}->data.hdr.len; i++)
+00135                 new->data.buf[i] = msg->data.buf[i];
+00136         \textcolor{keywordflow}{return} \textcolor{keyword}{new};
+00137 \}
+00138 
+00139 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* MESSAGE\_H\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

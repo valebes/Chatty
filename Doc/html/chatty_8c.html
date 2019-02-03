@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.14"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>chatterbox: Riferimenti per il file chatty.c</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(initResizable);
+/* @license-end */</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">chatterbox
+   &#160;<span id="projectnumber">2.0</span>
+   </div>
+   <div id="projectbrief">Progetto del corso di LSO 2017</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generato da Doxygen 1.8.14 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Cerca');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Cerca');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('chatty_8c.html','');});
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Definizioni</a> &#124;
+<a href="#func-members">Funzioni</a> &#124;
+<a href="#var-members">Variabili</a>  </div>
+  <div class="headertitle">
+<div class="title">Riferimenti per il file chatty.c</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>file principale del server chatterbox  
+<a href="#details">Continua...</a></p>
+<div class="textblock"><code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &lt;unistd.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+<code>#include &lt;signal.h&gt;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
+<code>#include &lt;sys/types.h&gt;</code><br />
+<code>#include &lt;sys/socket.h&gt;</code><br />
+<code>#include &lt;sys/un.h&gt;</code><br />
+<code>#include &lt;sys/stat.h&gt;</code><br />
+<code>#include &lt;fcntl.h&gt;</code><br />
+<code>#include &lt;sys/mman.h&gt;</code><br />
+<code>#include &lt;sys/epoll.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="parser_8h_source.html">parser.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="stats_8h_source.html">stats.h</a>&quot;</code><br />
+<code>#include &quot;connections.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="task_8h_source.html">task.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="tpool_8h_source.html">tpool.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="message_8h_source.html">message.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="user_8h_source.html">user.h</a>&quot;</code><br />
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Definizioni</h2></td></tr>
+<tr class="memitem:a3024ccd4a9af5109d24e6c57565d74a1"><td class="memItemLeft" align="right" valign="top"><a id="a3024ccd4a9af5109d24e6c57565d74a1"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>_POSIX_C_SOURCE</b>&#160;&#160;&#160;200809L</td></tr>
+<tr class="separator:a3024ccd4a9af5109d24e6c57565d74a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae42954bb8545d24e3e9dcde5920c9a0b"><td class="memItemLeft" align="right" valign="top"><a id="ae42954bb8545d24e3e9dcde5920c9a0b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_EVENTS</b>&#160;&#160;&#160;60</td></tr>
+<tr class="separator:ae42954bb8545d24e3e9dcde5920c9a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Funzioni</h2></td></tr>
+<tr class="memitem:a64d4bdb89afd5825451bd8b12ae64a3e"><td class="memItemLeft" align="right" valign="top"><a id="a64d4bdb89afd5825451bd8b12ae64a3e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>signals</b> ()</td></tr>
+<tr class="separator:a64d4bdb89afd5825451bd8b12ae64a3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ac817bfeed2cc83598aa74059dd7aef"><td class="memItemLeft" align="right" valign="top"><a id="a1ac817bfeed2cc83598aa74059dd7aef"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>stop_server</b> ()</td></tr>
+<tr class="separator:a1ac817bfeed2cc83598aa74059dd7aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82864de2258efa43feced47abc1beb94"><td class="memItemLeft" align="right" valign="top"><a id="a82864de2258efa43feced47abc1beb94"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>get_stats</b> ()</td></tr>
+<tr class="separator:a82864de2258efa43feced47abc1beb94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9963c63eeaf50f60b0cf667b69fd1d8a"><td class="memItemLeft" align="right" valign="top"><a id="a9963c63eeaf50f60b0cf667b69fd1d8a"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>print_stats</b> (void *arg)</td></tr>
+<tr class="separator:a9963c63eeaf50f60b0cf667b69fd1d8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft" align="right" valign="top"><a id="a0ddf1224851353fc92bfbff6f499fa97"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>main</b> (int argc, char *argv[])</td></tr>
+<tr class="separator:a0ddf1224851353fc92bfbff6f499fa97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variabili</h2></td></tr>
+<tr class="memitem:a6c0af9f2e97842405fb15ed952ef2976"><td class="memItemLeft" align="right" valign="top"><a id="a6c0af9f2e97842405fb15ed952ef2976"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>stop</b> = 1</td></tr>
+<tr class="separator:a6c0af9f2e97842405fb15ed952ef2976"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c6b2bbaa44b91388c6f59215a7325d3"><td class="memItemLeft" align="right" valign="top"><a id="a5c6b2bbaa44b91388c6f59215a7325d3"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>statspath</b></td></tr>
+<tr class="separator:a5c6b2bbaa44b91388c6f59215a7325d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17f628a85d54537228bb78477fdafab3"><td class="memItemLeft" align="right" valign="top"><a id="a17f628a85d54537228bb78477fdafab3"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>alert</b> = 0</td></tr>
+<tr class="separator:a17f628a85d54537228bb78477fdafab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad45e5ab717f3e6d6d9d11151da558c28"><td class="memItemLeft" align="right" valign="top"><a id="ad45e5ab717f3e6d6d9d11151da558c28"></a>
+pthread_mutex_t *&#160;</td><td class="memItemRight" valign="bottom"><b>stats_mtx</b></td></tr>
+<tr class="separator:ad45e5ab717f3e6d6d9d11151da558c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e4166354e886d074465ab1bb87ca0e2"><td class="memItemLeft" align="right" valign="top"><a id="a9e4166354e886d074465ab1bb87ca0e2"></a>
+struct <a class="el" href="structstatistics.html">statistics</a>&#160;</td><td class="memItemRight" valign="bottom"><b>chattyStats</b> = { 0,0,0,0,0,0,0 }</td></tr>
+<tr class="separator:a9e4166354e886d074465ab1bb87ca0e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af227f01f6d7d5da220fe0027d9d4a297"><td class="memItemLeft" align="right" valign="top"><a id="af227f01f6d7d5da220fe0027d9d4a297"></a>
+<a class="el" href="structconf.html">conf</a>&#160;</td><td class="memItemRight" valign="bottom"><b>cf</b> = {NULL, 0, 0, 0, 0, 0, NULL, NULL}</td></tr>
+<tr class="separator:af227f01f6d7d5da220fe0027d9d4a297"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Descrizione dettagliata</h2>
+<div class="textblock"><p>file principale del server chatterbox </p>
+<dl class="section author"><dt>Autore</dt><dd>Valerio Besozzi 543685 Si dichiara che il contenuto di questo file e' in ogni sua parte opera originale dell'autore </dd></dl>
+</div></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="chatty_8c.html">chatty.c</a></li>
+    <li class="footer">Generato da
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+\hypertarget{task_8h_source}{}\subsection{task.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00018 \textcolor{preprocessor}{#ifndef TASK\_H\_}
+00019 \textcolor{preprocessor}{#define TASK\_H\_}
+00020 
+00021 \textcolor{preprocessor}{#include <stdio.h>}
+00022 \textcolor{preprocessor}{#include <stdlib.h>}
+00023 \textcolor{preprocessor}{#include <unistd.h>}
+00024 \textcolor{preprocessor}{#include <pthread.h>}
+00025 \textcolor{preprocessor}{#include <sys/time.h>}
+00026 \textcolor{preprocessor}{#include <sys/types.h>}
+00027 \textcolor{preprocessor}{#include <sys/epoll.h>}
+00028 \textcolor{preprocessor}{#include <\mbox{\hyperlink{user_8h}{user.h}}>}
+00029 
+00030 
+00031 
+00032 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__task__manager}{\_task\_manager}} \mbox{\hyperlink{struct__task__manager}{task\_manager}};
+00033 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__job}{\_job}} \mbox{\hyperlink{struct__job}{job}};
+00034 
+\Hypertarget{task_8h_source_l00045}\mbox{\hyperlink{struct__task__manager}{00045}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__task__manager}{\_task\_manager}} \{
+00046         pthread\_mutex\_t *mtx\_poll;
+00047         pthread\_mutex\_t *mtx\_tm;
+00048         \textcolor{keywordtype}{int} epollfd;
+00049         \mbox{\hyperlink{struct__job}{job}} *jobs;
+00050         \mbox{\hyperlink{struct__usersdata}{userdata}} *ud;
+00051 \};
+00052 
+\Hypertarget{task_8h_source_l00062}\mbox{\hyperlink{struct__job}{00062}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__job}{\_job}} \{
+00063   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} fd;
+00064   \mbox{\hyperlink{structmessage__t}{message\_t}} *msg;
+00065   \mbox{\hyperlink{struct__task__manager}{task\_manager}} *tsk;
+00066   \mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} hh;
+00067 \};
+00068 
+00069 
+00078 \mbox{\hyperlink{struct__task__manager}{task\_manager}} *\mbox{\hyperlink{task_8h_af4fb683e1349ea399ff8fb25cde2738e}{new\_manager}}(\textcolor{keywordtype}{int} epollfd, \mbox{\hyperlink{struct__usersdata}{userdata}} *ud);
+00079 
+00086 \textcolor{keywordtype}{void} \mbox{\hyperlink{task_8h_aeffb5dad0f2438558b4eabfe643cb450}{del\_task}}(\mbox{\hyperlink{struct__task__manager}{task\_manager}} *tsk);
+00087 
+00096 \mbox{\hyperlink{struct__job}{job}} *\mbox{\hyperlink{task_8h_a266921ef0e6577e64d1a610c6a5a4059}{new\_job}}(\textcolor{keywordtype}{int} fd, \mbox{\hyperlink{struct__task__manager}{task\_manager}} *tsk);
+00097 
+00104 \textcolor{keywordtype}{void} \mbox{\hyperlink{task_8h_a0cd9a89e1c14740d1519dc186636b5bc}{del\_job}}(\mbox{\hyperlink{struct__job}{job}} *jobd);
+00105 
+00114 \textcolor{keywordtype}{int} \mbox{\hyperlink{task_8h_a7eb471712750e50636ea6647d8b08125}{read\_task}}(\mbox{\hyperlink{struct__job}{job}} *jobr);
+00115 
+00124 \textcolor{keywordtype}{int} \mbox{\hyperlink{task_8h_a03632619b1f9d2ad6d4fee583f504233}{write\_task}}(\mbox{\hyperlink{struct__job}{job}} *jobw);
+00125 
+00137 \textcolor{keywordtype}{int} \mbox{\hyperlink{task_8h_af25be8d82c44505f8d002e18925cfae8}{exec\_task}}(\mbox{\hyperlink{struct__task__manager}{task\_manager}} *tsk, \mbox{\hyperlink{structmessage__t}{message\_t}} *s\_msg, \textcolor{keywordtype}{int} fd, 
+      \mbox{\hyperlink{struct__usersdata}{userdata}} *ud);
+00138 
+00139 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* TASK\_H\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

@@ -1,0 +1,119 @@
+\hypertarget{user_8h_source}{}\subsection{user.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00020 \textcolor{preprocessor}{#ifndef USER\_H\_}
+00021 \textcolor{preprocessor}{#define USER\_H\_}
+00022 
+00023 \textcolor{preprocessor}{#include <string.h>}
+00024 \textcolor{preprocessor}{#include <pthread.h>}
+00025 \textcolor{preprocessor}{#include <uthash.h>}
+00026 \textcolor{preprocessor}{#include <utlist.h>}
+00027 \textcolor{preprocessor}{#include <\mbox{\hyperlink{config_8h}{config.h}}>}
+00028 \textcolor{preprocessor}{#include <\mbox{\hyperlink{message_8h}{message.h}}>}
+00029 \textcolor{preprocessor}{#include <\mbox{\hyperlink{parser_8h}{parser.h}}>}
+00030 \textcolor{preprocessor}{#include <\mbox{\hyperlink{stats_8h}{stats.h}}>}
+00031 \textcolor{preprocessor}{#include <sys/socket.h>}
+00032 \textcolor{preprocessor}{#include <sys/select.h>}
+00033 \textcolor{preprocessor}{#include <sys/epoll.h>}
+00034 
+00035 
+\Hypertarget{user_8h_source_l00043}\mbox{\hyperlink{struct__history}{00043}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__history}{\_history}} \{
+00044   \mbox{\hyperlink{structmessage__t}{message\_t}} *\mbox{\hyperlink{structdata}{data}};
+00045   \textcolor{keyword}{struct }\mbox{\hyperlink{struct__history}{\_history}} *next;
+00046 \} \mbox{\hyperlink{struct__history}{history}};
+00047 
+\Hypertarget{user_8h_source_l00056}\mbox{\hyperlink{struct__user__list}{00056}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__user__list}{\_user\_list}} \{
+00057   \textcolor{keywordtype}{char} nick[MAX\_NAME\_LENGTH + 1];
+00058   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} fd;
+00059   \textcolor{keyword}{struct }\mbox{\hyperlink{struct__user__list}{\_user\_list}} *next;
+00060 \} \mbox{\hyperlink{struct__user__list}{ulist}};
+00061 
+\Hypertarget{user_8h_source_l00072}\mbox{\hyperlink{struct__user}{00072}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__user}{\_user}} \{
+00073   \textcolor{keywordtype}{char} nick[MAX\_NAME\_LENGTH + 1];
+00074   \mbox{\hyperlink{struct__history}{history}} *\mbox{\hyperlink{struct__history}{history}};
+00075   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} hc;
+00076   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} fd;
+00077   \mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} hh;
+00078 \} \mbox{\hyperlink{struct__user}{user}};
+00079 
+\Hypertarget{user_8h_source_l00088}\mbox{\hyperlink{struct__user__group}{00088}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__user__group}{\_user\_group}} \{
+00089   \textcolor{keywordtype}{char} nick[MAX\_NAME\_LENGTH + 1];
+00090   \mbox{\hyperlink{struct__user}{user}} *\mbox{\hyperlink{struct__user}{user}};
+00091   \mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} hh;
+00092 \} \mbox{\hyperlink{struct__user__group}{user\_group}};
+00093 
+\Hypertarget{user_8h_source_l00103}\mbox{\hyperlink{struct__group}{00103}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__group}{\_group}} \{
+00104   \textcolor{keywordtype}{char} name[MAX\_NAME\_LENGTH + 1];
+00105   pthread\_mutex\_t *group\_mtx;
+00106   \mbox{\hyperlink{struct__user__group}{user\_group}} *\mbox{\hyperlink{struct__group}{group}};
+00107   \mbox{\hyperlink{structUT__hash__handle}{UT\_hash\_handle}} hh;
+00108 \} \mbox{\hyperlink{struct__group}{group}};
+00109 
+\Hypertarget{user_8h_source_l00123}\mbox{\hyperlink{struct__usersdata}{00123}} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__usersdata}{\_usersdata}} \{
+00124   pthread\_mutex\_t *mtx;
+00125   \mbox{\hyperlink{struct__user}{user}} *users;
+00126   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} connessi;
+00127   \mbox{\hyperlink{structconf}{conf}} *cf;
+00128   \mbox{\hyperlink{struct__group}{group}} *groups;
+00129   \textcolor{keyword}{struct }\mbox{\hyperlink{structstatistics}{statistics}} *\mbox{\hyperlink{user_8h_a21a1f4faff772a417f2f48bf45bcc89c}{stats}};
+00130   pthread\_mutex\_t *stats\_mtx;
+00131   pthread\_mutex\_t *his\_mtx;
+00132 \} \mbox{\hyperlink{struct__usersdata}{userdata}};
+00133 
+00134 
+00143 \mbox{\hyperlink{struct__usersdata}{userdata}} *\mbox{\hyperlink{user_8h_a22092737cd5a0895c1f57e90c786b83f}{new\_udata}}(\mbox{\hyperlink{structconf}{conf}} *cf, \textcolor{keyword}{struct} \mbox{\hyperlink{structstatistics}{statistics}} *chattyStats);
+00144 
+00151 \textcolor{keywordtype}{void} \mbox{\hyperlink{user_8h_a2b5d2bb28b9c95159ae4c9650bd1bbfc}{del\_udata}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud);
+00152 
+00161 \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_a0b3da9bc8bad80b9e45aabffbf47ffbd}{reg\_user}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char} *nick);
+00162 
+00172 \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_a36d6a58bf0fef737c8461d3b6fe2b4ed}{con\_user}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char} *nick, \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} fd);
+00173 
+00182 \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_acd3cb71d6292ec2a1ed584f4881ee357}{del\_user}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char} *nick);
+00183 
+00192 \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_ac5918076cf75292bc08642e0feffe613}{logout\_user}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char} *nick);
+00193 
+00204 \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_afe383557cd7baba7d0c7b9040011bfe7}{brutal\_logout}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{int} fd, \textcolor{keywordtype}{int} epollfd, pthread\_mutex\_t *mtx);
+00205 
+00213 \textcolor{keywordtype}{void} \mbox{\hyperlink{user_8h_af5c73c15fe3f86d1d4ff9a1b71fac700}{all\_user}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \mbox{\hyperlink{struct__user__list}{ulist}} **list);
+00214 
+00221 \textcolor{keywordtype}{void} \mbox{\hyperlink{user_8h_ad65a594ab75714463ba64596d36c0d0c}{del\_list}}(\mbox{\hyperlink{struct__user__list}{ulist}} **list);
+00222 
+00232 \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_aece82f34fb4581299d6914ef871d886b}{save\_msg}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char} *nick, \mbox{\hyperlink{structmessage__t}{message\_t}} *msg);
+00233 
+00241 \textcolor{keywordtype}{void} \mbox{\hyperlink{user_8h_a69703738faca2131cb5714fa1fb8f8a1}{del\_history}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \mbox{\hyperlink{struct__history}{history}} **list);
+00242 
+00251 \mbox{\hyperlink{struct__user}{user}} *\mbox{\hyperlink{user_8h_a4ae20b98acc64359de1f8baa82b8b7b4}{find\_user}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char} *nick);
+00252 
+00261 \mbox{\hyperlink{struct__history}{history}} *\mbox{\hyperlink{user_8h_ac9e2beafc42bdb5158f33957d247f949}{find\_history}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char}*nick);
+00262 
+00263 \textcolor{keywordtype}{void} print\_list(\mbox{\hyperlink{struct__user__list}{ulist}} *list); \textcolor{comment}{//Serve solo per debug}
+00264 
+00265 \textcolor{keywordtype}{void} print\_users(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud); \textcolor{comment}{//Serve solo per debug}
+00266 
+00274 \textcolor{keywordtype}{void} \mbox{\hyperlink{user_8h_a21a1f4faff772a417f2f48bf45bcc89c}{stats}}(\textcolor{keywordtype}{int} reg, \textcolor{keywordtype}{int} con, \textcolor{keywordtype}{int} msg\_delivered, \textcolor{keywordtype}{int} msg\_waiting,
+00275    \textcolor{keywordtype}{int} file\_delivered, \textcolor{keywordtype}{int} file\_waiting, \textcolor{keywordtype}{int} err, \mbox{\hyperlink{struct__usersdata}{userdata}} *ud);
+00276 
+00284    \mbox{\hyperlink{struct__group}{group}} *\mbox{\hyperlink{user_8h_a95bf7e7bf28b0b58de967ee0618abd09}{new\_group}}(\textcolor{keywordtype}{char} *name);
+00285 
+00292    \textcolor{keywordtype}{void} \mbox{\hyperlink{user_8h_a31406d7a99a36caa72b976ae2996796f}{del\_group}}(\mbox{\hyperlink{struct__group}{group}} *gdata);
+00293 
+00302    \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_a9a0c20af8dbe611c25900fff4b393e09}{reg\_user\_group}}(\mbox{\hyperlink{struct__group}{group}} *gdata, \mbox{\hyperlink{struct__user}{user}} *\textcolor{keyword}{new});
+00303 
+00312    \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_a5236c2601d5fe844ca3e70676ea0997e}{del\_user\_group}}(\mbox{\hyperlink{struct__group}{group}} *gdata, \mbox{\hyperlink{struct__user}{user}} *del);
+00313 
+00322    \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_addec4d9e953b2ce565cdde67ec90699d}{find\_user\_group}}(\mbox{\hyperlink{struct__group}{group}} *gdata, \textcolor{keywordtype}{char} *nick);
+00323 
+00333    \mbox{\hyperlink{struct__group}{group}} *\mbox{\hyperlink{user_8h_a97ebeace5e433443dfbc1566475a246a}{find\_group}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char} *name);
+00334 
+00344    \textcolor{keywordtype}{int} \mbox{\hyperlink{user_8h_a83e3853217d5eefd3e13def97c7545f9}{add\_group}}(\mbox{\hyperlink{struct__usersdata}{userdata}} *ud, \textcolor{keywordtype}{char} *name);
+00345 
+00346 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* USER\_H\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

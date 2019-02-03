@@ -1,0 +1,40 @@
+\hypertarget{tpool_8h_source}{}\subsection{tpool.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00019 \textcolor{preprocessor}{#ifndef TPOOL\_H\_}
+00020 \textcolor{preprocessor}{#define TPOOL\_H\_}
+00021 
+00022 \textcolor{preprocessor}{#include <stdio.h>}
+00023 \textcolor{preprocessor}{#include <unistd.h>}
+00024 \textcolor{preprocessor}{#include <stdlib.h>}
+00025 \textcolor{preprocessor}{#include <pthread.h>}
+00026 \textcolor{preprocessor}{#include <sys/time.h>}
+00027 \textcolor{preprocessor}{#include <sys/types.h>}
+00028 \textcolor{preprocessor}{#include <sys/select.h>}
+00029 \textcolor{preprocessor}{#include <\mbox{\hyperlink{user_8h}{user.h}}>}
+00030 \textcolor{preprocessor}{#include <\mbox{\hyperlink{task_8h}{task.h}}>}
+00031 
+00032 \textcolor{preprocessor}{#define CLEAN\_UP(pool)                                    \(\backslash\)}
+00033 \textcolor{preprocessor}{                                if(pool) \{                                \(\backslash\)}
+00034 \textcolor{preprocessor}{                                    tpool\_free(pool);                       \(\backslash\)}
+00035 \textcolor{preprocessor}{                                \}                                         \(\backslash\)}
+00036 \textcolor{preprocessor}{                                return NULL;                              \(\backslash\)}
+00037 \textcolor{preprocessor}{}
+00038 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__t__pool}{\_t\_pool}} \mbox{\hyperlink{struct__t__pool}{t\_pool}};
+00039 
+00048 \mbox{\hyperlink{struct__t__pool}{t\_pool}} *\mbox{\hyperlink{tpool_8h_a5e98ff56b31208a0762701f2d97a4fa4}{tpool\_create}}(\textcolor{keywordtype}{int} nthreads, \textcolor{keywordtype}{int} max\_con);
+00049 
+00059 \textcolor{keywordtype}{int} \mbox{\hyperlink{tpool_8h_a358d0acd03f8339ce5dcc6bc8ff91922}{tpool\_add}}(\mbox{\hyperlink{struct__t__pool}{t\_pool}} *pool, \textcolor{keywordtype}{int} (*fun)(\mbox{\hyperlink{struct__job}{job}} *), \textcolor{keywordtype}{void} *arg);
+00060 
+00068 \textcolor{keywordtype}{int} \mbox{\hyperlink{tpool_8h_a36eff49591584172a8062630e2edbae5}{tpool\_delete}}(\mbox{\hyperlink{struct__t__pool}{t\_pool}} *pool);
+00069 
+00070 
+00071 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* TPOOL\_H\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

@@ -1,0 +1,32 @@
+\hypertarget{utility_8h_source}{}\subsection{utility.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00018 \textcolor{preprocessor}{#ifndef UTILITY\_H\_}
+00019 \textcolor{preprocessor}{#define UTILITY\_H\_}
+00020 
+00021 \textcolor{preprocessor}{#include <sys/types.h>}
+00022 \textcolor{preprocessor}{#include <unistd.h>}
+00023 
+00024 
+00025 \textcolor{comment}{//    Codice visto su:                             //}
+00026 \textcolor{comment}{//    Unix Network Programming, Volume 1           //}
+00027 \textcolor{comment}{//    http://www.unpbook.com                       //}
+00028 \textcolor{comment}{// Socket, read e write non vanno molto d'accordo, //}
+00029 \textcolor{comment}{// potrebbe succedere che vengano letti/scritti    //}
+00030 \textcolor{comment}{// meno bytes di quelli richiesti.                 //}
+00031 
+00032 \textcolor{comment}{/* Abbiamo visto la stessa cosa su conn.h su assegnamento 10 e 11 durante il corso */}
+00033 
+00043 ssize\_t \mbox{\hyperlink{utility_8h_ac9259628f4bca1f9d37d9d1f87a73b1b}{readn}}(\textcolor{keywordtype}{int} filedes, \textcolor{keywordtype}{void} *buff, \textcolor{keywordtype}{size\_t} nbytes);
+00044 
+00054 ssize\_t \mbox{\hyperlink{utility_8h_ac6671001233740b43906caff6bf25339}{writen}}(\textcolor{keywordtype}{int} filedes, \textcolor{keyword}{const} \textcolor{keywordtype}{void} *buff, \textcolor{keywordtype}{size\_t} nbytes);
+00055 
+00056 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* UTILITY\_H\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

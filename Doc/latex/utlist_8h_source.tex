@@ -1,0 +1,1077 @@
+\hypertarget{utlist_8h_source}{}\subsection{utlist.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{Copyright (c) 2007-2018, Troy D. Hanson   http://troydhanson.github.com/uthash/}
+00003 \textcolor{comment}{All rights reserved.}
+00004 \textcolor{comment}{}
+00005 \textcolor{comment}{Redistribution and use in source and binary forms, with or without}
+00006 \textcolor{comment}{modification, are permitted provided that the following conditions are met:}
+00007 \textcolor{comment}{}
+00008 \textcolor{comment}{    * Redistributions of source code must retain the above copyright}
+00009 \textcolor{comment}{      notice, this list of conditions and the following disclaimer.}
+00010 \textcolor{comment}{}
+00011 \textcolor{comment}{THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS}
+00012 \textcolor{comment}{IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED}
+00013 \textcolor{comment}{TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A}
+00014 \textcolor{comment}{PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER}
+00015 \textcolor{comment}{OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,}
+00016 \textcolor{comment}{EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,}
+00017 \textcolor{comment}{PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR}
+00018 \textcolor{comment}{PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF}
+00019 \textcolor{comment}{LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING}
+00020 \textcolor{comment}{NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS}
+00021 \textcolor{comment}{SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}
+00022 \textcolor{comment}{*/}
+00023 
+00024 \textcolor{preprocessor}{#ifndef UTLIST\_H}
+00025 \textcolor{preprocessor}{#define UTLIST\_H}
+00026 
+00027 \textcolor{preprocessor}{#define UTLIST\_VERSION 2.0.2}
+00028 
+00029 \textcolor{preprocessor}{#include <assert.h>}
+00030 
+00031 \textcolor{comment}{/*}
+00032 \textcolor{comment}{ * This file contains macros to manipulate singly and doubly-linked lists.}
+00033 \textcolor{comment}{ *}
+00034 \textcolor{comment}{ * 1. LL\_ macros:  singly-linked lists.}
+00035 \textcolor{comment}{ * 2. DL\_ macros:  doubly-linked lists.}
+00036 \textcolor{comment}{ * 3. CDL\_ macros: circular doubly-linked lists.}
+00037 \textcolor{comment}{ *}
+00038 \textcolor{comment}{ * To use singly-linked lists, your structure must have a "next" pointer.}
+00039 \textcolor{comment}{ * To use doubly-linked lists, your structure must "prev" and "next" pointers.}
+00040 \textcolor{comment}{ * Either way, the pointer to the head of the list must be initialized to NULL.}
+00041 \textcolor{comment}{ *}
+00042 \textcolor{comment}{ * ----------------.EXAMPLE -------------------------}
+00043 \textcolor{comment}{ * struct item \{}
+00044 \textcolor{comment}{ *      int id;}
+00045 \textcolor{comment}{ *      struct item *prev, *next;}
+00046 \textcolor{comment}{ * \}}
+00047 \textcolor{comment}{ *}
+00048 \textcolor{comment}{ * struct item *list = NULL:}
+00049 \textcolor{comment}{ *}
+00050 \textcolor{comment}{ * int main() \{}
+00051 \textcolor{comment}{ *      struct item *item;}
+00052 \textcolor{comment}{ *      ... allocate and populate item ...}
+00053 \textcolor{comment}{ *      DL\_APPEND(list, item);}
+00054 \textcolor{comment}{ * \}}
+00055 \textcolor{comment}{ * --------------------------------------------------}
+00056 \textcolor{comment}{ *}
+00057 \textcolor{comment}{ * For doubly-linked lists, the append and delete macros are O(1)}
+00058 \textcolor{comment}{ * For singly-linked lists, append and delete are O(n) but prepend is O(1)}
+00059 \textcolor{comment}{ * The sort macro is O(n log(n)) for all types of single/double/circular lists.}
+00060 \textcolor{comment}{ */}
+00061 
+00062 \textcolor{comment}{/* These macros use decltype or the earlier \_\_typeof GNU extension.}
+00063 \textcolor{comment}{   As decltype is only available in newer compilers (VS2010 or gcc 4.3+}
+00064 \textcolor{comment}{   when compiling c++ source) this code uses whatever method is needed}
+00065 \textcolor{comment}{   or, for VS2008 where neither is available, uses casting workarounds. */}
+00066 \textcolor{preprocessor}{#if !defined(LDECLTYPE) && !defined(NO\_DECLTYPE)}
+00067 \textcolor{preprocessor}{#if defined(\_MSC\_VER)   }\textcolor{comment}{/* MS compiler */}\textcolor{preprocessor}{}
+00068 \textcolor{preprocessor}{#if \_MSC\_VER >= 1600 && defined(\_\_cplusplus)  }\textcolor{comment}{/* VS2010 or newer in C++ mode */}\textcolor{preprocessor}{}
+00069 \textcolor{preprocessor}{#define LDECLTYPE(x) decltype(x)}
+00070 \textcolor{preprocessor}{#else                   }\textcolor{comment}{/* VS2008 or older (or VS2010 in C mode) */}\textcolor{preprocessor}{}
+00071 \textcolor{preprocessor}{#define NO\_DECLTYPE}
+00072 \textcolor{preprocessor}{#endif}
+00073 \textcolor{preprocessor}{#elif defined(\_\_BORLANDC\_\_) || defined(\_\_ICCARM\_\_) || defined(\_\_LCC\_\_) || defined(\_\_WATCOMC\_\_)}
+00074 \textcolor{preprocessor}{#define NO\_DECLTYPE}
+00075 \textcolor{preprocessor}{#else                   }\textcolor{comment}{/* GNU, Sun and other compilers */}\textcolor{preprocessor}{}
+00076 \textcolor{preprocessor}{#define LDECLTYPE(x) \_\_typeof(x)}
+00077 \textcolor{preprocessor}{#endif}
+00078 \textcolor{preprocessor}{#endif}
+00079 
+00080 \textcolor{comment}{/* for VS2008 we use some workarounds to get around the lack of decltype,}
+00081 \textcolor{comment}{ * namely, we always reassign our tmp variable to the list head if we need}
+00082 \textcolor{comment}{ * to dereference its prev/next pointers, and save/restore the real head.*/}
+00083 \textcolor{preprocessor}{#ifdef NO\_DECLTYPE}
+00084 \textcolor{preprocessor}{#define IF\_NO\_DECLTYPE(x) x}
+00085 \textcolor{preprocessor}{#define LDECLTYPE(x) char*}
+00086 \textcolor{preprocessor}{#define UTLIST\_SV(elt,list) \_tmp = (char*)(list); \{char **\_alias = (char**)&(list); *\_alias = (elt); \}}
+00087 \textcolor{preprocessor}{#define UTLIST\_NEXT(elt,list,next) ((char*)((list)->next))}
+00088 \textcolor{preprocessor}{#define UTLIST\_NEXTASGN(elt,list,to,next) \{ char **\_alias = (char**)&((list)->next); *\_alias=(char*)(to); \}}
+00089 \textcolor{comment}{/* #define UTLIST\_PREV(elt,list,prev) ((char*)((list)->prev)) */}
+00090 \textcolor{preprocessor}{#define UTLIST\_PREVASGN(elt,list,to,prev) \{ char **\_alias = (char**)&((list)->prev); *\_alias=(char*)(to); \}}
+00091 \textcolor{preprocessor}{#define UTLIST\_RS(list) \{ char **\_alias = (char**)&(list); *\_alias=\_tmp; \}}
+00092 \textcolor{preprocessor}{#define UTLIST\_CASTASGN(a,b) \{ char **\_alias = (char**)&(a); *\_alias=(char*)(b); \}}
+00093 \textcolor{preprocessor}{#else}
+00094 \textcolor{preprocessor}{#define IF\_NO\_DECLTYPE(x)}
+00095 \textcolor{preprocessor}{#define UTLIST\_SV(elt,list)}
+00096 \textcolor{preprocessor}{#define UTLIST\_NEXT(elt,list,next) ((elt)->next)}
+00097 \textcolor{preprocessor}{#define UTLIST\_NEXTASGN(elt,list,to,next) ((elt)->next)=(to)}
+00098 \textcolor{comment}{/* #define UTLIST\_PREV(elt,list,prev) ((elt)->prev) */}
+00099 \textcolor{preprocessor}{#define UTLIST\_PREVASGN(elt,list,to,prev) ((elt)->prev)=(to)}
+00100 \textcolor{preprocessor}{#define UTLIST\_RS(list)}
+00101 \textcolor{preprocessor}{#define UTLIST\_CASTASGN(a,b) (a)=(b)}
+00102 \textcolor{preprocessor}{#endif}
+00103 
+00104 \textcolor{comment}{/******************************************************************************}
+00105 \textcolor{comment}{ * The sort macro is an adaptation of Simon Tatham's O(n log(n)) mergesort    *}
+00106 \textcolor{comment}{ * Unwieldy variable names used here to avoid shadowing passed-in variables.  *}
+00107 \textcolor{comment}{ *****************************************************************************/}
+00108 \textcolor{preprocessor}{#define LL\_SORT(list, cmp)                                                                     \(\backslash\)}
+00109 \textcolor{preprocessor}{    LL\_SORT2(list, cmp, next)}
+00110 
+00111 \textcolor{preprocessor}{#define LL\_SORT2(list, cmp, next)                                                              \(\backslash\)}
+00112 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00113 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_p;                                                                       \(\backslash\)}
+00114 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_q;                                                                       \(\backslash\)}
+00115 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_e;                                                                       \(\backslash\)}
+00116 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_tail;                                                                    \(\backslash\)}
+00117 \textcolor{preprocessor}{  IF\_NO\_DECLTYPE(LDECLTYPE(list) \_tmp;)                                                        \(\backslash\)}
+00118 \textcolor{preprocessor}{  int \_ls\_insize, \_ls\_nmerges, \_ls\_psize, \_ls\_qsize, \_ls\_i, \_ls\_looping;                       \(\backslash\)}
+00119 \textcolor{preprocessor}{  if (list) \{                                                                                  \(\backslash\)}
+00120 \textcolor{preprocessor}{    \_ls\_insize = 1;                                                                            \(\backslash\)}
+00121 \textcolor{preprocessor}{    \_ls\_looping = 1;                                                                           \(\backslash\)}
+00122 \textcolor{preprocessor}{    while (\_ls\_looping) \{                                                                      \(\backslash\)}
+00123 \textcolor{preprocessor}{      UTLIST\_CASTASGN(\_ls\_p,list);                                                             \(\backslash\)}
+00124 \textcolor{preprocessor}{      (list) = NULL;                                                                           \(\backslash\)}
+00125 \textcolor{preprocessor}{      \_ls\_tail = NULL;                                                                         \(\backslash\)}
+00126 \textcolor{preprocessor}{      \_ls\_nmerges = 0;                                                                         \(\backslash\)}
+00127 \textcolor{preprocessor}{      while (\_ls\_p) \{                                                                          \(\backslash\)}
+00128 \textcolor{preprocessor}{        \_ls\_nmerges++;                                                                         \(\backslash\)}
+00129 \textcolor{preprocessor}{        \_ls\_q = \_ls\_p;                                                                         \(\backslash\)}
+00130 \textcolor{preprocessor}{        \_ls\_psize = 0;                                                                         \(\backslash\)}
+00131 \textcolor{preprocessor}{        for (\_ls\_i = 0; \_ls\_i < \_ls\_insize; \_ls\_i++) \{                                         \(\backslash\)}
+00132 \textcolor{preprocessor}{          \_ls\_psize++;                                                                         \(\backslash\)}
+00133 \textcolor{preprocessor}{          UTLIST\_SV(\_ls\_q,list); \_ls\_q = UTLIST\_NEXT(\_ls\_q,list,next); UTLIST\_RS(list);        \(\backslash\)}
+00134 \textcolor{preprocessor}{          if (!\_ls\_q) break;                                                                   \(\backslash\)}
+00135 \textcolor{preprocessor}{        \}                                                                                      \(\backslash\)}
+00136 \textcolor{preprocessor}{        \_ls\_qsize = \_ls\_insize;                                                                \(\backslash\)}
+00137 \textcolor{preprocessor}{        while (\_ls\_psize > 0 || (\_ls\_qsize > 0 && \_ls\_q)) \{                                    \(\backslash\)}
+00138 \textcolor{preprocessor}{          if (\_ls\_psize == 0) \{                                                                \(\backslash\)}
+00139 \textcolor{preprocessor}{            \_ls\_e = \_ls\_q; UTLIST\_SV(\_ls\_q,list); \_ls\_q =                                      \(\backslash\)}
+00140 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_q,list,next); UTLIST\_RS(list); \_ls\_qsize--;                      \(\backslash\)}
+00141 \textcolor{preprocessor}{          \} else if (\_ls\_qsize == 0 || !\_ls\_q) \{                                               \(\backslash\)}
+00142 \textcolor{preprocessor}{            \_ls\_e = \_ls\_p; UTLIST\_SV(\_ls\_p,list); \_ls\_p =                                      \(\backslash\)}
+00143 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_p,list,next); UTLIST\_RS(list); \_ls\_psize--;                      \(\backslash\)}
+00144 \textcolor{preprocessor}{          \} else if (cmp(\_ls\_p,\_ls\_q) <= 0) \{                                                  \(\backslash\)}
+00145 \textcolor{preprocessor}{            \_ls\_e = \_ls\_p; UTLIST\_SV(\_ls\_p,list); \_ls\_p =                                      \(\backslash\)}
+00146 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_p,list,next); UTLIST\_RS(list); \_ls\_psize--;                      \(\backslash\)}
+00147 \textcolor{preprocessor}{          \} else \{                                                                             \(\backslash\)}
+00148 \textcolor{preprocessor}{            \_ls\_e = \_ls\_q; UTLIST\_SV(\_ls\_q,list); \_ls\_q =                                      \(\backslash\)}
+00149 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_q,list,next); UTLIST\_RS(list); \_ls\_qsize--;                      \(\backslash\)}
+00150 \textcolor{preprocessor}{          \}                                                                                    \(\backslash\)}
+00151 \textcolor{preprocessor}{          if (\_ls\_tail) \{                                                                      \(\backslash\)}
+00152 \textcolor{preprocessor}{            UTLIST\_SV(\_ls\_tail,list); UTLIST\_NEXTASGN(\_ls\_tail,list,\_ls\_e,next); UTLIST\_RS(list); \(\backslash\)}
+00153 \textcolor{preprocessor}{          \} else \{                                                                             \(\backslash\)}
+00154 \textcolor{preprocessor}{            UTLIST\_CASTASGN(list,\_ls\_e);                                                       \(\backslash\)}
+00155 \textcolor{preprocessor}{          \}                                                                                    \(\backslash\)}
+00156 \textcolor{preprocessor}{          \_ls\_tail = \_ls\_e;                                                                    \(\backslash\)}
+00157 \textcolor{preprocessor}{        \}                                                                                      \(\backslash\)}
+00158 \textcolor{preprocessor}{        \_ls\_p = \_ls\_q;                                                                         \(\backslash\)}
+00159 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00160 \textcolor{preprocessor}{      if (\_ls\_tail) \{                                                                          \(\backslash\)}
+00161 \textcolor{preprocessor}{        UTLIST\_SV(\_ls\_tail,list); UTLIST\_NEXTASGN(\_ls\_tail,list,NULL,next); UTLIST\_RS(list);   \(\backslash\)}
+00162 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00163 \textcolor{preprocessor}{      if (\_ls\_nmerges <= 1) \{                                                                  \(\backslash\)}
+00164 \textcolor{preprocessor}{        \_ls\_looping=0;                                                                         \(\backslash\)}
+00165 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00166 \textcolor{preprocessor}{      \_ls\_insize *= 2;                                                                         \(\backslash\)}
+00167 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00168 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00169 \textcolor{preprocessor}{\} while (0)}
+00170 
+00171 
+00172 \textcolor{preprocessor}{#define DL\_SORT(list, cmp)                                                                     \(\backslash\)}
+00173 \textcolor{preprocessor}{    DL\_SORT2(list, cmp, prev, next)}
+00174 
+00175 \textcolor{preprocessor}{#define DL\_SORT2(list, cmp, prev, next)                                                        \(\backslash\)}
+00176 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00177 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_p;                                                                       \(\backslash\)}
+00178 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_q;                                                                       \(\backslash\)}
+00179 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_e;                                                                       \(\backslash\)}
+00180 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_tail;                                                                    \(\backslash\)}
+00181 \textcolor{preprocessor}{  IF\_NO\_DECLTYPE(LDECLTYPE(list) \_tmp;)                                                        \(\backslash\)}
+00182 \textcolor{preprocessor}{  int \_ls\_insize, \_ls\_nmerges, \_ls\_psize, \_ls\_qsize, \_ls\_i, \_ls\_looping;                       \(\backslash\)}
+00183 \textcolor{preprocessor}{  if (list) \{                                                                                  \(\backslash\)}
+00184 \textcolor{preprocessor}{    \_ls\_insize = 1;                                                                            \(\backslash\)}
+00185 \textcolor{preprocessor}{    \_ls\_looping = 1;                                                                           \(\backslash\)}
+00186 \textcolor{preprocessor}{    while (\_ls\_looping) \{                                                                      \(\backslash\)}
+00187 \textcolor{preprocessor}{      UTLIST\_CASTASGN(\_ls\_p,list);                                                             \(\backslash\)}
+00188 \textcolor{preprocessor}{      (list) = NULL;                                                                           \(\backslash\)}
+00189 \textcolor{preprocessor}{      \_ls\_tail = NULL;                                                                         \(\backslash\)}
+00190 \textcolor{preprocessor}{      \_ls\_nmerges = 0;                                                                         \(\backslash\)}
+00191 \textcolor{preprocessor}{      while (\_ls\_p) \{                                                                          \(\backslash\)}
+00192 \textcolor{preprocessor}{        \_ls\_nmerges++;                                                                         \(\backslash\)}
+00193 \textcolor{preprocessor}{        \_ls\_q = \_ls\_p;                                                                         \(\backslash\)}
+00194 \textcolor{preprocessor}{        \_ls\_psize = 0;                                                                         \(\backslash\)}
+00195 \textcolor{preprocessor}{        for (\_ls\_i = 0; \_ls\_i < \_ls\_insize; \_ls\_i++) \{                                         \(\backslash\)}
+00196 \textcolor{preprocessor}{          \_ls\_psize++;                                                                         \(\backslash\)}
+00197 \textcolor{preprocessor}{          UTLIST\_SV(\_ls\_q,list); \_ls\_q = UTLIST\_NEXT(\_ls\_q,list,next); UTLIST\_RS(list);        \(\backslash\)}
+00198 \textcolor{preprocessor}{          if (!\_ls\_q) break;                                                                   \(\backslash\)}
+00199 \textcolor{preprocessor}{        \}                                                                                      \(\backslash\)}
+00200 \textcolor{preprocessor}{        \_ls\_qsize = \_ls\_insize;                                                                \(\backslash\)}
+00201 \textcolor{preprocessor}{        while ((\_ls\_psize > 0) || ((\_ls\_qsize > 0) && \_ls\_q)) \{                                \(\backslash\)}
+00202 \textcolor{preprocessor}{          if (\_ls\_psize == 0) \{                                                                \(\backslash\)}
+00203 \textcolor{preprocessor}{            \_ls\_e = \_ls\_q; UTLIST\_SV(\_ls\_q,list); \_ls\_q =                                      \(\backslash\)}
+00204 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_q,list,next); UTLIST\_RS(list); \_ls\_qsize--;                      \(\backslash\)}
+00205 \textcolor{preprocessor}{          \} else if ((\_ls\_qsize == 0) || (!\_ls\_q)) \{                                           \(\backslash\)}
+00206 \textcolor{preprocessor}{            \_ls\_e = \_ls\_p; UTLIST\_SV(\_ls\_p,list); \_ls\_p =                                      \(\backslash\)}
+00207 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_p,list,next); UTLIST\_RS(list); \_ls\_psize--;                      \(\backslash\)}
+00208 \textcolor{preprocessor}{          \} else if (cmp(\_ls\_p,\_ls\_q) <= 0) \{                                                  \(\backslash\)}
+00209 \textcolor{preprocessor}{            \_ls\_e = \_ls\_p; UTLIST\_SV(\_ls\_p,list); \_ls\_p =                                      \(\backslash\)}
+00210 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_p,list,next); UTLIST\_RS(list); \_ls\_psize--;                      \(\backslash\)}
+00211 \textcolor{preprocessor}{          \} else \{                                                                             \(\backslash\)}
+00212 \textcolor{preprocessor}{            \_ls\_e = \_ls\_q; UTLIST\_SV(\_ls\_q,list); \_ls\_q =                                      \(\backslash\)}
+00213 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_q,list,next); UTLIST\_RS(list); \_ls\_qsize--;                      \(\backslash\)}
+00214 \textcolor{preprocessor}{          \}                                                                                    \(\backslash\)}
+00215 \textcolor{preprocessor}{          if (\_ls\_tail) \{                                                                      \(\backslash\)}
+00216 \textcolor{preprocessor}{            UTLIST\_SV(\_ls\_tail,list); UTLIST\_NEXTASGN(\_ls\_tail,list,\_ls\_e,next); UTLIST\_RS(list); \(\backslash\)}
+00217 \textcolor{preprocessor}{          \} else \{                                                                             \(\backslash\)}
+00218 \textcolor{preprocessor}{            UTLIST\_CASTASGN(list,\_ls\_e);                                                       \(\backslash\)}
+00219 \textcolor{preprocessor}{          \}                                                                                    \(\backslash\)}
+00220 \textcolor{preprocessor}{          UTLIST\_SV(\_ls\_e,list); UTLIST\_PREVASGN(\_ls\_e,list,\_ls\_tail,prev); UTLIST\_RS(list);   \(\backslash\)}
+00221 \textcolor{preprocessor}{          \_ls\_tail = \_ls\_e;                                                                    \(\backslash\)}
+00222 \textcolor{preprocessor}{        \}                                                                                      \(\backslash\)}
+00223 \textcolor{preprocessor}{        \_ls\_p = \_ls\_q;                                                                         \(\backslash\)}
+00224 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00225 \textcolor{preprocessor}{      UTLIST\_CASTASGN((list)->prev, \_ls\_tail);                                                 \(\backslash\)}
+00226 \textcolor{preprocessor}{      UTLIST\_SV(\_ls\_tail,list); UTLIST\_NEXTASGN(\_ls\_tail,list,NULL,next); UTLIST\_RS(list);     \(\backslash\)}
+00227 \textcolor{preprocessor}{      if (\_ls\_nmerges <= 1) \{                                                                  \(\backslash\)}
+00228 \textcolor{preprocessor}{        \_ls\_looping=0;                                                                         \(\backslash\)}
+00229 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00230 \textcolor{preprocessor}{      \_ls\_insize *= 2;                                                                         \(\backslash\)}
+00231 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00232 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00233 \textcolor{preprocessor}{\} while (0)}
+00234 
+00235 \textcolor{preprocessor}{#define CDL\_SORT(list, cmp)                                                                    \(\backslash\)}
+00236 \textcolor{preprocessor}{    CDL\_SORT2(list, cmp, prev, next)}
+00237 
+00238 \textcolor{preprocessor}{#define CDL\_SORT2(list, cmp, prev, next)                                                       \(\backslash\)}
+00239 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00240 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_p;                                                                       \(\backslash\)}
+00241 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_q;                                                                       \(\backslash\)}
+00242 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_e;                                                                       \(\backslash\)}
+00243 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_tail;                                                                    \(\backslash\)}
+00244 \textcolor{preprocessor}{  LDECLTYPE(list) \_ls\_oldhead;                                                                 \(\backslash\)}
+00245 \textcolor{preprocessor}{  LDECLTYPE(list) \_tmp;                                                                        \(\backslash\)}
+00246 \textcolor{preprocessor}{  int \_ls\_insize, \_ls\_nmerges, \_ls\_psize, \_ls\_qsize, \_ls\_i, \_ls\_looping;                       \(\backslash\)}
+00247 \textcolor{preprocessor}{  if (list) \{                                                                                  \(\backslash\)}
+00248 \textcolor{preprocessor}{    \_ls\_insize = 1;                                                                            \(\backslash\)}
+00249 \textcolor{preprocessor}{    \_ls\_looping = 1;                                                                           \(\backslash\)}
+00250 \textcolor{preprocessor}{    while (\_ls\_looping) \{                                                                      \(\backslash\)}
+00251 \textcolor{preprocessor}{      UTLIST\_CASTASGN(\_ls\_p,list);                                                             \(\backslash\)}
+00252 \textcolor{preprocessor}{      UTLIST\_CASTASGN(\_ls\_oldhead,list);                                                       \(\backslash\)}
+00253 \textcolor{preprocessor}{      (list) = NULL;                                                                           \(\backslash\)}
+00254 \textcolor{preprocessor}{      \_ls\_tail = NULL;                                                                         \(\backslash\)}
+00255 \textcolor{preprocessor}{      \_ls\_nmerges = 0;                                                                         \(\backslash\)}
+00256 \textcolor{preprocessor}{      while (\_ls\_p) \{                                                                          \(\backslash\)}
+00257 \textcolor{preprocessor}{        \_ls\_nmerges++;                                                                         \(\backslash\)}
+00258 \textcolor{preprocessor}{        \_ls\_q = \_ls\_p;                                                                         \(\backslash\)}
+00259 \textcolor{preprocessor}{        \_ls\_psize = 0;                                                                         \(\backslash\)}
+00260 \textcolor{preprocessor}{        for (\_ls\_i = 0; \_ls\_i < \_ls\_insize; \_ls\_i++) \{                                         \(\backslash\)}
+00261 \textcolor{preprocessor}{          \_ls\_psize++;                                                                         \(\backslash\)}
+00262 \textcolor{preprocessor}{          UTLIST\_SV(\_ls\_q,list);                                                               \(\backslash\)}
+00263 \textcolor{preprocessor}{          if (UTLIST\_NEXT(\_ls\_q,list,next) == \_ls\_oldhead) \{                                   \(\backslash\)}
+00264 \textcolor{preprocessor}{            \_ls\_q = NULL;                                                                      \(\backslash\)}
+00265 \textcolor{preprocessor}{          \} else \{                                                                             \(\backslash\)}
+00266 \textcolor{preprocessor}{            \_ls\_q = UTLIST\_NEXT(\_ls\_q,list,next);                                              \(\backslash\)}
+00267 \textcolor{preprocessor}{          \}                                                                                    \(\backslash\)}
+00268 \textcolor{preprocessor}{          UTLIST\_RS(list);                                                                     \(\backslash\)}
+00269 \textcolor{preprocessor}{          if (!\_ls\_q) break;                                                                   \(\backslash\)}
+00270 \textcolor{preprocessor}{        \}                                                                                      \(\backslash\)}
+00271 \textcolor{preprocessor}{        \_ls\_qsize = \_ls\_insize;                                                                \(\backslash\)}
+00272 \textcolor{preprocessor}{        while (\_ls\_psize > 0 || (\_ls\_qsize > 0 && \_ls\_q)) \{                                    \(\backslash\)}
+00273 \textcolor{preprocessor}{          if (\_ls\_psize == 0) \{                                                                \(\backslash\)}
+00274 \textcolor{preprocessor}{            \_ls\_e = \_ls\_q; UTLIST\_SV(\_ls\_q,list); \_ls\_q =                                      \(\backslash\)}
+00275 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_q,list,next); UTLIST\_RS(list); \_ls\_qsize--;                      \(\backslash\)}
+00276 \textcolor{preprocessor}{            if (\_ls\_q == \_ls\_oldhead) \{ \_ls\_q = NULL; \}                                        \(\backslash\)}
+00277 \textcolor{preprocessor}{          \} else if (\_ls\_qsize == 0 || !\_ls\_q) \{                                               \(\backslash\)}
+00278 \textcolor{preprocessor}{            \_ls\_e = \_ls\_p; UTLIST\_SV(\_ls\_p,list); \_ls\_p =                                      \(\backslash\)}
+00279 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_p,list,next); UTLIST\_RS(list); \_ls\_psize--;                      \(\backslash\)}
+00280 \textcolor{preprocessor}{            if (\_ls\_p == \_ls\_oldhead) \{ \_ls\_p = NULL; \}                                        \(\backslash\)}
+00281 \textcolor{preprocessor}{          \} else if (cmp(\_ls\_p,\_ls\_q) <= 0) \{                                                  \(\backslash\)}
+00282 \textcolor{preprocessor}{            \_ls\_e = \_ls\_p; UTLIST\_SV(\_ls\_p,list); \_ls\_p =                                      \(\backslash\)}
+00283 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_p,list,next); UTLIST\_RS(list); \_ls\_psize--;                      \(\backslash\)}
+00284 \textcolor{preprocessor}{            if (\_ls\_p == \_ls\_oldhead) \{ \_ls\_p = NULL; \}                                        \(\backslash\)}
+00285 \textcolor{preprocessor}{          \} else \{                                                                             \(\backslash\)}
+00286 \textcolor{preprocessor}{            \_ls\_e = \_ls\_q; UTLIST\_SV(\_ls\_q,list); \_ls\_q =                                      \(\backslash\)}
+00287 \textcolor{preprocessor}{              UTLIST\_NEXT(\_ls\_q,list,next); UTLIST\_RS(list); \_ls\_qsize--;                      \(\backslash\)}
+00288 \textcolor{preprocessor}{            if (\_ls\_q == \_ls\_oldhead) \{ \_ls\_q = NULL; \}                                        \(\backslash\)}
+00289 \textcolor{preprocessor}{          \}                                                                                    \(\backslash\)}
+00290 \textcolor{preprocessor}{          if (\_ls\_tail) \{                                                                      \(\backslash\)}
+00291 \textcolor{preprocessor}{            UTLIST\_SV(\_ls\_tail,list); UTLIST\_NEXTASGN(\_ls\_tail,list,\_ls\_e,next); UTLIST\_RS(list); \(\backslash\)}
+00292 \textcolor{preprocessor}{          \} else \{                                                                             \(\backslash\)}
+00293 \textcolor{preprocessor}{            UTLIST\_CASTASGN(list,\_ls\_e);                                                       \(\backslash\)}
+00294 \textcolor{preprocessor}{          \}                                                                                    \(\backslash\)}
+00295 \textcolor{preprocessor}{          UTLIST\_SV(\_ls\_e,list); UTLIST\_PREVASGN(\_ls\_e,list,\_ls\_tail,prev); UTLIST\_RS(list);   \(\backslash\)}
+00296 \textcolor{preprocessor}{          \_ls\_tail = \_ls\_e;                                                                    \(\backslash\)}
+00297 \textcolor{preprocessor}{        \}                                                                                      \(\backslash\)}
+00298 \textcolor{preprocessor}{        \_ls\_p = \_ls\_q;                                                                         \(\backslash\)}
+00299 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00300 \textcolor{preprocessor}{      UTLIST\_CASTASGN((list)->prev,\_ls\_tail);                                                  \(\backslash\)}
+00301 \textcolor{preprocessor}{      UTLIST\_CASTASGN(\_tmp,list);                                                              \(\backslash\)}
+00302 \textcolor{preprocessor}{      UTLIST\_SV(\_ls\_tail,list); UTLIST\_NEXTASGN(\_ls\_tail,list,\_tmp,next); UTLIST\_RS(list);     \(\backslash\)}
+00303 \textcolor{preprocessor}{      if (\_ls\_nmerges <= 1) \{                                                                  \(\backslash\)}
+00304 \textcolor{preprocessor}{        \_ls\_looping=0;                                                                         \(\backslash\)}
+00305 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00306 \textcolor{preprocessor}{      \_ls\_insize *= 2;                                                                         \(\backslash\)}
+00307 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00308 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00309 \textcolor{preprocessor}{\} while (0)}
+00310 
+00311 \textcolor{comment}{/******************************************************************************}
+00312 \textcolor{comment}{ * singly linked list macros (non-circular)                                   *}
+00313 \textcolor{comment}{ *****************************************************************************/}
+00314 \textcolor{preprocessor}{#define LL\_PREPEND(head,add)                                                                   \(\backslash\)}
+00315 \textcolor{preprocessor}{    LL\_PREPEND2(head,add,next)}
+00316 
+00317 \textcolor{preprocessor}{#define LL\_PREPEND2(head,add,next)                                                             \(\backslash\)}
+00318 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00319 \textcolor{preprocessor}{  (add)->next = (head);                                                                        \(\backslash\)}
+00320 \textcolor{preprocessor}{  (head) = (add);                                                                              \(\backslash\)}
+00321 \textcolor{preprocessor}{\} while (0)}
+00322 
+00323 \textcolor{preprocessor}{#define LL\_CONCAT(head1,head2)                                                                 \(\backslash\)}
+00324 \textcolor{preprocessor}{    LL\_CONCAT2(head1,head2,next)}
+00325 
+00326 \textcolor{preprocessor}{#define LL\_CONCAT2(head1,head2,next)                                                           \(\backslash\)}
+00327 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00328 \textcolor{preprocessor}{  LDECLTYPE(head1) \_tmp;                                                                       \(\backslash\)}
+00329 \textcolor{preprocessor}{  if (head1) \{                                                                                 \(\backslash\)}
+00330 \textcolor{preprocessor}{    \_tmp = (head1);                                                                            \(\backslash\)}
+00331 \textcolor{preprocessor}{    while (\_tmp->next) \{ \_tmp = \_tmp->next; \}                                                  \(\backslash\)}
+00332 \textcolor{preprocessor}{    \_tmp->next=(head2);                                                                        \(\backslash\)}
+00333 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00334 \textcolor{preprocessor}{    (head1)=(head2);                                                                           \(\backslash\)}
+00335 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00336 \textcolor{preprocessor}{\} while (0)}
+00337 
+00338 \textcolor{preprocessor}{#define LL\_APPEND(head,add)                                                                    \(\backslash\)}
+00339 \textcolor{preprocessor}{    LL\_APPEND2(head,add,next)}
+00340 
+00341 \textcolor{preprocessor}{#define LL\_APPEND2(head,add,next)                                                              \(\backslash\)}
+00342 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00343 \textcolor{preprocessor}{  LDECLTYPE(head) \_tmp;                                                                        \(\backslash\)}
+00344 \textcolor{preprocessor}{  (add)->next=NULL;                                                                            \(\backslash\)}
+00345 \textcolor{preprocessor}{  if (head) \{                                                                                  \(\backslash\)}
+00346 \textcolor{preprocessor}{    \_tmp = (head);                                                                             \(\backslash\)}
+00347 \textcolor{preprocessor}{    while (\_tmp->next) \{ \_tmp = \_tmp->next; \}                                                  \(\backslash\)}
+00348 \textcolor{preprocessor}{    \_tmp->next=(add);                                                                          \(\backslash\)}
+00349 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00350 \textcolor{preprocessor}{    (head)=(add);                                                                              \(\backslash\)}
+00351 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00352 \textcolor{preprocessor}{\} while (0)}
+00353 
+00354 \textcolor{preprocessor}{#define LL\_INSERT\_INORDER(head,add,cmp)                                                        \(\backslash\)}
+00355 \textcolor{preprocessor}{    LL\_INSERT\_INORDER2(head,add,cmp,next)}
+00356 
+00357 \textcolor{preprocessor}{#define LL\_INSERT\_INORDER2(head,add,cmp,next)                                                  \(\backslash\)}
+00358 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00359 \textcolor{preprocessor}{  LDECLTYPE(head) \_tmp;                                                                        \(\backslash\)}
+00360 \textcolor{preprocessor}{  if (head) \{                                                                                  \(\backslash\)}
+00361 \textcolor{preprocessor}{    LL\_LOWER\_BOUND2(head, \_tmp, add, cmp, next);                                               \(\backslash\)}
+00362 \textcolor{preprocessor}{    LL\_APPEND\_ELEM2(head, \_tmp, add, next);                                                    \(\backslash\)}
+00363 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00364 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+00365 \textcolor{preprocessor}{    (head)->next = NULL;                                                                       \(\backslash\)}
+00366 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00367 \textcolor{preprocessor}{\} while (0)}
+00368 
+00369 \textcolor{preprocessor}{#define LL\_LOWER\_BOUND(head,elt,like,cmp)                                                      \(\backslash\)}
+00370 \textcolor{preprocessor}{    LL\_LOWER\_BOUND2(head,elt,like,cmp,next)}
+00371 
+00372 \textcolor{preprocessor}{#define LL\_LOWER\_BOUND2(head,elt,like,cmp,next)                                                \(\backslash\)}
+00373 \textcolor{preprocessor}{  do \{                                                                                         \(\backslash\)}
+00374 \textcolor{preprocessor}{    if ((head) == NULL || (cmp(head, like)) >= 0) \{                                            \(\backslash\)}
+00375 \textcolor{preprocessor}{      (elt) = NULL;                                                                            \(\backslash\)}
+00376 \textcolor{preprocessor}{    \} else \{                                                                                   \(\backslash\)}
+00377 \textcolor{preprocessor}{      for ((elt) = (head); (elt)->next != NULL; (elt) = (elt)->next) \{                         \(\backslash\)}
+00378 \textcolor{preprocessor}{        if (cmp((elt)->next, like) >= 0) \{                                                     \(\backslash\)}
+00379 \textcolor{preprocessor}{          break;                                                                               \(\backslash\)}
+00380 \textcolor{preprocessor}{        \}                                                                                      \(\backslash\)}
+00381 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00382 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00383 \textcolor{preprocessor}{  \} while (0)}
+00384 
+00385 \textcolor{preprocessor}{#define LL\_DELETE(head,del)                                                                    \(\backslash\)}
+00386 \textcolor{preprocessor}{    LL\_DELETE2(head,del,next)}
+00387 
+00388 \textcolor{preprocessor}{#define LL\_DELETE2(head,del,next)                                                              \(\backslash\)}
+00389 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00390 \textcolor{preprocessor}{  LDECLTYPE(head) \_tmp;                                                                        \(\backslash\)}
+00391 \textcolor{preprocessor}{  if ((head) == (del)) \{                                                                       \(\backslash\)}
+00392 \textcolor{preprocessor}{    (head)=(head)->next;                                                                       \(\backslash\)}
+00393 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00394 \textcolor{preprocessor}{    \_tmp = (head);                                                                             \(\backslash\)}
+00395 \textcolor{preprocessor}{    while (\_tmp->next && (\_tmp->next != (del))) \{                                              \(\backslash\)}
+00396 \textcolor{preprocessor}{      \_tmp = \_tmp->next;                                                                       \(\backslash\)}
+00397 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00398 \textcolor{preprocessor}{    if (\_tmp->next) \{                                                                          \(\backslash\)}
+00399 \textcolor{preprocessor}{      \_tmp->next = (del)->next;                                                                \(\backslash\)}
+00400 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00401 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00402 \textcolor{preprocessor}{\} while (0)}
+00403 
+00404 \textcolor{preprocessor}{#define LL\_COUNT(head,el,counter)                                                              \(\backslash\)}
+00405 \textcolor{preprocessor}{    LL\_COUNT2(head,el,counter,next)                                                            \(\backslash\)}
+00406 \textcolor{preprocessor}{}
+00407 \textcolor{preprocessor}{#define LL\_COUNT2(head,el,counter,next)                                                        \(\backslash\)}
+00408 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00409 \textcolor{preprocessor}{  (counter) = 0;                                                                               \(\backslash\)}
+00410 \textcolor{preprocessor}{  LL\_FOREACH2(head,el,next) \{ ++(counter); \}                                                   \(\backslash\)}
+00411 \textcolor{preprocessor}{\} while (0)}
+00412 
+00413 \textcolor{preprocessor}{#define LL\_FOREACH(head,el)                                                                    \(\backslash\)}
+00414 \textcolor{preprocessor}{    LL\_FOREACH2(head,el,next)}
+00415 
+00416 \textcolor{preprocessor}{#define LL\_FOREACH2(head,el,next)                                                              \(\backslash\)}
+00417 \textcolor{preprocessor}{    for ((el) = (head); el; (el) = (el)->next)}
+00418 
+00419 \textcolor{preprocessor}{#define LL\_FOREACH\_SAFE(head,el,tmp)                                                           \(\backslash\)}
+00420 \textcolor{preprocessor}{    LL\_FOREACH\_SAFE2(head,el,tmp,next)}
+00421 
+00422 \textcolor{preprocessor}{#define LL\_FOREACH\_SAFE2(head,el,tmp,next)                                                     \(\backslash\)}
+00423 \textcolor{preprocessor}{  for ((el) = (head); (el) && ((tmp) = (el)->next, 1); (el) = (tmp))}
+00424 
+00425 \textcolor{preprocessor}{#define LL\_SEARCH\_SCALAR(head,out,field,val)                                                   \(\backslash\)}
+00426 \textcolor{preprocessor}{    LL\_SEARCH\_SCALAR2(head,out,field,val,next)}
+00427 
+00428 \textcolor{preprocessor}{#define LL\_SEARCH\_SCALAR2(head,out,field,val,next)                                             \(\backslash\)}
+00429 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00430 \textcolor{preprocessor}{    LL\_FOREACH2(head,out,next) \{                                                               \(\backslash\)}
+00431 \textcolor{preprocessor}{      if ((out)->field == (val)) break;                                                        \(\backslash\)}
+00432 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00433 \textcolor{preprocessor}{\} while (0)}
+00434 
+00435 \textcolor{preprocessor}{#define LL\_SEARCH(head,out,elt,cmp)                                                            \(\backslash\)}
+00436 \textcolor{preprocessor}{    LL\_SEARCH2(head,out,elt,cmp,next)}
+00437 
+00438 \textcolor{preprocessor}{#define LL\_SEARCH2(head,out,elt,cmp,next)                                                      \(\backslash\)}
+00439 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00440 \textcolor{preprocessor}{    LL\_FOREACH2(head,out,next) \{                                                               \(\backslash\)}
+00441 \textcolor{preprocessor}{      if ((cmp(out,elt))==0) break;                                                            \(\backslash\)}
+00442 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00443 \textcolor{preprocessor}{\} while (0)}
+00444 
+00445 \textcolor{preprocessor}{#define LL\_REPLACE\_ELEM2(head, el, add, next)                                                  \(\backslash\)}
+00446 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00447 \textcolor{preprocessor}{ LDECLTYPE(head) \_tmp;                                                                         \(\backslash\)}
+00448 \textcolor{preprocessor}{ assert((head) != NULL);                                                                       \(\backslash\)}
+00449 \textcolor{preprocessor}{ assert((el) != NULL);                                                                         \(\backslash\)}
+00450 \textcolor{preprocessor}{ assert((add) != NULL);                                                                        \(\backslash\)}
+00451 \textcolor{preprocessor}{ (add)->next = (el)->next;                                                                     \(\backslash\)}
+00452 \textcolor{preprocessor}{ if ((head) == (el)) \{                                                                         \(\backslash\)}
+00453 \textcolor{preprocessor}{  (head) = (add);                                                                              \(\backslash\)}
+00454 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00455 \textcolor{preprocessor}{  \_tmp = (head);                                                                               \(\backslash\)}
+00456 \textcolor{preprocessor}{  while (\_tmp->next && (\_tmp->next != (el))) \{                                                 \(\backslash\)}
+00457 \textcolor{preprocessor}{   \_tmp = \_tmp->next;                                                                          \(\backslash\)}
+00458 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00459 \textcolor{preprocessor}{  if (\_tmp->next) \{                                                                            \(\backslash\)}
+00460 \textcolor{preprocessor}{    \_tmp->next = (add);                                                                        \(\backslash\)}
+00461 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00462 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00463 \textcolor{preprocessor}{\} while (0)}
+00464 
+00465 \textcolor{preprocessor}{#define LL\_REPLACE\_ELEM(head, el, add)                                                         \(\backslash\)}
+00466 \textcolor{preprocessor}{    LL\_REPLACE\_ELEM2(head, el, add, next)}
+00467 
+00468 \textcolor{preprocessor}{#define LL\_PREPEND\_ELEM2(head, el, add, next)                                                  \(\backslash\)}
+00469 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00470 \textcolor{preprocessor}{ if (el) \{                                                                                     \(\backslash\)}
+00471 \textcolor{preprocessor}{  LDECLTYPE(head) \_tmp;                                                                        \(\backslash\)}
+00472 \textcolor{preprocessor}{  assert((head) != NULL);                                                                      \(\backslash\)}
+00473 \textcolor{preprocessor}{  assert((add) != NULL);                                                                       \(\backslash\)}
+00474 \textcolor{preprocessor}{  (add)->next = (el);                                                                          \(\backslash\)}
+00475 \textcolor{preprocessor}{  if ((head) == (el)) \{                                                                        \(\backslash\)}
+00476 \textcolor{preprocessor}{   (head) = (add);                                                                             \(\backslash\)}
+00477 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00478 \textcolor{preprocessor}{   \_tmp = (head);                                                                              \(\backslash\)}
+00479 \textcolor{preprocessor}{   while (\_tmp->next && (\_tmp->next != (el))) \{                                                \(\backslash\)}
+00480 \textcolor{preprocessor}{    \_tmp = \_tmp->next;                                                                         \(\backslash\)}
+00481 \textcolor{preprocessor}{   \}                                                                                           \(\backslash\)}
+00482 \textcolor{preprocessor}{   if (\_tmp->next) \{                                                                           \(\backslash\)}
+00483 \textcolor{preprocessor}{     \_tmp->next = (add);                                                                       \(\backslash\)}
+00484 \textcolor{preprocessor}{   \}                                                                                           \(\backslash\)}
+00485 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00486 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00487 \textcolor{preprocessor}{  LL\_APPEND2(head, add, next);                                                                 \(\backslash\)}
+00488 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00489 \textcolor{preprocessor}{\} while (0)                                                                                    \(\backslash\)}
+00490 \textcolor{preprocessor}{}
+00491 \textcolor{preprocessor}{#define LL\_PREPEND\_ELEM(head, el, add)                                                         \(\backslash\)}
+00492 \textcolor{preprocessor}{    LL\_PREPEND\_ELEM2(head, el, add, next)}
+00493 
+00494 \textcolor{preprocessor}{#define LL\_APPEND\_ELEM2(head, el, add, next)                                                   \(\backslash\)}
+00495 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00496 \textcolor{preprocessor}{ if (el) \{                                                                                     \(\backslash\)}
+00497 \textcolor{preprocessor}{  assert((head) != NULL);                                                                      \(\backslash\)}
+00498 \textcolor{preprocessor}{  assert((add) != NULL);                                                                       \(\backslash\)}
+00499 \textcolor{preprocessor}{  (add)->next = (el)->next;                                                                    \(\backslash\)}
+00500 \textcolor{preprocessor}{  (el)->next = (add);                                                                          \(\backslash\)}
+00501 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00502 \textcolor{preprocessor}{  LL\_PREPEND2(head, add, next);                                                                \(\backslash\)}
+00503 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00504 \textcolor{preprocessor}{\} while (0)                                                                                    \(\backslash\)}
+00505 \textcolor{preprocessor}{}
+00506 \textcolor{preprocessor}{#define LL\_APPEND\_ELEM(head, el, add)                                                          \(\backslash\)}
+00507 \textcolor{preprocessor}{    LL\_APPEND\_ELEM2(head, el, add, next)}
+00508 
+00509 \textcolor{preprocessor}{#ifdef NO\_DECLTYPE}
+00510 \textcolor{comment}{/* Here are VS2008 / NO\_DECLTYPE replacements for a few functions */}
+00511 
+00512 \textcolor{preprocessor}{#undef LL\_CONCAT2}
+00513 \textcolor{preprocessor}{#define LL\_CONCAT2(head1,head2,next)                                                           \(\backslash\)}
+00514 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00515 \textcolor{preprocessor}{  char *\_tmp;                                                                                  \(\backslash\)}
+00516 \textcolor{preprocessor}{  if (head1) \{                                                                                 \(\backslash\)}
+00517 \textcolor{preprocessor}{    \_tmp = (char*)(head1);                                                                     \(\backslash\)}
+00518 \textcolor{preprocessor}{    while ((head1)->next) \{ (head1) = (head1)->next; \}                                         \(\backslash\)}
+00519 \textcolor{preprocessor}{    (head1)->next = (head2);                                                                   \(\backslash\)}
+00520 \textcolor{preprocessor}{    UTLIST\_RS(head1);                                                                          \(\backslash\)}
+00521 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00522 \textcolor{preprocessor}{    (head1)=(head2);                                                                           \(\backslash\)}
+00523 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00524 \textcolor{preprocessor}{\} while (0)}
+00525 
+00526 \textcolor{preprocessor}{#undef LL\_APPEND2}
+00527 \textcolor{preprocessor}{#define LL\_APPEND2(head,add,next)                                                              \(\backslash\)}
+00528 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00529 \textcolor{preprocessor}{  if (head) \{                                                                                  \(\backslash\)}
+00530 \textcolor{preprocessor}{    (add)->next = head;     }\textcolor{comment}{/* use add->next as a temp variable */}\textcolor{preprocessor}{                             \(\backslash\)}
+00531 \textcolor{preprocessor}{    while ((add)->next->next) \{ (add)->next = (add)->next->next; \}                             \(\backslash\)}
+00532 \textcolor{preprocessor}{    (add)->next->next=(add);                                                                   \(\backslash\)}
+00533 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00534 \textcolor{preprocessor}{    (head)=(add);                                                                              \(\backslash\)}
+00535 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00536 \textcolor{preprocessor}{  (add)->next=NULL;                                                                            \(\backslash\)}
+00537 \textcolor{preprocessor}{\} while (0)}
+00538 
+00539 \textcolor{preprocessor}{#undef LL\_INSERT\_INORDER2}
+00540 \textcolor{preprocessor}{#define LL\_INSERT\_INORDER2(head,add,cmp,next)                                                  \(\backslash\)}
+00541 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00542 \textcolor{preprocessor}{  if ((head) == NULL || (cmp(head, add)) >= 0) \{                                               \(\backslash\)}
+00543 \textcolor{preprocessor}{    (add)->next = (head);                                                                      \(\backslash\)}
+00544 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+00545 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00546 \textcolor{preprocessor}{    char *\_tmp = (char*)(head);                                                                \(\backslash\)}
+00547 \textcolor{preprocessor}{    while ((head)->next != NULL && (cmp((head)->next, add)) < 0) \{                             \(\backslash\)}
+00548 \textcolor{preprocessor}{      (head) = (head)->next;                                                                   \(\backslash\)}
+00549 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00550 \textcolor{preprocessor}{    (add)->next = (head)->next;                                                                \(\backslash\)}
+00551 \textcolor{preprocessor}{    (head)->next = (add);                                                                      \(\backslash\)}
+00552 \textcolor{preprocessor}{    UTLIST\_RS(head);                                                                           \(\backslash\)}
+00553 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00554 \textcolor{preprocessor}{\} while (0)}
+00555 
+00556 \textcolor{preprocessor}{#undef LL\_DELETE2}
+00557 \textcolor{preprocessor}{#define LL\_DELETE2(head,del,next)                                                              \(\backslash\)}
+00558 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00559 \textcolor{preprocessor}{  if ((head) == (del)) \{                                                                       \(\backslash\)}
+00560 \textcolor{preprocessor}{    (head)=(head)->next;                                                                       \(\backslash\)}
+00561 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00562 \textcolor{preprocessor}{    char *\_tmp = (char*)(head);                                                                \(\backslash\)}
+00563 \textcolor{preprocessor}{    while ((head)->next && ((head)->next != (del))) \{                                          \(\backslash\)}
+00564 \textcolor{preprocessor}{      (head) = (head)->next;                                                                   \(\backslash\)}
+00565 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00566 \textcolor{preprocessor}{    if ((head)->next) \{                                                                        \(\backslash\)}
+00567 \textcolor{preprocessor}{      (head)->next = ((del)->next);                                                            \(\backslash\)}
+00568 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00569 \textcolor{preprocessor}{    UTLIST\_RS(head);                                                                           \(\backslash\)}
+00570 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00571 \textcolor{preprocessor}{\} while (0)}
+00572 
+00573 \textcolor{preprocessor}{#undef LL\_REPLACE\_ELEM2}
+00574 \textcolor{preprocessor}{#define LL\_REPLACE\_ELEM2(head, el, add, next)                                                  \(\backslash\)}
+00575 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00576 \textcolor{preprocessor}{  assert((head) != NULL);                                                                      \(\backslash\)}
+00577 \textcolor{preprocessor}{  assert((el) != NULL);                                                                        \(\backslash\)}
+00578 \textcolor{preprocessor}{  assert((add) != NULL);                                                                       \(\backslash\)}
+00579 \textcolor{preprocessor}{  if ((head) == (el)) \{                                                                        \(\backslash\)}
+00580 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+00581 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00582 \textcolor{preprocessor}{    (add)->next = head;                                                                        \(\backslash\)}
+00583 \textcolor{preprocessor}{    while ((add)->next->next && ((add)->next->next != (el))) \{                                 \(\backslash\)}
+00584 \textcolor{preprocessor}{      (add)->next = (add)->next->next;                                                         \(\backslash\)}
+00585 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00586 \textcolor{preprocessor}{    if ((add)->next->next) \{                                                                   \(\backslash\)}
+00587 \textcolor{preprocessor}{      (add)->next->next = (add);                                                               \(\backslash\)}
+00588 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00589 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00590 \textcolor{preprocessor}{  (add)->next = (el)->next;                                                                    \(\backslash\)}
+00591 \textcolor{preprocessor}{\} while (0)}
+00592 
+00593 \textcolor{preprocessor}{#undef LL\_PREPEND\_ELEM2}
+00594 \textcolor{preprocessor}{#define LL\_PREPEND\_ELEM2(head, el, add, next)                                                  \(\backslash\)}
+00595 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00596 \textcolor{preprocessor}{  if (el) \{                                                                                    \(\backslash\)}
+00597 \textcolor{preprocessor}{    assert((head) != NULL);                                                                    \(\backslash\)}
+00598 \textcolor{preprocessor}{    assert((add) != NULL);                                                                     \(\backslash\)}
+00599 \textcolor{preprocessor}{    if ((head) == (el)) \{                                                                      \(\backslash\)}
+00600 \textcolor{preprocessor}{      (head) = (add);                                                                          \(\backslash\)}
+00601 \textcolor{preprocessor}{    \} else \{                                                                                   \(\backslash\)}
+00602 \textcolor{preprocessor}{      (add)->next = (head);                                                                    \(\backslash\)}
+00603 \textcolor{preprocessor}{      while ((add)->next->next && ((add)->next->next != (el))) \{                               \(\backslash\)}
+00604 \textcolor{preprocessor}{        (add)->next = (add)->next->next;                                                       \(\backslash\)}
+00605 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00606 \textcolor{preprocessor}{      if ((add)->next->next) \{                                                                 \(\backslash\)}
+00607 \textcolor{preprocessor}{        (add)->next->next = (add);                                                             \(\backslash\)}
+00608 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00609 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00610 \textcolor{preprocessor}{    (add)->next = (el);                                                                        \(\backslash\)}
+00611 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00612 \textcolor{preprocessor}{    LL\_APPEND2(head, add, next);                                                               \(\backslash\)}
+00613 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00614 \textcolor{preprocessor}{\} while (0)                                                                                    \(\backslash\)}
+00615 \textcolor{preprocessor}{}
+00616 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* NO\_DECLTYPE */}\textcolor{preprocessor}{}
+00617 
+00618 \textcolor{comment}{/******************************************************************************}
+00619 \textcolor{comment}{ * doubly linked list macros (non-circular)                                   *}
+00620 \textcolor{comment}{ *****************************************************************************/}
+00621 \textcolor{preprocessor}{#define DL\_PREPEND(head,add)                                                                   \(\backslash\)}
+00622 \textcolor{preprocessor}{    DL\_PREPEND2(head,add,prev,next)}
+00623 
+00624 \textcolor{preprocessor}{#define DL\_PREPEND2(head,add,prev,next)                                                        \(\backslash\)}
+00625 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00626 \textcolor{preprocessor}{ (add)->next = (head);                                                                         \(\backslash\)}
+00627 \textcolor{preprocessor}{ if (head) \{                                                                                   \(\backslash\)}
+00628 \textcolor{preprocessor}{   (add)->prev = (head)->prev;                                                                 \(\backslash\)}
+00629 \textcolor{preprocessor}{   (head)->prev = (add);                                                                       \(\backslash\)}
+00630 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00631 \textcolor{preprocessor}{   (add)->prev = (add);                                                                        \(\backslash\)}
+00632 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00633 \textcolor{preprocessor}{ (head) = (add);                                                                               \(\backslash\)}
+00634 \textcolor{preprocessor}{\} while (0)}
+00635 
+00636 \textcolor{preprocessor}{#define DL\_APPEND(head,add)                                                                    \(\backslash\)}
+00637 \textcolor{preprocessor}{    DL\_APPEND2(head,add,prev,next)}
+00638 
+00639 \textcolor{preprocessor}{#define DL\_APPEND2(head,add,prev,next)                                                         \(\backslash\)}
+00640 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00641 \textcolor{preprocessor}{  if (head) \{                                                                                  \(\backslash\)}
+00642 \textcolor{preprocessor}{      (add)->prev = (head)->prev;                                                              \(\backslash\)}
+00643 \textcolor{preprocessor}{      (head)->prev->next = (add);                                                              \(\backslash\)}
+00644 \textcolor{preprocessor}{      (head)->prev = (add);                                                                    \(\backslash\)}
+00645 \textcolor{preprocessor}{      (add)->next = NULL;                                                                      \(\backslash\)}
+00646 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00647 \textcolor{preprocessor}{      (head)=(add);                                                                            \(\backslash\)}
+00648 \textcolor{preprocessor}{      (head)->prev = (head);                                                                   \(\backslash\)}
+00649 \textcolor{preprocessor}{      (head)->next = NULL;                                                                     \(\backslash\)}
+00650 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00651 \textcolor{preprocessor}{\} while (0)}
+00652 
+00653 \textcolor{preprocessor}{#define DL\_INSERT\_INORDER(head,add,cmp)                                                        \(\backslash\)}
+00654 \textcolor{preprocessor}{    DL\_INSERT\_INORDER2(head,add,cmp,prev,next)}
+00655 
+00656 \textcolor{preprocessor}{#define DL\_INSERT\_INORDER2(head,add,cmp,prev,next)                                             \(\backslash\)}
+00657 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00658 \textcolor{preprocessor}{  LDECLTYPE(head) \_tmp;                                                                        \(\backslash\)}
+00659 \textcolor{preprocessor}{  if (head) \{                                                                                  \(\backslash\)}
+00660 \textcolor{preprocessor}{    DL\_LOWER\_BOUND2(head, \_tmp, add, cmp, next);                                               \(\backslash\)}
+00661 \textcolor{preprocessor}{    DL\_APPEND\_ELEM2(head, \_tmp, add, prev, next);                                              \(\backslash\)}
+00662 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00663 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+00664 \textcolor{preprocessor}{    (head)->prev = (head);                                                                     \(\backslash\)}
+00665 \textcolor{preprocessor}{    (head)->next = NULL;                                                                       \(\backslash\)}
+00666 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00667 \textcolor{preprocessor}{\} while (0)}
+00668 
+00669 \textcolor{preprocessor}{#define DL\_LOWER\_BOUND(head,elt,like,cmp)                                                      \(\backslash\)}
+00670 \textcolor{preprocessor}{    DL\_LOWER\_BOUND2(head,elt,like,cmp,next)}
+00671 
+00672 \textcolor{preprocessor}{#define DL\_LOWER\_BOUND2(head,elt,like,cmp,next)                                                \(\backslash\)}
+00673 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00674 \textcolor{preprocessor}{  if ((head) == NULL || (cmp(head, like)) >= 0) \{                                              \(\backslash\)}
+00675 \textcolor{preprocessor}{    (elt) = NULL;                                                                              \(\backslash\)}
+00676 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00677 \textcolor{preprocessor}{    for ((elt) = (head); (elt)->next != NULL; (elt) = (elt)->next) \{                           \(\backslash\)}
+00678 \textcolor{preprocessor}{      if ((cmp((elt)->next, like)) >= 0) \{                                                     \(\backslash\)}
+00679 \textcolor{preprocessor}{        break;                                                                                 \(\backslash\)}
+00680 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00681 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00682 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00683 \textcolor{preprocessor}{\} while (0)}
+00684 
+00685 \textcolor{preprocessor}{#define DL\_CONCAT(head1,head2)                                                                 \(\backslash\)}
+00686 \textcolor{preprocessor}{    DL\_CONCAT2(head1,head2,prev,next)}
+00687 
+00688 \textcolor{preprocessor}{#define DL\_CONCAT2(head1,head2,prev,next)                                                      \(\backslash\)}
+00689 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00690 \textcolor{preprocessor}{  LDECLTYPE(head1) \_tmp;                                                                       \(\backslash\)}
+00691 \textcolor{preprocessor}{  if (head2) \{                                                                                 \(\backslash\)}
+00692 \textcolor{preprocessor}{    if (head1) \{                                                                               \(\backslash\)}
+00693 \textcolor{preprocessor}{        UTLIST\_CASTASGN(\_tmp, (head2)->prev);                                                  \(\backslash\)}
+00694 \textcolor{preprocessor}{        (head2)->prev = (head1)->prev;                                                         \(\backslash\)}
+00695 \textcolor{preprocessor}{        (head1)->prev->next = (head2);                                                         \(\backslash\)}
+00696 \textcolor{preprocessor}{        UTLIST\_CASTASGN((head1)->prev, \_tmp);                                                  \(\backslash\)}
+00697 \textcolor{preprocessor}{    \} else \{                                                                                   \(\backslash\)}
+00698 \textcolor{preprocessor}{        (head1)=(head2);                                                                       \(\backslash\)}
+00699 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00700 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00701 \textcolor{preprocessor}{\} while (0)}
+00702 
+00703 \textcolor{preprocessor}{#define DL\_DELETE(head,del)                                                                    \(\backslash\)}
+00704 \textcolor{preprocessor}{    DL\_DELETE2(head,del,prev,next)}
+00705 
+00706 \textcolor{preprocessor}{#define DL\_DELETE2(head,del,prev,next)                                                         \(\backslash\)}
+00707 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00708 \textcolor{preprocessor}{  assert((head) != NULL);                                                                      \(\backslash\)}
+00709 \textcolor{preprocessor}{  assert((del)->prev != NULL);                                                                 \(\backslash\)}
+00710 \textcolor{preprocessor}{  if ((del)->prev == (del)) \{                                                                  \(\backslash\)}
+00711 \textcolor{preprocessor}{      (head)=NULL;                                                                             \(\backslash\)}
+00712 \textcolor{preprocessor}{  \} else if ((del)==(head)) \{                                                                  \(\backslash\)}
+00713 \textcolor{preprocessor}{      (del)->next->prev = (del)->prev;                                                         \(\backslash\)}
+00714 \textcolor{preprocessor}{      (head) = (del)->next;                                                                    \(\backslash\)}
+00715 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00716 \textcolor{preprocessor}{      (del)->prev->next = (del)->next;                                                         \(\backslash\)}
+00717 \textcolor{preprocessor}{      if ((del)->next) \{                                                                       \(\backslash\)}
+00718 \textcolor{preprocessor}{          (del)->next->prev = (del)->prev;                                                     \(\backslash\)}
+00719 \textcolor{preprocessor}{      \} else \{                                                                                 \(\backslash\)}
+00720 \textcolor{preprocessor}{          (head)->prev = (del)->prev;                                                          \(\backslash\)}
+00721 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00722 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00723 \textcolor{preprocessor}{\} while (0)}
+00724 
+00725 \textcolor{preprocessor}{#define DL\_COUNT(head,el,counter)                                                              \(\backslash\)}
+00726 \textcolor{preprocessor}{    DL\_COUNT2(head,el,counter,next)                                                            \(\backslash\)}
+00727 \textcolor{preprocessor}{}
+00728 \textcolor{preprocessor}{#define DL\_COUNT2(head,el,counter,next)                                                        \(\backslash\)}
+00729 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00730 \textcolor{preprocessor}{  (counter) = 0;                                                                               \(\backslash\)}
+00731 \textcolor{preprocessor}{  DL\_FOREACH2(head,el,next) \{ ++(counter); \}                                                   \(\backslash\)}
+00732 \textcolor{preprocessor}{\} while (0)}
+00733 
+00734 \textcolor{preprocessor}{#define DL\_FOREACH(head,el)                                                                    \(\backslash\)}
+00735 \textcolor{preprocessor}{    DL\_FOREACH2(head,el,next)}
+00736 
+00737 \textcolor{preprocessor}{#define DL\_FOREACH2(head,el,next)                                                              \(\backslash\)}
+00738 \textcolor{preprocessor}{    for ((el) = (head); el; (el) = (el)->next)}
+00739 
+00740 \textcolor{comment}{/* this version is safe for deleting the elements during iteration */}
+00741 \textcolor{preprocessor}{#define DL\_FOREACH\_SAFE(head,el,tmp)                                                           \(\backslash\)}
+00742 \textcolor{preprocessor}{    DL\_FOREACH\_SAFE2(head,el,tmp,next)}
+00743 
+00744 \textcolor{preprocessor}{#define DL\_FOREACH\_SAFE2(head,el,tmp,next)                                                     \(\backslash\)}
+00745 \textcolor{preprocessor}{  for ((el) = (head); (el) && ((tmp) = (el)->next, 1); (el) = (tmp))}
+00746 
+00747 \textcolor{comment}{/* these are identical to their singly-linked list counterparts */}
+00748 \textcolor{preprocessor}{#define DL\_SEARCH\_SCALAR LL\_SEARCH\_SCALAR}
+00749 \textcolor{preprocessor}{#define DL\_SEARCH LL\_SEARCH}
+00750 \textcolor{preprocessor}{#define DL\_SEARCH\_SCALAR2 LL\_SEARCH\_SCALAR2}
+00751 \textcolor{preprocessor}{#define DL\_SEARCH2 LL\_SEARCH2}
+00752 
+00753 \textcolor{preprocessor}{#define DL\_REPLACE\_ELEM2(head, el, add, prev, next)                                            \(\backslash\)}
+00754 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00755 \textcolor{preprocessor}{ assert((head) != NULL);                                                                       \(\backslash\)}
+00756 \textcolor{preprocessor}{ assert((el) != NULL);                                                                         \(\backslash\)}
+00757 \textcolor{preprocessor}{ assert((add) != NULL);                                                                        \(\backslash\)}
+00758 \textcolor{preprocessor}{ if ((head) == (el)) \{                                                                         \(\backslash\)}
+00759 \textcolor{preprocessor}{  (head) = (add);                                                                              \(\backslash\)}
+00760 \textcolor{preprocessor}{  (add)->next = (el)->next;                                                                    \(\backslash\)}
+00761 \textcolor{preprocessor}{  if ((el)->next == NULL) \{                                                                    \(\backslash\)}
+00762 \textcolor{preprocessor}{   (add)->prev = (add);                                                                        \(\backslash\)}
+00763 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00764 \textcolor{preprocessor}{   (add)->prev = (el)->prev;                                                                   \(\backslash\)}
+00765 \textcolor{preprocessor}{   (add)->next->prev = (add);                                                                  \(\backslash\)}
+00766 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00767 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00768 \textcolor{preprocessor}{  (add)->next = (el)->next;                                                                    \(\backslash\)}
+00769 \textcolor{preprocessor}{  (add)->prev = (el)->prev;                                                                    \(\backslash\)}
+00770 \textcolor{preprocessor}{  (add)->prev->next = (add);                                                                   \(\backslash\)}
+00771 \textcolor{preprocessor}{  if ((el)->next == NULL) \{                                                                    \(\backslash\)}
+00772 \textcolor{preprocessor}{   (head)->prev = (add);                                                                       \(\backslash\)}
+00773 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00774 \textcolor{preprocessor}{   (add)->next->prev = (add);                                                                  \(\backslash\)}
+00775 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00776 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00777 \textcolor{preprocessor}{\} while (0)}
+00778 
+00779 \textcolor{preprocessor}{#define DL\_REPLACE\_ELEM(head, el, add)                                                         \(\backslash\)}
+00780 \textcolor{preprocessor}{    DL\_REPLACE\_ELEM2(head, el, add, prev, next)}
+00781 
+00782 \textcolor{preprocessor}{#define DL\_PREPEND\_ELEM2(head, el, add, prev, next)                                            \(\backslash\)}
+00783 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00784 \textcolor{preprocessor}{ if (el) \{                                                                                     \(\backslash\)}
+00785 \textcolor{preprocessor}{  assert((head) != NULL);                                                                      \(\backslash\)}
+00786 \textcolor{preprocessor}{  assert((add) != NULL);                                                                       \(\backslash\)}
+00787 \textcolor{preprocessor}{  (add)->next = (el);                                                                          \(\backslash\)}
+00788 \textcolor{preprocessor}{  (add)->prev = (el)->prev;                                                                    \(\backslash\)}
+00789 \textcolor{preprocessor}{  (el)->prev = (add);                                                                          \(\backslash\)}
+00790 \textcolor{preprocessor}{  if ((head) == (el)) \{                                                                        \(\backslash\)}
+00791 \textcolor{preprocessor}{   (head) = (add);                                                                             \(\backslash\)}
+00792 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00793 \textcolor{preprocessor}{   (add)->prev->next = (add);                                                                  \(\backslash\)}
+00794 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00795 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00796 \textcolor{preprocessor}{  DL\_APPEND2(head, add, prev, next);                                                           \(\backslash\)}
+00797 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00798 \textcolor{preprocessor}{\} while (0)                                                                                    \(\backslash\)}
+00799 \textcolor{preprocessor}{}
+00800 \textcolor{preprocessor}{#define DL\_PREPEND\_ELEM(head, el, add)                                                         \(\backslash\)}
+00801 \textcolor{preprocessor}{    DL\_PREPEND\_ELEM2(head, el, add, prev, next)}
+00802 
+00803 \textcolor{preprocessor}{#define DL\_APPEND\_ELEM2(head, el, add, prev, next)                                             \(\backslash\)}
+00804 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00805 \textcolor{preprocessor}{ if (el) \{                                                                                     \(\backslash\)}
+00806 \textcolor{preprocessor}{  assert((head) != NULL);                                                                      \(\backslash\)}
+00807 \textcolor{preprocessor}{  assert((add) != NULL);                                                                       \(\backslash\)}
+00808 \textcolor{preprocessor}{  (add)->next = (el)->next;                                                                    \(\backslash\)}
+00809 \textcolor{preprocessor}{  (add)->prev = (el);                                                                          \(\backslash\)}
+00810 \textcolor{preprocessor}{  (el)->next = (add);                                                                          \(\backslash\)}
+00811 \textcolor{preprocessor}{  if ((add)->next) \{                                                                           \(\backslash\)}
+00812 \textcolor{preprocessor}{   (add)->next->prev = (add);                                                                  \(\backslash\)}
+00813 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00814 \textcolor{preprocessor}{   (head)->prev = (add);                                                                       \(\backslash\)}
+00815 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00816 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00817 \textcolor{preprocessor}{  DL\_PREPEND2(head, add, prev, next);                                                          \(\backslash\)}
+00818 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00819 \textcolor{preprocessor}{\} while (0)                                                                                    \(\backslash\)}
+00820 \textcolor{preprocessor}{}
+00821 \textcolor{preprocessor}{#define DL\_APPEND\_ELEM(head, el, add)                                                          \(\backslash\)}
+00822 \textcolor{preprocessor}{   DL\_APPEND\_ELEM2(head, el, add, prev, next)}
+00823 
+00824 \textcolor{preprocessor}{#ifdef NO\_DECLTYPE}
+00825 \textcolor{comment}{/* Here are VS2008 / NO\_DECLTYPE replacements for a few functions */}
+00826 
+00827 \textcolor{preprocessor}{#undef DL\_INSERT\_INORDER2}
+00828 \textcolor{preprocessor}{#define DL\_INSERT\_INORDER2(head,add,cmp,prev,next)                                             \(\backslash\)}
+00829 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00830 \textcolor{preprocessor}{  if ((head) == NULL) \{                                                                        \(\backslash\)}
+00831 \textcolor{preprocessor}{    (add)->prev = (add);                                                                       \(\backslash\)}
+00832 \textcolor{preprocessor}{    (add)->next = NULL;                                                                        \(\backslash\)}
+00833 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+00834 \textcolor{preprocessor}{  \} else if ((cmp(head, add)) >= 0) \{                                                          \(\backslash\)}
+00835 \textcolor{preprocessor}{    (add)->prev = (head)->prev;                                                                \(\backslash\)}
+00836 \textcolor{preprocessor}{    (add)->next = (head);                                                                      \(\backslash\)}
+00837 \textcolor{preprocessor}{    (head)->prev = (add);                                                                      \(\backslash\)}
+00838 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+00839 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00840 \textcolor{preprocessor}{    char *\_tmp = (char*)(head);                                                                \(\backslash\)}
+00841 \textcolor{preprocessor}{    while ((head)->next && (cmp((head)->next, add)) < 0) \{                                     \(\backslash\)}
+00842 \textcolor{preprocessor}{      (head) = (head)->next;                                                                   \(\backslash\)}
+00843 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00844 \textcolor{preprocessor}{    (add)->prev = (head);                                                                      \(\backslash\)}
+00845 \textcolor{preprocessor}{    (add)->next = (head)->next;                                                                \(\backslash\)}
+00846 \textcolor{preprocessor}{    (head)->next = (add);                                                                      \(\backslash\)}
+00847 \textcolor{preprocessor}{    UTLIST\_RS(head);                                                                           \(\backslash\)}
+00848 \textcolor{preprocessor}{    if ((add)->next) \{                                                                         \(\backslash\)}
+00849 \textcolor{preprocessor}{      (add)->next->prev = (add);                                                               \(\backslash\)}
+00850 \textcolor{preprocessor}{    \} else \{                                                                                   \(\backslash\)}
+00851 \textcolor{preprocessor}{      (head)->prev = (add);                                                                    \(\backslash\)}
+00852 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00853 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00854 \textcolor{preprocessor}{\} while (0)}
+00855 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* NO\_DECLTYPE */}\textcolor{preprocessor}{}
+00856 
+00857 \textcolor{comment}{/******************************************************************************}
+00858 \textcolor{comment}{ * circular doubly linked list macros                                         *}
+00859 \textcolor{comment}{ *****************************************************************************/}
+00860 \textcolor{preprocessor}{#define CDL\_APPEND(head,add)                                                                   \(\backslash\)}
+00861 \textcolor{preprocessor}{    CDL\_APPEND2(head,add,prev,next)}
+00862 
+00863 \textcolor{preprocessor}{#define CDL\_APPEND2(head,add,prev,next)                                                        \(\backslash\)}
+00864 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00865 \textcolor{preprocessor}{ if (head) \{                                                                                   \(\backslash\)}
+00866 \textcolor{preprocessor}{   (add)->prev = (head)->prev;                                                                 \(\backslash\)}
+00867 \textcolor{preprocessor}{   (add)->next = (head);                                                                       \(\backslash\)}
+00868 \textcolor{preprocessor}{   (head)->prev = (add);                                                                       \(\backslash\)}
+00869 \textcolor{preprocessor}{   (add)->prev->next = (add);                                                                  \(\backslash\)}
+00870 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00871 \textcolor{preprocessor}{   (add)->prev = (add);                                                                        \(\backslash\)}
+00872 \textcolor{preprocessor}{   (add)->next = (add);                                                                        \(\backslash\)}
+00873 \textcolor{preprocessor}{   (head) = (add);                                                                             \(\backslash\)}
+00874 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00875 \textcolor{preprocessor}{\} while (0)}
+00876 
+00877 \textcolor{preprocessor}{#define CDL\_PREPEND(head,add)                                                                  \(\backslash\)}
+00878 \textcolor{preprocessor}{    CDL\_PREPEND2(head,add,prev,next)}
+00879 
+00880 \textcolor{preprocessor}{#define CDL\_PREPEND2(head,add,prev,next)                                                       \(\backslash\)}
+00881 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00882 \textcolor{preprocessor}{ if (head) \{                                                                                   \(\backslash\)}
+00883 \textcolor{preprocessor}{   (add)->prev = (head)->prev;                                                                 \(\backslash\)}
+00884 \textcolor{preprocessor}{   (add)->next = (head);                                                                       \(\backslash\)}
+00885 \textcolor{preprocessor}{   (head)->prev = (add);                                                                       \(\backslash\)}
+00886 \textcolor{preprocessor}{   (add)->prev->next = (add);                                                                  \(\backslash\)}
+00887 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00888 \textcolor{preprocessor}{   (add)->prev = (add);                                                                        \(\backslash\)}
+00889 \textcolor{preprocessor}{   (add)->next = (add);                                                                        \(\backslash\)}
+00890 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+00891 \textcolor{preprocessor}{ (head) = (add);                                                                               \(\backslash\)}
+00892 \textcolor{preprocessor}{\} while (0)}
+00893 
+00894 \textcolor{preprocessor}{#define CDL\_INSERT\_INORDER(head,add,cmp)                                                       \(\backslash\)}
+00895 \textcolor{preprocessor}{    CDL\_INSERT\_INORDER2(head,add,cmp,prev,next)}
+00896 
+00897 \textcolor{preprocessor}{#define CDL\_INSERT\_INORDER2(head,add,cmp,prev,next)                                            \(\backslash\)}
+00898 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00899 \textcolor{preprocessor}{  LDECLTYPE(head) \_tmp;                                                                        \(\backslash\)}
+00900 \textcolor{preprocessor}{  if (head) \{                                                                                  \(\backslash\)}
+00901 \textcolor{preprocessor}{    CDL\_LOWER\_BOUND2(head, \_tmp, add, cmp, next);                                              \(\backslash\)}
+00902 \textcolor{preprocessor}{    CDL\_APPEND\_ELEM2(head, \_tmp, add, prev, next);                                             \(\backslash\)}
+00903 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00904 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+00905 \textcolor{preprocessor}{    (head)->next = (head);                                                                     \(\backslash\)}
+00906 \textcolor{preprocessor}{    (head)->prev = (head);                                                                     \(\backslash\)}
+00907 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00908 \textcolor{preprocessor}{\} while (0)}
+00909 
+00910 \textcolor{preprocessor}{#define CDL\_LOWER\_BOUND(head,elt,like,cmp)                                                     \(\backslash\)}
+00911 \textcolor{preprocessor}{    CDL\_LOWER\_BOUND2(head,elt,like,cmp,next)}
+00912 
+00913 \textcolor{preprocessor}{#define CDL\_LOWER\_BOUND2(head,elt,like,cmp,next)                                               \(\backslash\)}
+00914 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00915 \textcolor{preprocessor}{  if ((head) == NULL || (cmp(head, like)) >= 0) \{                                              \(\backslash\)}
+00916 \textcolor{preprocessor}{    (elt) = NULL;                                                                              \(\backslash\)}
+00917 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00918 \textcolor{preprocessor}{    for ((elt) = (head); (elt)->next != (head); (elt) = (elt)->next) \{                         \(\backslash\)}
+00919 \textcolor{preprocessor}{      if ((cmp((elt)->next, like)) >= 0) \{                                                     \(\backslash\)}
+00920 \textcolor{preprocessor}{        break;                                                                                 \(\backslash\)}
+00921 \textcolor{preprocessor}{      \}                                                                                        \(\backslash\)}
+00922 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00923 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00924 \textcolor{preprocessor}{\} while (0)}
+00925 
+00926 \textcolor{preprocessor}{#define CDL\_DELETE(head,del)                                                                   \(\backslash\)}
+00927 \textcolor{preprocessor}{    CDL\_DELETE2(head,del,prev,next)}
+00928 
+00929 \textcolor{preprocessor}{#define CDL\_DELETE2(head,del,prev,next)                                                        \(\backslash\)}
+00930 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00931 \textcolor{preprocessor}{  if (((head)==(del)) && ((head)->next == (head))) \{                                           \(\backslash\)}
+00932 \textcolor{preprocessor}{      (head) = NULL;                                                                           \(\backslash\)}
+00933 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+00934 \textcolor{preprocessor}{     (del)->next->prev = (del)->prev;                                                          \(\backslash\)}
+00935 \textcolor{preprocessor}{     (del)->prev->next = (del)->next;                                                          \(\backslash\)}
+00936 \textcolor{preprocessor}{     if ((del) == (head)) (head)=(del)->next;                                                  \(\backslash\)}
+00937 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+00938 \textcolor{preprocessor}{\} while (0)}
+00939 
+00940 \textcolor{preprocessor}{#define CDL\_COUNT(head,el,counter)                                                             \(\backslash\)}
+00941 \textcolor{preprocessor}{    CDL\_COUNT2(head,el,counter,next)                                                           \(\backslash\)}
+00942 \textcolor{preprocessor}{}
+00943 \textcolor{preprocessor}{#define CDL\_COUNT2(head, el, counter,next)                                                     \(\backslash\)}
+00944 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00945 \textcolor{preprocessor}{  (counter) = 0;                                                                               \(\backslash\)}
+00946 \textcolor{preprocessor}{  CDL\_FOREACH2(head,el,next) \{ ++(counter); \}                                                  \(\backslash\)}
+00947 \textcolor{preprocessor}{\} while (0)}
+00948 
+00949 \textcolor{preprocessor}{#define CDL\_FOREACH(head,el)                                                                   \(\backslash\)}
+00950 \textcolor{preprocessor}{    CDL\_FOREACH2(head,el,next)}
+00951 
+00952 \textcolor{preprocessor}{#define CDL\_FOREACH2(head,el,next)                                                             \(\backslash\)}
+00953 \textcolor{preprocessor}{    for ((el)=(head);el;(el)=(((el)->next==(head)) ? NULL : (el)->next))}
+00954 
+00955 \textcolor{preprocessor}{#define CDL\_FOREACH\_SAFE(head,el,tmp1,tmp2)                                                    \(\backslash\)}
+00956 \textcolor{preprocessor}{    CDL\_FOREACH\_SAFE2(head,el,tmp1,tmp2,prev,next)}
+00957 
+00958 \textcolor{preprocessor}{#define CDL\_FOREACH\_SAFE2(head,el,tmp1,tmp2,prev,next)                                         \(\backslash\)}
+00959 \textcolor{preprocessor}{  for ((el) = (head), (tmp1) = (head) ? (head)->prev : NULL;                                   \(\backslash\)}
+00960 \textcolor{preprocessor}{       (el) && ((tmp2) = (el)->next, 1);                                                       \(\backslash\)}
+00961 \textcolor{preprocessor}{       (el) = ((el) == (tmp1) ? NULL : (tmp2)))}
+00962 
+00963 \textcolor{preprocessor}{#define CDL\_SEARCH\_SCALAR(head,out,field,val)                                                  \(\backslash\)}
+00964 \textcolor{preprocessor}{    CDL\_SEARCH\_SCALAR2(head,out,field,val,next)}
+00965 
+00966 \textcolor{preprocessor}{#define CDL\_SEARCH\_SCALAR2(head,out,field,val,next)                                            \(\backslash\)}
+00967 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00968 \textcolor{preprocessor}{    CDL\_FOREACH2(head,out,next) \{                                                              \(\backslash\)}
+00969 \textcolor{preprocessor}{      if ((out)->field == (val)) break;                                                        \(\backslash\)}
+00970 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00971 \textcolor{preprocessor}{\} while (0)}
+00972 
+00973 \textcolor{preprocessor}{#define CDL\_SEARCH(head,out,elt,cmp)                                                           \(\backslash\)}
+00974 \textcolor{preprocessor}{    CDL\_SEARCH2(head,out,elt,cmp,next)}
+00975 
+00976 \textcolor{preprocessor}{#define CDL\_SEARCH2(head,out,elt,cmp,next)                                                     \(\backslash\)}
+00977 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00978 \textcolor{preprocessor}{    CDL\_FOREACH2(head,out,next) \{                                                              \(\backslash\)}
+00979 \textcolor{preprocessor}{      if ((cmp(out,elt))==0) break;                                                            \(\backslash\)}
+00980 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+00981 \textcolor{preprocessor}{\} while (0)}
+00982 
+00983 \textcolor{preprocessor}{#define CDL\_REPLACE\_ELEM2(head, el, add, prev, next)                                           \(\backslash\)}
+00984 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+00985 \textcolor{preprocessor}{ assert((head) != NULL);                                                                       \(\backslash\)}
+00986 \textcolor{preprocessor}{ assert((el) != NULL);                                                                         \(\backslash\)}
+00987 \textcolor{preprocessor}{ assert((add) != NULL);                                                                        \(\backslash\)}
+00988 \textcolor{preprocessor}{ if ((el)->next == (el)) \{                                                                     \(\backslash\)}
+00989 \textcolor{preprocessor}{  (add)->next = (add);                                                                         \(\backslash\)}
+00990 \textcolor{preprocessor}{  (add)->prev = (add);                                                                         \(\backslash\)}
+00991 \textcolor{preprocessor}{  (head) = (add);                                                                              \(\backslash\)}
+00992 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+00993 \textcolor{preprocessor}{  (add)->next = (el)->next;                                                                    \(\backslash\)}
+00994 \textcolor{preprocessor}{  (add)->prev = (el)->prev;                                                                    \(\backslash\)}
+00995 \textcolor{preprocessor}{  (add)->next->prev = (add);                                                                   \(\backslash\)}
+00996 \textcolor{preprocessor}{  (add)->prev->next = (add);                                                                   \(\backslash\)}
+00997 \textcolor{preprocessor}{  if ((head) == (el)) \{                                                                        \(\backslash\)}
+00998 \textcolor{preprocessor}{   (head) = (add);                                                                             \(\backslash\)}
+00999 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+01000 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+01001 \textcolor{preprocessor}{\} while (0)}
+01002 
+01003 \textcolor{preprocessor}{#define CDL\_REPLACE\_ELEM(head, el, add)                                                        \(\backslash\)}
+01004 \textcolor{preprocessor}{    CDL\_REPLACE\_ELEM2(head, el, add, prev, next)}
+01005 
+01006 \textcolor{preprocessor}{#define CDL\_PREPEND\_ELEM2(head, el, add, prev, next)                                           \(\backslash\)}
+01007 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+01008 \textcolor{preprocessor}{  if (el) \{                                                                                    \(\backslash\)}
+01009 \textcolor{preprocessor}{    assert((head) != NULL);                                                                    \(\backslash\)}
+01010 \textcolor{preprocessor}{    assert((add) != NULL);                                                                     \(\backslash\)}
+01011 \textcolor{preprocessor}{    (add)->next = (el);                                                                        \(\backslash\)}
+01012 \textcolor{preprocessor}{    (add)->prev = (el)->prev;                                                                  \(\backslash\)}
+01013 \textcolor{preprocessor}{    (el)->prev = (add);                                                                        \(\backslash\)}
+01014 \textcolor{preprocessor}{    (add)->prev->next = (add);                                                                 \(\backslash\)}
+01015 \textcolor{preprocessor}{    if ((head) == (el)) \{                                                                      \(\backslash\)}
+01016 \textcolor{preprocessor}{      (head) = (add);                                                                          \(\backslash\)}
+01017 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+01018 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+01019 \textcolor{preprocessor}{    CDL\_APPEND2(head, add, prev, next);                                                        \(\backslash\)}
+01020 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+01021 \textcolor{preprocessor}{\} while (0)}
+01022 
+01023 \textcolor{preprocessor}{#define CDL\_PREPEND\_ELEM(head, el, add)                                                        \(\backslash\)}
+01024 \textcolor{preprocessor}{    CDL\_PREPEND\_ELEM2(head, el, add, prev, next)}
+01025 
+01026 \textcolor{preprocessor}{#define CDL\_APPEND\_ELEM2(head, el, add, prev, next)                                            \(\backslash\)}
+01027 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+01028 \textcolor{preprocessor}{ if (el) \{                                                                                     \(\backslash\)}
+01029 \textcolor{preprocessor}{  assert((head) != NULL);                                                                      \(\backslash\)}
+01030 \textcolor{preprocessor}{  assert((add) != NULL);                                                                       \(\backslash\)}
+01031 \textcolor{preprocessor}{  (add)->next = (el)->next;                                                                    \(\backslash\)}
+01032 \textcolor{preprocessor}{  (add)->prev = (el);                                                                          \(\backslash\)}
+01033 \textcolor{preprocessor}{  (el)->next = (add);                                                                          \(\backslash\)}
+01034 \textcolor{preprocessor}{  (add)->next->prev = (add);                                                                   \(\backslash\)}
+01035 \textcolor{preprocessor}{ \} else \{                                                                                      \(\backslash\)}
+01036 \textcolor{preprocessor}{  CDL\_PREPEND2(head, add, prev, next);                                                         \(\backslash\)}
+01037 \textcolor{preprocessor}{ \}                                                                                             \(\backslash\)}
+01038 \textcolor{preprocessor}{\} while (0)}
+01039 
+01040 \textcolor{preprocessor}{#define CDL\_APPEND\_ELEM(head, el, add)                                                         \(\backslash\)}
+01041 \textcolor{preprocessor}{    CDL\_APPEND\_ELEM2(head, el, add, prev, next)}
+01042 
+01043 \textcolor{preprocessor}{#ifdef NO\_DECLTYPE}
+01044 \textcolor{comment}{/* Here are VS2008 / NO\_DECLTYPE replacements for a few functions */}
+01045 
+01046 \textcolor{preprocessor}{#undef CDL\_INSERT\_INORDER2}
+01047 \textcolor{preprocessor}{#define CDL\_INSERT\_INORDER2(head,add,cmp,prev,next)                                            \(\backslash\)}
+01048 \textcolor{preprocessor}{do \{                                                                                           \(\backslash\)}
+01049 \textcolor{preprocessor}{  if ((head) == NULL) \{                                                                        \(\backslash\)}
+01050 \textcolor{preprocessor}{    (add)->prev = (add);                                                                       \(\backslash\)}
+01051 \textcolor{preprocessor}{    (add)->next = (add);                                                                       \(\backslash\)}
+01052 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+01053 \textcolor{preprocessor}{  \} else if ((cmp(head, add)) >= 0) \{                                                          \(\backslash\)}
+01054 \textcolor{preprocessor}{    (add)->prev = (head)->prev;                                                                \(\backslash\)}
+01055 \textcolor{preprocessor}{    (add)->next = (head);                                                                      \(\backslash\)}
+01056 \textcolor{preprocessor}{    (add)->prev->next = (add);                                                                 \(\backslash\)}
+01057 \textcolor{preprocessor}{    (head)->prev = (add);                                                                      \(\backslash\)}
+01058 \textcolor{preprocessor}{    (head) = (add);                                                                            \(\backslash\)}
+01059 \textcolor{preprocessor}{  \} else \{                                                                                     \(\backslash\)}
+01060 \textcolor{preprocessor}{    char *\_tmp = (char*)(head);                                                                \(\backslash\)}
+01061 \textcolor{preprocessor}{    while ((char*)(head)->next != \_tmp && (cmp((head)->next, add)) < 0) \{                      \(\backslash\)}
+01062 \textcolor{preprocessor}{      (head) = (head)->next;                                                                   \(\backslash\)}
+01063 \textcolor{preprocessor}{    \}                                                                                          \(\backslash\)}
+01064 \textcolor{preprocessor}{    (add)->prev = (head);                                                                      \(\backslash\)}
+01065 \textcolor{preprocessor}{    (add)->next = (head)->next;                                                                \(\backslash\)}
+01066 \textcolor{preprocessor}{    (add)->next->prev = (add);                                                                 \(\backslash\)}
+01067 \textcolor{preprocessor}{    (head)->next = (add);                                                                      \(\backslash\)}
+01068 \textcolor{preprocessor}{    UTLIST\_RS(head);                                                                           \(\backslash\)}
+01069 \textcolor{preprocessor}{  \}                                                                                            \(\backslash\)}
+01070 \textcolor{preprocessor}{\} while (0)}
+01071 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* NO\_DECLTYPE */}\textcolor{preprocessor}{}
+01072 
+01073 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* UTLIST\_H */}\textcolor{preprocessor}{}
+\end{DoxyCode}

@@ -1,0 +1,40 @@
+\hypertarget{parser_8h_source}{}\subsection{parser.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00019 \textcolor{preprocessor}{#ifndef PARSER\_H\_}
+00020 \textcolor{preprocessor}{#define PARSER\_H\_}
+00021 
+00022 \textcolor{preprocessor}{#define MAXBUF 1024}
+00023 \textcolor{preprocessor}{#define DIV "= \(\backslash\)t\(\backslash\)r\(\backslash\)n\(\backslash\)v\(\backslash\)f"}
+00024 \textcolor{preprocessor}{#define CHECK\_TOK(token)    \(\backslash\)}
+00025 \textcolor{preprocessor}{                                if(token == NULL) \{ \(\backslash\)}
+00026 \textcolor{preprocessor}{                                                                printf("Errore nel file di configurazione\(\backslash\)
+      n"); \(\backslash\)}
+00027 \textcolor{preprocessor}{                                                                return -2; \(\backslash\)}
+00028 \textcolor{preprocessor}{                                \} \(\backslash\)}
+00029 \textcolor{preprocessor}{}
+00030 
+\Hypertarget{parser_8h_source_l00042}\mbox{\hyperlink{struct__conf}{00042}} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__conf}{\_conf}} \{
+00043                                 \textcolor{keywordtype}{char} *unix\_path;
+00044                                 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} max\_con;
+00045                                 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} nthreads;
+00046                                 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} max\_msg;
+00047                                 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} max\_size;
+00048                                 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} max\_history;
+00049                                 \textcolor{keywordtype}{char} *down\_path;
+00050                                 \textcolor{keywordtype}{char} *stats;
+00051 \};
+00052 
+00053 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{struct__conf}{\_conf}} \mbox{\hyperlink{structconf}{conf}};
+00054 
+00060 \textcolor{keywordtype}{int} \mbox{\hyperlink{parser_8h_ad2fe9b8d7e81085357ac987738f86908}{load\_conf}}(\textcolor{keywordtype}{char} *path, \mbox{\hyperlink{structconf}{conf}} *cf);
+00061 
+00062 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* PARSER\_H\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

@@ -1,0 +1,68 @@
+\hypertarget{ops_8h_source}{}\subsection{ops.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017/2018}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00018 \textcolor{preprocessor}{#if !defined(OPS\_H\_)}
+00019 \textcolor{preprocessor}{#define OPS\_H\_}
+00020 
+\Hypertarget{ops_8h_source_l00021}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44c}{00021}} \textcolor{keyword}{typedef} \textcolor{keyword}{enum} \{
+00022 
+00023     \textcolor{comment}{/* ------------------------------------------ */}
+00024     \textcolor{comment}{/*      operazioni che il server deve gestire */}
+00025     \textcolor{comment}{/* ------------------------------------------ */}
+00026     REGISTER\_OP      = 0,   
+00027 
+\Hypertarget{ops_8h_source_l00028}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cab602ddf0795d3c4dc2fd0b4b957ba988}{00028}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cab602ddf0795d3c4dc2fd0b4b957ba988}{CONNECT\_OP}}       = 1,   
+\Hypertarget{ops_8h_source_l00029}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca87576ba07c1cfb86b898b212bf927e3b}{00029}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca87576ba07c1cfb86b898b212bf927e3b}{POSTTXT\_OP}}       = 2,   
+\Hypertarget{ops_8h_source_l00030}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cad8bffd524142ec0c418a426344387282}{00030}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cad8bffd524142ec0c418a426344387282}{POSTTXTALL\_OP}}    = 3,   
+\Hypertarget{ops_8h_source_l00031}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44caf2b9ae66799c6fdfc938b69f49c9d4e4}{00031}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44caf2b9ae66799c6fdfc938b69f49c9d4e4}{POSTFILE\_OP}}      = 4,   
+\Hypertarget{ops_8h_source_l00032}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cadb9dcac2886dea585d6851db2a02de4b}{00032}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cadb9dcac2886dea585d6851db2a02de4b}{GETFILE\_OP}}       = 5,   
+\Hypertarget{ops_8h_source_l00033}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cad40f98fc799cf8b6a8dc25c90464a809}{00033}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cad40f98fc799cf8b6a8dc25c90464a809}{GETPREVMSGS\_OP}}   = 6,   
+\Hypertarget{ops_8h_source_l00034}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca76c5f8cf5dd046fbfe3f0b6a7bce8e90}{00034}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca76c5f8cf5dd046fbfe3f0b6a7bce8e90}{USRLIST\_OP}}       = 7,   
+\Hypertarget{ops_8h_source_l00035}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cabc2ab44946aad99a4cda3f0e4abb5b5a}{00035}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cabc2ab44946aad99a4cda3f0e4abb5b5a}{UNREGISTER\_OP}}    = 8,   
+\Hypertarget{ops_8h_source_l00036}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca06d81ab3ef58420bbebac2c67dc901e2}{00036}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca06d81ab3ef58420bbebac2c67dc901e2}{DISCONNECT\_OP}}    = 9,   
+00037 
+00038     \textcolor{comment}{/*  la gestione dei gruppi e' opzionale */}
+\Hypertarget{ops_8h_source_l00039}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca30840713ad9050c2d275b31ff8404313}{00039}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca30840713ad9050c2d275b31ff8404313}{CREATEGROUP\_OP}}   = 10,  
+\Hypertarget{ops_8h_source_l00040}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca30f53d46265f83a2b0a14d6486a450d5}{00040}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44ca30f53d46265f83a2b0a14d6486a450d5}{ADDGROUP\_OP}}      = 11,  
+\Hypertarget{ops_8h_source_l00041}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cab9abe0fa4dab90183a19f2f56dfe0d49}{00041}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cab9abe0fa4dab90183a19f2f56dfe0d49}{DELGROUP\_OP}}      = 12,  
+00042 
+00043 
+00044     \textcolor{comment}{/* NOTA: la richiesta di cancellazione di un gruppo e' lasciata come task opzionale */}
+00045 
+00046     \textcolor{comment}{/*}
+00047 \textcolor{comment}{     * aggiungere qui eltre operazioni che si vogliono implementare}
+00048 \textcolor{comment}{     */}
+00049 
+00050     \textcolor{comment}{/* ------------------------------------------ */}
+00051     \textcolor{comment}{/*    messaggi inviati dal server             */}
+00052     \textcolor{comment}{/* ------------------------------------------ */}
+00053 
+\Hypertarget{ops_8h_source_l00054}\mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cacc156be86a1cb4bfc0e21d8c72e4971c}{00054}}     \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44cacc156be86a1cb4bfc0e21d8c72e4971c}{OP\_OK}}           = 20,  \textcolor{comment}{// operazione eseguita con successo}
+00055     TXT\_MESSAGE     = 21,  \textcolor{comment}{// notifica di messaggio testuale}
+00056     FILE\_MESSAGE    = 22,  \textcolor{comment}{// notifica di messaggio "file disponibile"}
+00057 
+00058     OP\_FAIL         = 25,  \textcolor{comment}{// generico messaggio di fallimento}
+00059     OP\_NICK\_ALREADY = 26,  \textcolor{comment}{// nickname o groupname gia' registrato}
+00060     OP\_NICK\_UNKNOWN = 27,  \textcolor{comment}{// nickname non riconosciuto}
+00061     OP\_MSG\_TOOLONG  = 28,  \textcolor{comment}{// messaggio con size troppo lunga}
+00062     OP\_NO\_SUCH\_FILE = 29,  \textcolor{comment}{// il file richiesto non esiste}
+00063 
+00064 
+00065     \textcolor{comment}{/*}
+00066 \textcolor{comment}{     * aggiungere qui altri messaggi di ritorno che possono servire}
+00067 \textcolor{comment}{     */}
+00068 
+00069     OP\_END          = 100 \textcolor{comment}{// limite superiore agli id usati per le operazioni}
+00070 
+00071 \} \mbox{\hyperlink{ops_8h_ac6fa1b34da8872e34c2936391332f44c}{op\_t}};
+00072 
+00073 
+00074 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* OPS\_H\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

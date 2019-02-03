@@ -1,0 +1,1056 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.14"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>chatterbox: Riferimenti per il file user.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(initResizable);
+/* @license-end */</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">chatterbox
+   &#160;<span id="projectnumber">2.0</span>
+   </div>
+   <div id="projectbrief">Progetto del corso di LSO 2017</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generato da Doxygen 1.8.14 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Cerca');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Cerca');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('user_8h.html','');});
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Strutture dati</a> &#124;
+<a href="#typedef-members">Ridefinizioni di tipo (typedef)</a> &#124;
+<a href="#func-members">Funzioni</a>  </div>
+  <div class="headertitle">
+<div class="title">Riferimenti per il file user.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>file contenente definizione delle strutture per la gestione degli utenti e funzioni per operare su esse  
+<a href="#details">Continua...</a></p>
+<div class="textblock"><code>#include &lt;string.h&gt;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
+<code>#include &lt;uthash.h&gt;</code><br />
+<code>#include &lt;utlist.h&gt;</code><br />
+<code>#include &lt;<a class="el" href="config_8h_source.html">config.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="message_8h_source.html">message.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="parser_8h_source.html">parser.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="stats_8h_source.html">stats.h</a>&gt;</code><br />
+<code>#include &lt;sys/socket.h&gt;</code><br />
+<code>#include &lt;sys/select.h&gt;</code><br />
+<code>#include &lt;sys/epoll.h&gt;</code><br />
+</div>
+<p><a href="user_8h_source.html">Vai al codice sorgente di questo file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Strutture dati</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__history.html">_history</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">lista history utente  <a href="struct__history.html#details">Continua...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__user__list.html">_user_list</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">lista utenti  <a href="struct__user__list.html#details">Continua...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__user.html">_user</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">struttura contenente informazioni utente  <a href="struct__user.html#details">Continua...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__user__group.html">_user_group</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">struttura contenente informazioni utente di un gruppo  <a href="struct__user__group.html#details">Continua...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__group.html">_group</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__usersdata.html">_usersdata</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">struttura contenente utenti registrati  <a href="struct__usersdata.html#details">Continua...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Ridefinizioni di tipo (typedef)</h2></td></tr>
+<tr class="memitem:a554f83e99f378eab98256644d9f15af9"><td class="memItemLeft" align="right" valign="top"><a id="a554f83e99f378eab98256644d9f15af9"></a>
+typedef struct <a class="el" href="struct__history.html">_history</a>&#160;</td><td class="memItemRight" valign="bottom"><b>history</b></td></tr>
+<tr class="separator:a554f83e99f378eab98256644d9f15af9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a342cf971910307ec2d5d78fbc528d068"><td class="memItemLeft" align="right" valign="top"><a id="a342cf971910307ec2d5d78fbc528d068"></a>
+typedef struct <a class="el" href="struct__user__list.html">_user_list</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ulist</b></td></tr>
+<tr class="separator:a342cf971910307ec2d5d78fbc528d068"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a015ad14609b63bf8567ea367a5e858c0"><td class="memItemLeft" align="right" valign="top"><a id="a015ad14609b63bf8567ea367a5e858c0"></a>
+typedef struct <a class="el" href="struct__user.html">_user</a>&#160;</td><td class="memItemRight" valign="bottom"><b>user</b></td></tr>
+<tr class="separator:a015ad14609b63bf8567ea367a5e858c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d7fcd9b4b7be5fe68484c228385cead"><td class="memItemLeft" align="right" valign="top"><a id="a0d7fcd9b4b7be5fe68484c228385cead"></a>
+typedef struct <a class="el" href="struct__user__group.html">_user_group</a>&#160;</td><td class="memItemRight" valign="bottom"><b>user_group</b></td></tr>
+<tr class="separator:a0d7fcd9b4b7be5fe68484c228385cead"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c93ff4a099dfdc32376f3227d32e70b"><td class="memItemLeft" align="right" valign="top"><a id="a8c93ff4a099dfdc32376f3227d32e70b"></a>
+typedef struct <a class="el" href="struct__group.html">_group</a>&#160;</td><td class="memItemRight" valign="bottom"><b>group</b></td></tr>
+<tr class="separator:a8c93ff4a099dfdc32376f3227d32e70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeee797c3c1e7bb5386c1ebf9dce4b7e9"><td class="memItemLeft" align="right" valign="top"><a id="aeee797c3c1e7bb5386c1ebf9dce4b7e9"></a>
+typedef struct <a class="el" href="struct__usersdata.html">_usersdata</a>&#160;</td><td class="memItemRight" valign="bottom"><b>userdata</b></td></tr>
+<tr class="separator:aeee797c3c1e7bb5386c1ebf9dce4b7e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Funzioni</h2></td></tr>
+<tr class="memitem:a22092737cd5a0895c1f57e90c786b83f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a22092737cd5a0895c1f57e90c786b83f">new_udata</a> (<a class="el" href="structconf.html">conf</a> *cf, struct <a class="el" href="structstatistics.html">statistics</a> *chattyStats)</td></tr>
+<tr class="memdesc:a22092737cd5a0895c1f57e90c786b83f"><td class="mdescLeft">&#160;</td><td class="mdescRight">crea la struttura per la gestione degli utenti  <a href="#a22092737cd5a0895c1f57e90c786b83f">Continua...</a><br /></td></tr>
+<tr class="separator:a22092737cd5a0895c1f57e90c786b83f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b5d2bb28b9c95159ae4c9650bd1bbfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a2b5d2bb28b9c95159ae4c9650bd1bbfc">del_udata</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud)</td></tr>
+<tr class="memdesc:a2b5d2bb28b9c95159ae4c9650bd1bbfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">elimina la struttura per la gestione degli utenti  <a href="#a2b5d2bb28b9c95159ae4c9650bd1bbfc">Continua...</a><br /></td></tr>
+<tr class="separator:a2b5d2bb28b9c95159ae4c9650bd1bbfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b3da9bc8bad80b9e45aabffbf47ffbd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a0b3da9bc8bad80b9e45aabffbf47ffbd">reg_user</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *nick)</td></tr>
+<tr class="memdesc:a0b3da9bc8bad80b9e45aabffbf47ffbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">registra utente  <a href="#a0b3da9bc8bad80b9e45aabffbf47ffbd">Continua...</a><br /></td></tr>
+<tr class="separator:a0b3da9bc8bad80b9e45aabffbf47ffbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36d6a58bf0fef737c8461d3b6fe2b4ed"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a36d6a58bf0fef737c8461d3b6fe2b4ed">con_user</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *nick, unsigned long fd)</td></tr>
+<tr class="memdesc:a36d6a58bf0fef737c8461d3b6fe2b4ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">connette utente  <a href="#a36d6a58bf0fef737c8461d3b6fe2b4ed">Continua...</a><br /></td></tr>
+<tr class="separator:a36d6a58bf0fef737c8461d3b6fe2b4ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd3cb71d6292ec2a1ed584f4881ee357"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#acd3cb71d6292ec2a1ed584f4881ee357">del_user</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *nick)</td></tr>
+<tr class="memdesc:acd3cb71d6292ec2a1ed584f4881ee357"><td class="mdescLeft">&#160;</td><td class="mdescRight">elimina utente  <a href="#acd3cb71d6292ec2a1ed584f4881ee357">Continua...</a><br /></td></tr>
+<tr class="separator:acd3cb71d6292ec2a1ed584f4881ee357"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5918076cf75292bc08642e0feffe613"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#ac5918076cf75292bc08642e0feffe613">logout_user</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *nick)</td></tr>
+<tr class="memdesc:ac5918076cf75292bc08642e0feffe613"><td class="mdescLeft">&#160;</td><td class="mdescRight">disconnette utente  <a href="#ac5918076cf75292bc08642e0feffe613">Continua...</a><br /></td></tr>
+<tr class="separator:ac5918076cf75292bc08642e0feffe613"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe383557cd7baba7d0c7b9040011bfe7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#afe383557cd7baba7d0c7b9040011bfe7">brutal_logout</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, int fd, int epollfd, pthread_mutex_t *mtx)</td></tr>
+<tr class="memdesc:afe383557cd7baba7d0c7b9040011bfe7"><td class="mdescLeft">&#160;</td><td class="mdescRight">disconnette utente dato il suo fd  <a href="#afe383557cd7baba7d0c7b9040011bfe7">Continua...</a><br /></td></tr>
+<tr class="separator:afe383557cd7baba7d0c7b9040011bfe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5c73c15fe3f86d1d4ff9a1b71fac700"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#af5c73c15fe3f86d1d4ff9a1b71fac700">all_user</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, <a class="el" href="struct__user__list.html">ulist</a> **list)</td></tr>
+<tr class="memdesc:af5c73c15fe3f86d1d4ff9a1b71fac700"><td class="mdescLeft">&#160;</td><td class="mdescRight">restituisce lista utenti connessi  <a href="#af5c73c15fe3f86d1d4ff9a1b71fac700">Continua...</a><br /></td></tr>
+<tr class="separator:af5c73c15fe3f86d1d4ff9a1b71fac700"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad65a594ab75714463ba64596d36c0d0c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#ad65a594ab75714463ba64596d36c0d0c">del_list</a> (<a class="el" href="struct__user__list.html">ulist</a> **list)</td></tr>
+<tr class="memdesc:ad65a594ab75714463ba64596d36c0d0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">elimina lista utenti connessi  <a href="#ad65a594ab75714463ba64596d36c0d0c">Continua...</a><br /></td></tr>
+<tr class="separator:ad65a594ab75714463ba64596d36c0d0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aece82f34fb4581299d6914ef871d886b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#aece82f34fb4581299d6914ef871d886b">save_msg</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *nick, <a class="el" href="structmessage__t.html">message_t</a> *msg)</td></tr>
+<tr class="memdesc:aece82f34fb4581299d6914ef871d886b"><td class="mdescLeft">&#160;</td><td class="mdescRight">salva msg nella history di un utente non connesso  <a href="#aece82f34fb4581299d6914ef871d886b">Continua...</a><br /></td></tr>
+<tr class="separator:aece82f34fb4581299d6914ef871d886b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69703738faca2131cb5714fa1fb8f8a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a69703738faca2131cb5714fa1fb8f8a1">del_history</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, <a class="el" href="struct__history.html">history</a> **list)</td></tr>
+<tr class="memdesc:a69703738faca2131cb5714fa1fb8f8a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">elimina history utente  <a href="#a69703738faca2131cb5714fa1fb8f8a1">Continua...</a><br /></td></tr>
+<tr class="separator:a69703738faca2131cb5714fa1fb8f8a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ae20b98acc64359de1f8baa82b8b7b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct__user.html">user</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a4ae20b98acc64359de1f8baa82b8b7b4">find_user</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *nick)</td></tr>
+<tr class="memdesc:a4ae20b98acc64359de1f8baa82b8b7b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">cerca un utente  <a href="#a4ae20b98acc64359de1f8baa82b8b7b4">Continua...</a><br /></td></tr>
+<tr class="separator:a4ae20b98acc64359de1f8baa82b8b7b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9e2beafc42bdb5158f33957d247f949"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct__history.html">history</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#ac9e2beafc42bdb5158f33957d247f949">find_history</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *nick)</td></tr>
+<tr class="memdesc:ac9e2beafc42bdb5158f33957d247f949"><td class="mdescLeft">&#160;</td><td class="mdescRight">cerca history utente  <a href="#ac9e2beafc42bdb5158f33957d247f949">Continua...</a><br /></td></tr>
+<tr class="separator:ac9e2beafc42bdb5158f33957d247f949"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9be930562c932e7e49d2f9ca0a68e428"><td class="memItemLeft" align="right" valign="top"><a id="a9be930562c932e7e49d2f9ca0a68e428"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>print_list</b> (<a class="el" href="struct__user__list.html">ulist</a> *list)</td></tr>
+<tr class="separator:a9be930562c932e7e49d2f9ca0a68e428"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac67d1bd84fe394508e26c4889c9544ce"><td class="memItemLeft" align="right" valign="top"><a id="ac67d1bd84fe394508e26c4889c9544ce"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>print_users</b> (<a class="el" href="struct__usersdata.html">userdata</a> *ud)</td></tr>
+<tr class="separator:ac67d1bd84fe394508e26c4889c9544ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21a1f4faff772a417f2f48bf45bcc89c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a21a1f4faff772a417f2f48bf45bcc89c">stats</a> (int reg, int con, int msg_delivered, int msg_waiting, int file_delivered, int file_waiting, int err, <a class="el" href="struct__usersdata.html">userdata</a> *ud)</td></tr>
+<tr class="memdesc:a21a1f4faff772a417f2f48bf45bcc89c"><td class="mdescLeft">&#160;</td><td class="mdescRight">aggiorna statistiche  <a href="#a21a1f4faff772a417f2f48bf45bcc89c">Continua...</a><br /></td></tr>
+<tr class="separator:a21a1f4faff772a417f2f48bf45bcc89c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95bf7e7bf28b0b58de967ee0618abd09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct__group.html">group</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a95bf7e7bf28b0b58de967ee0618abd09">new_group</a> (char *name)</td></tr>
+<tr class="memdesc:a95bf7e7bf28b0b58de967ee0618abd09"><td class="mdescLeft">&#160;</td><td class="mdescRight">crea una struttura di tipo <a class="el" href="struct__group.html">_group</a>  <a href="#a95bf7e7bf28b0b58de967ee0618abd09">Continua...</a><br /></td></tr>
+<tr class="separator:a95bf7e7bf28b0b58de967ee0618abd09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31406d7a99a36caa72b976ae2996796f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a31406d7a99a36caa72b976ae2996796f">del_group</a> (<a class="el" href="struct__group.html">group</a> *gdata)</td></tr>
+<tr class="memdesc:a31406d7a99a36caa72b976ae2996796f"><td class="mdescLeft">&#160;</td><td class="mdescRight">elimina una struttura di tipo <a class="el" href="struct__group.html">_group</a>  <a href="#a31406d7a99a36caa72b976ae2996796f">Continua...</a><br /></td></tr>
+<tr class="separator:a31406d7a99a36caa72b976ae2996796f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a0c20af8dbe611c25900fff4b393e09"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a9a0c20af8dbe611c25900fff4b393e09">reg_user_group</a> (<a class="el" href="struct__group.html">group</a> *gdata, <a class="el" href="struct__user.html">user</a> *new)</td></tr>
+<tr class="memdesc:a9a0c20af8dbe611c25900fff4b393e09"><td class="mdescLeft">&#160;</td><td class="mdescRight">aggiunge un utente ad un gruppo  <a href="#a9a0c20af8dbe611c25900fff4b393e09">Continua...</a><br /></td></tr>
+<tr class="separator:a9a0c20af8dbe611c25900fff4b393e09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5236c2601d5fe844ca3e70676ea0997e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a5236c2601d5fe844ca3e70676ea0997e">del_user_group</a> (<a class="el" href="struct__group.html">group</a> *gdata, <a class="el" href="struct__user.html">user</a> *del)</td></tr>
+<tr class="memdesc:a5236c2601d5fe844ca3e70676ea0997e"><td class="mdescLeft">&#160;</td><td class="mdescRight">elimina un utente da un gruppo  <a href="#a5236c2601d5fe844ca3e70676ea0997e">Continua...</a><br /></td></tr>
+<tr class="separator:a5236c2601d5fe844ca3e70676ea0997e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addec4d9e953b2ce565cdde67ec90699d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#addec4d9e953b2ce565cdde67ec90699d">find_user_group</a> (<a class="el" href="struct__group.html">group</a> *gdata, char *nick)</td></tr>
+<tr class="memdesc:addec4d9e953b2ce565cdde67ec90699d"><td class="mdescLeft">&#160;</td><td class="mdescRight">verifica la presenza di un utente in un gruppo  <a href="#addec4d9e953b2ce565cdde67ec90699d">Continua...</a><br /></td></tr>
+<tr class="separator:addec4d9e953b2ce565cdde67ec90699d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97ebeace5e433443dfbc1566475a246a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct__group.html">group</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a97ebeace5e433443dfbc1566475a246a">find_group</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *name)</td></tr>
+<tr class="memdesc:a97ebeace5e433443dfbc1566475a246a"><td class="mdescLeft">&#160;</td><td class="mdescRight">cerca un gruppo tra i gruppi creati  <a href="#a97ebeace5e433443dfbc1566475a246a">Continua...</a><br /></td></tr>
+<tr class="separator:a97ebeace5e433443dfbc1566475a246a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83e3853217d5eefd3e13def97c7545f9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="user_8h.html#a83e3853217d5eefd3e13def97c7545f9">add_group</a> (<a class="el" href="struct__usersdata.html">userdata</a> *ud, char *name)</td></tr>
+<tr class="memdesc:a83e3853217d5eefd3e13def97c7545f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">crea e registra un gruppo in ud  <a href="#a83e3853217d5eefd3e13def97c7545f9">Continua...</a><br /></td></tr>
+<tr class="separator:a83e3853217d5eefd3e13def97c7545f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Descrizione dettagliata</h2>
+<div class="textblock"><p>file contenente definizione delle strutture per la gestione degli utenti e funzioni per operare su esse </p>
+<dl class="section author"><dt>Autore</dt><dd>Valerio Besozzi 543685 Si dichiara che il contenuto di questo file e' in ogni sua parte opera originale dell'autore </dd></dl>
+</div><h2 class="groupheader">Documentazione delle funzioni</h2>
+<a id="a83e3853217d5eefd3e13def97c7545f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83e3853217d5eefd3e13def97c7545f9">&#9670;&nbsp;</a></span>add_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int add_group </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>crea e registra un gruppo in ud </p>
+<p>add_group </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>struttura _userdata dove e' presente hashmap con i gruppi </td></tr>
+    <tr><td class="paramname">name</td><td>nome del gruppo da creare e registrare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se il gruppo e' stato creato e registrato correttamente, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="af5c73c15fe3f86d1d4ff9a1b71fac700"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5c73c15fe3f86d1d4ff9a1b71fac700">&#9670;&nbsp;</a></span>all_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void all_user </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct__user__list.html">ulist</a> **&#160;</td>
+          <td class="paramname"><em>list</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>restituisce lista utenti connessi </p>
+<p>all_user </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata dove cercare utente </td></tr>
+    <tr><td class="paramname">list</td><td>lista dove salvare utenti </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="afe383557cd7baba7d0c7b9040011bfe7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe383557cd7baba7d0c7b9040011bfe7">&#9670;&nbsp;</a></span>brutal_logout()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int brutal_logout </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>fd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>epollfd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">pthread_mutex_t *&#160;</td>
+          <td class="paramname"><em>mtx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>disconnette utente dato il suo fd </p>
+<p>brutal_user </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui disconnettere utente </td></tr>
+    <tr><td class="paramname">fd</td><td>descrittore della connessione relativo all'utente da disconnettere </td></tr>
+    <tr><td class="paramname">epollfd</td><td>fd relativo all'istanza epoll in uso </td></tr>
+    <tr><td class="paramname">mtx</td><td>mutex </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se la disconnessione e' avvenuta con successo, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="a36d6a58bf0fef737c8461d3b6fe2b4ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36d6a58bf0fef737c8461d3b6fe2b4ed">&#9670;&nbsp;</a></span>con_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int con_user </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>nick</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>fd</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>connette utente </p>
+<p>con_user </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui connettere utente </td></tr>
+    <tr><td class="paramname">nick</td><td>nome dell'utente da connettere </td></tr>
+    <tr><td class="paramname">fd</td><td>fd relativo all'utente da connettere </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se la connessione e' avvenuta con successo, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="a31406d7a99a36caa72b976ae2996796f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31406d7a99a36caa72b976ae2996796f">&#9670;&nbsp;</a></span>del_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void del_group </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__group.html">group</a> *&#160;</td>
+          <td class="paramname"><em>gdata</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>elimina una struttura di tipo <a class="el" href="struct__group.html">_group</a> </p>
+<p>del_group </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gdata</td><td>il gruppo da eliminare </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a69703738faca2131cb5714fa1fb8f8a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69703738faca2131cb5714fa1fb8f8a1">&#9670;&nbsp;</a></span>del_history()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void del_history </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct__history.html">history</a> **&#160;</td>
+          <td class="paramname"><em>list</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>elimina history utente </p>
+<p>del_history </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui e' presente utente </td></tr>
+    <tr><td class="paramname">list</td><td>lista da eliminare </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad65a594ab75714463ba64596d36c0d0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad65a594ab75714463ba64596d36c0d0c">&#9670;&nbsp;</a></span>del_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void del_list </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__user__list.html">ulist</a> **&#160;</td>
+          <td class="paramname"><em>list</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>elimina lista utenti connessi </p>
+<p>del_list </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">list</td><td>lista da eliminare </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2b5d2bb28b9c95159ae4c9650bd1bbfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b5d2bb28b9c95159ae4c9650bd1bbfc">&#9670;&nbsp;</a></span>del_udata()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void del_udata </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>elimina la struttura per la gestione degli utenti </p>
+<p>del_udata </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata da eliminare </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acd3cb71d6292ec2a1ed584f4881ee357"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd3cb71d6292ec2a1ed584f4881ee357">&#9670;&nbsp;</a></span>del_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int del_user </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>nick</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>elimina utente </p>
+<p>del_user </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui eliminare utente </td></tr>
+    <tr><td class="paramname">nick</td><td>nome dell'utente da eliminare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se l'eliminazione e' avvenuta con successo, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="a5236c2601d5fe844ca3e70676ea0997e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5236c2601d5fe844ca3e70676ea0997e">&#9670;&nbsp;</a></span>del_user_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int del_user_group </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__group.html">group</a> *&#160;</td>
+          <td class="paramname"><em>gdata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct__user.html">user</a> *&#160;</td>
+          <td class="paramname"><em>del</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>elimina un utente da un gruppo </p>
+<p>del_user_group </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gdata</td><td>il gruppo in cui c'e' l'utente da rimuovere </td></tr>
+    <tr><td class="paramname">del</td><td>utente da rimuovere dal gruppo </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se utente e' stato eliminato correttamente, -1 in caso di errore </dd></dl>
+
+</div>
+</div>
+<a id="a97ebeace5e433443dfbc1566475a246a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97ebeace5e433443dfbc1566475a246a">&#9670;&nbsp;</a></span>find_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct__group.html">group</a>* find_group </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>cerca un gruppo tra i gruppi creati </p>
+<p>find_group </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>struttura _userdata dove e' presente hashmap con i gruppi </td></tr>
+    <tr><td class="paramname">name</td><td>nome del gruppo da cercare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>puntatore alla struttura <a class="el" href="struct__group.html">_group</a> relativo al gruppo cercato, NULL altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="ac9e2beafc42bdb5158f33957d247f949"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9e2beafc42bdb5158f33957d247f949">&#9670;&nbsp;</a></span>find_history()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct__history.html">history</a>* find_history </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>nick</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>cerca history utente </p>
+<p>find_history </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui cercare history utente </td></tr>
+    <tr><td class="paramname">nick</td><td>nome utente da cercare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>history se la history utente e' stata trovata, null altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="a4ae20b98acc64359de1f8baa82b8b7b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ae20b98acc64359de1f8baa82b8b7b4">&#9670;&nbsp;</a></span>find_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct__user.html">user</a>* find_user </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>nick</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>cerca un utente </p>
+<p>find_user </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui cercare utente </td></tr>
+    <tr><td class="paramname">nick</td><td>nome utente da cercare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>user se l'utente e' stato trovato, null altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="addec4d9e953b2ce565cdde67ec90699d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addec4d9e953b2ce565cdde67ec90699d">&#9670;&nbsp;</a></span>find_user_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int find_user_group </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__group.html">group</a> *&#160;</td>
+          <td class="paramname"><em>gdata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>nick</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>verifica la presenza di un utente in un gruppo </p>
+<p>find_user_group </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gdata</td><td>il gruppo in cui cercare l'utente </td></tr>
+    <tr><td class="paramname">nick</td><td>nickname dell'utente da cercare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se utente e' stato trovato, -1 in caso di errore </dd></dl>
+
+</div>
+</div>
+<a id="ac5918076cf75292bc08642e0feffe613"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5918076cf75292bc08642e0feffe613">&#9670;&nbsp;</a></span>logout_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int logout_user </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>nick</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>disconnette utente </p>
+<p>logout_user </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui disconnettere utente </td></tr>
+    <tr><td class="paramname">nick</td><td>nome dell'utente da disconnettere </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se la disconnessione e' avvenuta con successo, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="a95bf7e7bf28b0b58de967ee0618abd09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95bf7e7bf28b0b58de967ee0618abd09">&#9670;&nbsp;</a></span>new_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct__group.html">group</a>* new_group </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>crea una struttura di tipo <a class="el" href="struct__group.html">_group</a> </p>
+<p>new_group </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>il nome del gruppo da creare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>puntatore alla struttura <a class="el" href="struct__group.html">_group</a> appena creata </dd></dl>
+
+</div>
+</div>
+<a id="a22092737cd5a0895c1f57e90c786b83f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22092737cd5a0895c1f57e90c786b83f">&#9670;&nbsp;</a></span>new_udata()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct__usersdata.html">userdata</a>* new_udata </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structconf.html">conf</a> *&#160;</td>
+          <td class="paramname"><em>cf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">struct <a class="el" href="structstatistics.html">statistics</a> *&#160;</td>
+          <td class="paramname"><em>chattyStats</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>crea la struttura per la gestione degli utenti </p>
+<p>new_udata </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cf</td><td>struttura contenente configurazioni </td></tr>
+    <tr><td class="paramname">chattyStats</td><td>struttura contenente statistiche </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>puntatore alla struttura userdata creata </dd></dl>
+
+</div>
+</div>
+<a id="a0b3da9bc8bad80b9e45aabffbf47ffbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b3da9bc8bad80b9e45aabffbf47ffbd">&#9670;&nbsp;</a></span>reg_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int reg_user </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>nick</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>registra utente </p>
+<p>reg_user </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui aggiungere utente </td></tr>
+    <tr><td class="paramname">nick</td><td>nome dell'utente da registrare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se la registrazione e' avvenuta con successo, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="a9a0c20af8dbe611c25900fff4b393e09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a0c20af8dbe611c25900fff4b393e09">&#9670;&nbsp;</a></span>reg_user_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int reg_user_group </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__group.html">group</a> *&#160;</td>
+          <td class="paramname"><em>gdata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct__user.html">user</a> *&#160;</td>
+          <td class="paramname"><em>new</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>aggiunge un utente ad un gruppo </p>
+<p>reg_user_group </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gdata</td><td>il gruppo in cui aggiungere l'utente </td></tr>
+    <tr><td class="paramname">new</td><td>utente da aggiungere al gruppo </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se utente e' stato aggiunto correttamente, -1 in caso di errore </dd></dl>
+
+</div>
+</div>
+<a id="aece82f34fb4581299d6914ef871d886b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aece82f34fb4581299d6914ef871d886b">&#9670;&nbsp;</a></span>save_msg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int save_msg </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>nick</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structmessage__t.html">message_t</a> *&#160;</td>
+          <td class="paramname"><em>msg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>salva msg nella history di un utente non connesso </p>
+<p>save_msg </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui e' presente utente </td></tr>
+    <tr><td class="paramname">nick</td><td>nome utente del destinatario del msg </td></tr>
+    <tr><td class="paramname">msg</td><td>msg da salvare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Restituisce</dt><dd>0 se la disconnessione e' avvenuta con successo, -1 altrimenti </dd></dl>
+
+</div>
+</div>
+<a id="a21a1f4faff772a417f2f48bf45bcc89c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21a1f4faff772a417f2f48bf45bcc89c">&#9670;&nbsp;</a></span>stats()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void stats </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>reg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>con</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>msg_delivered</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>msg_waiting</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>file_delivered</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>file_waiting</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>err</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct__usersdata.html">userdata</a> *&#160;</td>
+          <td class="paramname"><em>ud</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>aggiorna statistiche </p>
+<p>stats </p><dl class="params"><dt>Parametri</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ud</td><td>puntatore alla struttura userdata in cui e' presente la struttura stats da aggiornare </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="user_8h.html">user.h</a></li>
+    <li class="footer">Generato da
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
+  </ul>
+</div>
+</body>
+</html>

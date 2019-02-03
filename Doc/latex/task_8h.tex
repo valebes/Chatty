@@ -1,0 +1,189 @@
+\hypertarget{task_8h}{}\subsection{Riferimenti per il file task.\+h}
+\label{task_8h}\index{task.\+h@{task.\+h}}
+
+
+file contenente funzioni per la gestione ed esecuzione dei task  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$sys/time.\+h$>$}\newline
+{\ttfamily \#include $<$sys/types.\+h$>$}\newline
+{\ttfamily \#include $<$sys/epoll.\+h$>$}\newline
+{\ttfamily \#include $<$user.\+h$>$}\newline
+\subsubsection*{Strutture dati}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct__task__manager}{\+\_\+task\+\_\+manager}}
+\begin{DoxyCompactList}\small\item\em struttura per la gestione dei task \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct__job}{\+\_\+job}}
+\begin{DoxyCompactList}\small\item\em struttura contenente informazioni lavoro da svolgere \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsubsection*{Ridefinizioni di tipo (typedef)}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{task_8h_a9e00bf91aac924ddae55eab8e8a50b2f}\label{task_8h_a9e00bf91aac924ddae55eab8e8a50b2f}} 
+typedef struct \mbox{\hyperlink{struct__task__manager}{\+\_\+task\+\_\+manager}} {\bfseries task\+\_\+manager}
+\item 
+\mbox{\Hypertarget{task_8h_a186c26a394424d8895db8b240636eb70}\label{task_8h_a186c26a394424d8895db8b240636eb70}} 
+typedef struct \mbox{\hyperlink{struct__job}{\+\_\+job}} {\bfseries job}
+\end{DoxyCompactItemize}
+\subsubsection*{Funzioni}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct__task__manager}{task\+\_\+manager}} $\ast$ \mbox{\hyperlink{task_8h_af4fb683e1349ea399ff8fb25cde2738e}{new\+\_\+manager}} (int epollfd, \mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud)
+\begin{DoxyCompactList}\small\item\em crea la struttura per la gestione dei task \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{task_8h_aeffb5dad0f2438558b4eabfe643cb450}{del\+\_\+task}} (\mbox{\hyperlink{struct__task__manager}{task\+\_\+manager}} $\ast$tsk)
+\begin{DoxyCompactList}\small\item\em elimina la struttura per la gestione dei task \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct__job}{job}} $\ast$ \mbox{\hyperlink{task_8h_a266921ef0e6577e64d1a610c6a5a4059}{new\+\_\+job}} (int fd, \mbox{\hyperlink{struct__task__manager}{task\+\_\+manager}} $\ast$tsk)
+\begin{DoxyCompactList}\small\item\em crea un nuovo job \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{task_8h_a0cd9a89e1c14740d1519dc186636b5bc}{del\+\_\+job}} (\mbox{\hyperlink{struct__job}{job}} $\ast$jobd)
+\begin{DoxyCompactList}\small\item\em elimina job \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{task_8h_a7eb471712750e50636ea6647d8b08125}{read\+\_\+task}} (\mbox{\hyperlink{struct__job}{job}} $\ast$jobr)
+\begin{DoxyCompactList}\small\item\em legge richiesta client \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{task_8h_a03632619b1f9d2ad6d4fee583f504233}{write\+\_\+task}} (\mbox{\hyperlink{struct__job}{job}} $\ast$jobw)
+\begin{DoxyCompactList}\small\item\em esegue richiesta client \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{task_8h_af25be8d82c44505f8d002e18925cfae8}{exec\+\_\+task}} (\mbox{\hyperlink{struct__task__manager}{task\+\_\+manager}} $\ast$tsk, \mbox{\hyperlink{structmessage__t}{message\+\_\+t}} $\ast$s\+\_\+msg, int fd, \mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$ud)
+\begin{DoxyCompactList}\small\item\em esegue operazioni per soddisfare richiesta del client \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsubsection{Descrizione dettagliata}
+file contenente funzioni per la gestione ed esecuzione dei task 
+
+\begin{DoxyAuthor}{Autore}
+Valerio Besozzi 543685 Si dichiara che il contenuto di questo file e\textquotesingle{} in ogni sua parte opera originale dell\textquotesingle{}autore 
+\end{DoxyAuthor}
+
+
+\subsubsection{Documentazione delle funzioni}
+\mbox{\Hypertarget{task_8h_a0cd9a89e1c14740d1519dc186636b5bc}\label{task_8h_a0cd9a89e1c14740d1519dc186636b5bc}} 
+\index{task.\+h@{task.\+h}!del\+\_\+job@{del\+\_\+job}}
+\index{del\+\_\+job@{del\+\_\+job}!task.\+h@{task.\+h}}
+\paragraph{\texorpdfstring{del\+\_\+job()}{del\_job()}}
+{\footnotesize\ttfamily void del\+\_\+job (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__job}{job}} $\ast$}]{jobd }\end{DoxyParamCaption})}
+
+
+
+elimina job 
+
+del\+\_\+job 
+\begin{DoxyParams}{Parametri}
+{\em jobd} & job da eliminare \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{task_8h_aeffb5dad0f2438558b4eabfe643cb450}\label{task_8h_aeffb5dad0f2438558b4eabfe643cb450}} 
+\index{task.\+h@{task.\+h}!del\+\_\+task@{del\+\_\+task}}
+\index{del\+\_\+task@{del\+\_\+task}!task.\+h@{task.\+h}}
+\paragraph{\texorpdfstring{del\+\_\+task()}{del\_task()}}
+{\footnotesize\ttfamily void del\+\_\+task (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__task__manager}{task\+\_\+manager}} $\ast$}]{tsk }\end{DoxyParamCaption})}
+
+
+
+elimina la struttura per la gestione dei task 
+
+del\+\_\+task 
+\begin{DoxyParams}{Parametri}
+{\em tsk} & puntatore alla struttura task\+\_\+manager da eliminare \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{task_8h_af25be8d82c44505f8d002e18925cfae8}\label{task_8h_af25be8d82c44505f8d002e18925cfae8}} 
+\index{task.\+h@{task.\+h}!exec\+\_\+task@{exec\+\_\+task}}
+\index{exec\+\_\+task@{exec\+\_\+task}!task.\+h@{task.\+h}}
+\paragraph{\texorpdfstring{exec\+\_\+task()}{exec\_task()}}
+{\footnotesize\ttfamily int exec\+\_\+task (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__task__manager}{task\+\_\+manager}} $\ast$}]{tsk,  }\item[{\mbox{\hyperlink{structmessage__t}{message\+\_\+t}} $\ast$}]{s\+\_\+msg,  }\item[{int}]{fd,  }\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud }\end{DoxyParamCaption})}
+
+
+
+esegue operazioni per soddisfare richiesta del client 
+
+exec\+\_\+task 
+\begin{DoxyParams}{Parametri}
+{\em tsk} & puntatore alla struttura \mbox{\hyperlink{struct__task__manager}{\+\_\+task\+\_\+manager}} in uso \\
+\hline
+{\em s\+\_\+msg} & messaggio contenente richiesta client \\
+\hline
+{\em fd} & fd del client che ha inviato la richiesta \\
+\hline
+{\em ud} & puntatore alla struttura \+\_\+userdata in cui operare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se la richiesta da parte del client e\textquotesingle{} stata eseguita correttamente, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{task_8h_a266921ef0e6577e64d1a610c6a5a4059}\label{task_8h_a266921ef0e6577e64d1a610c6a5a4059}} 
+\index{task.\+h@{task.\+h}!new\+\_\+job@{new\+\_\+job}}
+\index{new\+\_\+job@{new\+\_\+job}!task.\+h@{task.\+h}}
+\paragraph{\texorpdfstring{new\+\_\+job()}{new\_job()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct__job}{job}}$\ast$ new\+\_\+job (\begin{DoxyParamCaption}\item[{int}]{fd,  }\item[{\mbox{\hyperlink{struct__task__manager}{task\+\_\+manager}} $\ast$}]{tsk }\end{DoxyParamCaption})}
+
+
+
+crea un nuovo job 
+
+new\+\_\+job 
+\begin{DoxyParams}{Parametri}
+{\em fd} & fd relativo al client oggetto del job \\
+\hline
+{\em tsk} & puntatore alla struttura task\+\_\+manager in uso \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+puntatore alla struttura \mbox{\hyperlink{struct__job}{\+\_\+job}} creata 
+\end{DoxyReturn}
+\mbox{\Hypertarget{task_8h_af4fb683e1349ea399ff8fb25cde2738e}\label{task_8h_af4fb683e1349ea399ff8fb25cde2738e}} 
+\index{task.\+h@{task.\+h}!new\+\_\+manager@{new\+\_\+manager}}
+\index{new\+\_\+manager@{new\+\_\+manager}!task.\+h@{task.\+h}}
+\paragraph{\texorpdfstring{new\+\_\+manager()}{new\_manager()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct__task__manager}{task\+\_\+manager}}$\ast$ new\+\_\+manager (\begin{DoxyParamCaption}\item[{int}]{epollfd,  }\item[{\mbox{\hyperlink{struct__usersdata}{userdata}} $\ast$}]{ud }\end{DoxyParamCaption})}
+
+
+
+crea la struttura per la gestione dei task 
+
+new\+\_\+manager 
+\begin{DoxyParams}{Parametri}
+{\em epollfd} & fd relativo all\textquotesingle{}istanza epoll in uso \\
+\hline
+{\em ud} & puntatore alla struttura \+\_\+userdata in uso \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+puntatore alla struttura task\+\_\+manager creata 
+\end{DoxyReturn}
+\mbox{\Hypertarget{task_8h_a7eb471712750e50636ea6647d8b08125}\label{task_8h_a7eb471712750e50636ea6647d8b08125}} 
+\index{task.\+h@{task.\+h}!read\+\_\+task@{read\+\_\+task}}
+\index{read\+\_\+task@{read\+\_\+task}!task.\+h@{task.\+h}}
+\paragraph{\texorpdfstring{read\+\_\+task()}{read\_task()}}
+{\footnotesize\ttfamily int read\+\_\+task (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__job}{job}} $\ast$}]{jobr }\end{DoxyParamCaption})}
+
+
+
+legge richiesta client 
+
+read\+\_\+task 
+\begin{DoxyParams}{Parametri}
+{\em jobr} & struttura \mbox{\hyperlink{struct__job}{\+\_\+job}} contenente informazioni richiesta del client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se la richiesta da parte del client e\textquotesingle{} stata letta e registrata, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{task_8h_a03632619b1f9d2ad6d4fee583f504233}\label{task_8h_a03632619b1f9d2ad6d4fee583f504233}} 
+\index{task.\+h@{task.\+h}!write\+\_\+task@{write\+\_\+task}}
+\index{write\+\_\+task@{write\+\_\+task}!task.\+h@{task.\+h}}
+\paragraph{\texorpdfstring{write\+\_\+task()}{write\_task()}}
+{\footnotesize\ttfamily int write\+\_\+task (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__job}{job}} $\ast$}]{jobw }\end{DoxyParamCaption})}
+
+
+
+esegue richiesta client 
+
+write\+\_\+task 
+\begin{DoxyParams}{Parametri}
+{\em jobr} & struttura \mbox{\hyperlink{struct__job}{\+\_\+job}} contenente informazioni richiesta del client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se la richiesta da parte del client e\textquotesingle{} stata eseguita correttamente, -\/1 altrimenti 
+\end{DoxyReturn}

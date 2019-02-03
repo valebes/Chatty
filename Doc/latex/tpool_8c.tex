@@ -1,0 +1,109 @@
+\hypertarget{tpool_8c}{}\subsection{Riferimenti per il file tpool.\+c}
+\label{tpool_8c}\index{tpool.\+c@{tpool.\+c}}
+
+
+contiene implementazioni funzioni per la creazione, eliminazione e gestione del threadpool  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$tpool.\+h$>$}\newline
+\subsubsection*{Strutture dati}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct__task}{\+\_\+task}}
+\item 
+struct \mbox{\hyperlink{struct__t__pool}{\+\_\+t\+\_\+pool}}
+\end{DoxyCompactItemize}
+\subsubsection*{Ridefinizioni di tipo (typedef)}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{tpool_8c_aa6c8f49bda45e63912e798a0cc315026}\label{tpool_8c_aa6c8f49bda45e63912e798a0cc315026}} 
+typedef struct \mbox{\hyperlink{struct__task}{\+\_\+task}} {\bfseries task}
+\end{DoxyCompactItemize}
+\subsubsection*{Funzioni}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{tpool_8c_ae4fbc3e65b0049350b393b4f234e510c}\label{tpool_8c_ae4fbc3e65b0049350b393b4f234e510c}} 
+int {\bfseries tpool\+\_\+free} (\mbox{\hyperlink{struct__t__pool}{t\+\_\+pool}} $\ast$pool)
+\item 
+\mbox{\hyperlink{struct__t__pool}{t\+\_\+pool}} $\ast$ \mbox{\hyperlink{tpool_8c_a3a6833ae78127320ec5027debf11a524}{tpool\+\_\+create}} (int nthreads, int dim\+\_\+coda)
+\begin{DoxyCompactList}\small\item\em crea threadpool \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{tpool_8c_a358d0acd03f8339ce5dcc6bc8ff91922}{tpool\+\_\+add}} (\mbox{\hyperlink{struct__t__pool}{t\+\_\+pool}} $\ast$pool, int($\ast$fun)(\mbox{\hyperlink{struct__job}{job}} $\ast$), void $\ast$arg)
+\begin{DoxyCompactList}\small\item\em aggiunge task \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{tpool_8c_a36eff49591584172a8062630e2edbae5}{tpool\+\_\+delete}} (\mbox{\hyperlink{struct__t__pool}{t\+\_\+pool}} $\ast$pool)
+\begin{DoxyCompactList}\small\item\em elimina threadpool \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsubsection{Descrizione dettagliata}
+contiene implementazioni funzioni per la creazione, eliminazione e gestione del threadpool 
+
+\begin{DoxyAuthor}{Autore}
+Valerio Besozzi 543685 Si dichiara che il contenuto di questo file e\textquotesingle{} in ogni sua parte opera originale dell\textquotesingle{}autore 
+\end{DoxyAuthor}
+
+
+\subsubsection{Documentazione delle funzioni}
+\mbox{\Hypertarget{tpool_8c_a358d0acd03f8339ce5dcc6bc8ff91922}\label{tpool_8c_a358d0acd03f8339ce5dcc6bc8ff91922}} 
+\index{tpool.\+c@{tpool.\+c}!tpool\+\_\+add@{tpool\+\_\+add}}
+\index{tpool\+\_\+add@{tpool\+\_\+add}!tpool.\+c@{tpool.\+c}}
+\paragraph{\texorpdfstring{tpool\+\_\+add()}{tpool\_add()}}
+{\footnotesize\ttfamily int tpool\+\_\+add (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__t__pool}{t\+\_\+pool}} $\ast$}]{pool,  }\item[{int($\ast$)(\mbox{\hyperlink{struct__job}{job}} $\ast$)}]{fun,  }\item[{void $\ast$}]{arg }\end{DoxyParamCaption})}
+
+
+
+aggiunge task 
+
+tpool\+\_\+add 
+\begin{DoxyParams}{Parametri}
+{\em pool} & puntatore alla struttura t\+\_\+pool in cui aggiungere task \\
+\hline
+{\em ($\ast$fun)(job} & $\ast$) funzione da chiamare \\
+\hline
+{\em arg} & argomento per la funzione da chiamare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se il task e\textquotesingle{} stato aggiunto correttamente, -\/1 altrimenti 
+\end{DoxyReturn}
+\mbox{\Hypertarget{tpool_8c_a3a6833ae78127320ec5027debf11a524}\label{tpool_8c_a3a6833ae78127320ec5027debf11a524}} 
+\index{tpool.\+c@{tpool.\+c}!tpool\+\_\+create@{tpool\+\_\+create}}
+\index{tpool\+\_\+create@{tpool\+\_\+create}!tpool.\+c@{tpool.\+c}}
+\paragraph{\texorpdfstring{tpool\+\_\+create()}{tpool\_create()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct__t__pool}{t\+\_\+pool}}$\ast$ tpool\+\_\+create (\begin{DoxyParamCaption}\item[{int}]{nthreads,  }\item[{int}]{max\+\_\+con }\end{DoxyParamCaption})}
+
+
+
+crea threadpool 
+
+tpool\+\_\+create 
+\begin{DoxyParams}{Parametri}
+{\em nthreads} & numero thread da creare \\
+\hline
+{\em max\+\_\+con} & numero massimo connessioni \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+puntatore alla struttura t\+\_\+pool creata 
+\end{DoxyReturn}
+\mbox{\Hypertarget{tpool_8c_a36eff49591584172a8062630e2edbae5}\label{tpool_8c_a36eff49591584172a8062630e2edbae5}} 
+\index{tpool.\+c@{tpool.\+c}!tpool\+\_\+delete@{tpool\+\_\+delete}}
+\index{tpool\+\_\+delete@{tpool\+\_\+delete}!tpool.\+c@{tpool.\+c}}
+\paragraph{\texorpdfstring{tpool\+\_\+delete()}{tpool\_delete()}}
+{\footnotesize\ttfamily int tpool\+\_\+delete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct__t__pool}{t\+\_\+pool}} $\ast$}]{pool }\end{DoxyParamCaption})}
+
+
+
+elimina threadpool 
+
+tpool\+\_\+delete 
+\begin{DoxyParams}{Parametri}
+{\em pool} & puntatore alla struttura t\+\_\+pool da eliminare \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Restituisce}
+0 se il threadpool e\textquotesingle{} stato eliminato, -\/1 altrimenti 
+\end{DoxyReturn}

@@ -1,0 +1,338 @@
+==17913== Memcheck, a memory error detector
+==17913== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==17913== Using Valgrind-3.14.0 and LibVEX; rerun with -h for copyright info
+==17913== Command: ./chatty -f DATA/chatty.conf1
+==17913== 
+ ### #  #  ##  #### #### #  #
+#    #### ####  ##   ##   ##
+ ### #  # #  #  ##   ##   #
+###############################################################
+Unix Path: /tmp/chatty_socket
+Max Connessioni: 32
+Threads: 8
+Max MSG: 512
+Max Size: 1024
+Max History: 16
+Download Path: /tmp/chatty
+Stats Path: /tmp/chatty_stats.txt
+###############################################################
+Creo Thread[0] 
+Creo Thread[1] 
+Creo Thread[2] 
+Creo Thread[3] 
+Creo Thread[4] 
+Creo Thread[5] 
+Creo Thread[6] 
+Creo Thread[7] 
+Thread creati!
+	 Dati ricevuti da [fd:5]
+	 Dati ricevuti da [fd:6]
+Eseguo richiesta di {nick: pippo } {fd: 5 } {op: 0}
+Registazione utente {nick: pippo } {fd: 5 } in corso
+Registazione utente {nick: pippo } {fd: 5 } completata!
+	 Dati ricevuti da [fd:7]
+	 Dati inviati a [fd:5]
+Eseguo richiesta di {nick: minni } {fd: 6 } {op: 0}
+Registazione utente {nick: minni } {fd: 6 } in corso
+Registazione utente {nick: minni } {fd: 6 } completata!
+	 Dati ricevuti da [fd:8]
+	 Dati inviati a [fd:6]
+	 Dati ricevuti da [fd:9]
+	 Dati ricevuti da [fd:5]
+	 Dati ricevuti da [fd:10]
+Eseguo richiesta di {nick: paperino } {fd: 7 } {op: 0}
+Registazione utente {nick: paperino } {fd: 7 } in corso
+Registazione utente {nick: paperino } {fd: 7 } completata!
+	 Dati inviati a [fd:7]
+	 Dati ricevuti da [fd:6]
+	 Dati ricevuti da [fd:11]
+Eseguo richiesta di {nick: qui } {fd: 8 } {op: 0}
+Registazione utente {nick: qui } {fd: 8 } in corso
+Registazione utente {nick: qui } {fd: 8 } completata!
+	 Sender assente
+Eseguo richiesta di {nick: quo } {fd: 9 } {op: 0}
+Registazione utente {nick: quo } {fd: 9 } in corso
+Registazione utente {nick: quo } {fd: 9 } completata!
+	 Dati inviati a [fd:8]
+Eseguo richiesta di {nick: topolino } {fd: 10 } {op: 0}
+Registazione utente {nick: topolino } {fd: 10 } in corso
+Registazione utente {nick: topolino } {fd: 10 } completata!
+	 Dati ricevuti da [fd:7]
+	 Dati inviati a [fd:9]
+	 Sender assente
+	 Dati ricevuti da [fd:12]
+	 Task di {nick:  }{fd: 6 }{op: 0 } fallita
+Eseguo richiesta di {nick: pluto } {fd: 11 } {op: 0}
+Registazione utente {nick: pluto } {fd: 11 } in corso
+Registazione utente {nick: pluto } {fd: 11 } completata!
+	 Dati inviati a [fd:10]
+	 Dati ricevuti da [fd:9]
+	 Dati ricevuti da [fd:8]
+	 Dati inviati a [fd:11]
+	 Task di {nick:  }{fd: 5 }{op: 0 } fallita
+	 Dati ricevuti da [fd:10]
+Eseguo richiesta di {nick: qua } {fd: 12 } {op: 0}
+Registazione utente {nick: qua } {fd: 12 } in corso
+Registazione utente {nick: qua } {fd: 12 } completata!
+	 Dati ricevuti da [fd:11]
+	 Dati inviati a [fd:12]
+	 Sender assente
+	 Task di {nick:  }{fd: 9 }{op: 0 } fallita
+	 Sender assente
+	 Task di {nick:  }{fd: 10 }{op: 0 } fallita
+	 Sender assente
+	 Task di {nick:  }{fd: 8 }{op: 0 } fallita
+	 Sender assente
+	 Task di {nick:  }{fd: 7 }{op: 0 } fallita
+	 Sender assente
+	 Task di {nick:  }{fd: 11 }{op: 0 } fallita
+	 Dati ricevuti da [fd:12]
+	 Dati ricevuti da [fd:13]
+	 Sender assente
+	 Task di {nick:  }{fd: 12 }{op: 0 } fallita
+	 Dati ricevuti da [fd:14]
+	 Dati ricevuti da [fd:15]
+Eseguo richiesta di {nick: qua } {fd: 13 } {op: 1}
+Connessione utente {nick: qua } {fd: 13 }
+	 Dati inviati a [fd:13]
+Eseguo richiesta di {nick: topolino } {fd: 15 } {op: 1}
+Connessione utente {nick: topolino } {fd: 15 }
+Eseguo richiesta di {nick: minni } {fd: 14 } {op: 1}
+Connessione utente {nick: minni } {fd: 14 }
+	 Dati inviati a [fd:15]
+	 Dati ricevuti da [fd:13]
+	 Dati inviati a [fd:14]
+	 Dati ricevuti da [fd:15]
+	 Dati ricevuti da [fd:14]
+Eseguo richiesta di {nick: qua } {fd: 13 } {op: 3}
+Messaggio per pippo salvato, dim history: 1
+Messaggio di {nick: qua } {fd: 13 } salvato
+	op: 21 sender: qua
+	buffer: Ciao a tutti, io ricevo e basta
+Messaggio di {nick: qua } {fd: 13 } inviato
+Messaggio per paperino salvato, dim history: 1
+Messaggio di {nick: qua } {fd: 13 } salvato
+Messaggio per qui salvato, dim history: 1
+Messaggio di {nick: qua } {fd: 13 } salvato
+Messaggio per quo salvato, dim history: 1
+Messaggio di {nick: qua } {fd: 13 } salvato
+	op: 21 sender: qua
+	buffer: Ciao a tutti, io ricevo e basta
+Messaggio di {nick: qua } {fd: 13 } inviato
+Messaggio per pluto salvato, dim history: 1
+Eseguo richiesta di {nick: minni } {fd: 14 } {op: 3}
+Eseguo richiesta di {nick: topolino } {fd: 15 } {op: 2}
+	op: 21 sender: topolino
+	buffer: aaaaaaaaaaaaaaaaaaaaaaaaaaa
+Messaggio di {nick: qua } {fd: 13 } salvato
+	op: 21 sender: qua
+	buffer: Ciao a tutti, io ricevo e basta
+Messaggio di {nick: topolino } {fd: 15 } inviato
+	 Dati inviati a [fd:15]
+Messaggio per pippo salvato, dim history: 2
+Messaggio di {nick: minni } {fd: 14 } salvato
+	op: 21 sender: minni
+	buffer: Ciao a tutti, io ricevo e basta
+Messaggio di {nick: qua } {fd: 13 } inviato
+	 Dati inviati a [fd:13]
+	 Dati ricevuti da [fd:15]
+Messaggio di {nick: minni } {fd: 14 } inviato
+Messaggio per paperino salvato, dim history: 2
+Messaggio di {nick: minni } {fd: 14 } salvato
+Messaggio per qui salvato, dim history: 2
+Messaggio di {nick: minni } {fd: 14 } salvato
+Messaggio per quo salvato, dim history: 2
+Messaggio di {nick: minni } {fd: 14 } salvato
+	op: 21 sender: minni
+	buffer: Ciao a tutti, io ricevo e basta
+Messaggio di {nick: minni } {fd: 14 } inviato
+Messaggio per pluto salvato, dim history: 2
+Messaggio di {nick: minni } {fd: 14 } salvato
+	op: 21 sender: minni
+	buffer: Ciao a tutti, io ricevo e basta
+Messaggio di {nick: minni } {fd: 14 } inviato
+Eseguo richiesta di {nick: topolino } {fd: 15 } {op: 2}
+Messaggio per pluto salvato, dim history: 3
+Messaggio di {nick: topolino } {fd: 15 } salvato
+	 Dati inviati a [fd:14]
+	 Dati inviati a [fd:15]
+	 Dati ricevuti da [fd:15]
+Eseguo richiesta di {nick: topolino } {fd: 15 } {op: 3}
+Messaggio per pippo salvato, dim history: 3
+Messaggio di {nick: topolino } {fd: 15 } salvato
+	op: 21 sender: topolino
+	buffer: ccccccccccccccccc
+Messaggio di {nick: topolino } {fd: 15 } inviato
+Messaggio per paperino salvato, dim history: 3
+Messaggio di {nick: topolino } {fd: 15 } salvato
+Messaggio per qui salvato, dim history: 3
+Messaggio di {nick: topolino } {fd: 15 } salvato
+Messaggio per quo salvato, dim history: 3
+Messaggio di {nick: topolino } {fd: 15 } salvato
+	op: 21 sender: topolino
+	buffer: ccccccccccccccccc
+Messaggio di {nick: topolino } {fd: 15 } inviato
+Messaggio per pluto salvato, dim history: 4
+Messaggio di {nick: topolino } {fd: 15 } salvato
+	op: 21 sender: topolino
+	buffer: ccccccccccccccccc
+Messaggio di {nick: topolino } {fd: 15 } inviato
+	 Dati inviati a [fd:15]
+	 Dati ricevuti da [fd:15]
+Eseguo richiesta di {nick: topolino } {fd: 15 } {op: 2}
+Messaggio per paperino salvato, dim history: 4
+Messaggio di {nick: topolino } {fd: 15 } salvato
+	 Dati inviati a [fd:15]
+	 Dati ricevuti da [fd:15]
+Eseguo richiesta di {nick: topolino } {fd: 15 } {op: 4}
+Upload: /tmp/chatty/client
+	op: 22 sender: topolino
+	 Dati ricevuti da [fd:14]
+Eseguo richiesta di {nick: minni } {fd: 14 } {op: 5}
+Richiesta file: /tmp/chatty/client
+	 Dati inviati a [fd:15]
+	 Dati ricevuti da [fd:15]
+	 Dati inviati a [fd:14]
+Eseguo richiesta di {nick: topolino } {fd: 15 } {op: 4}
+Upload: /tmp/chatty/chatty
+	op: 22 sender: topolino
+	 Dati ricevuti da [fd:13]
+	 Dati inviati a [fd:15]
+	 Dati ricevuti da [fd:16]
+Eseguo richiesta di {nick: qua } {fd: 13 } {op: 5}
+Richiesta file: /tmp/chatty/chatty
+	 Dati inviati a [fd:13]
+	 Dati ricevuti da [fd:15]
+Eseguo richiesta di {nick: paperino } {fd: 16 } {op: 1}
+Connessione utente {nick: paperino } {fd: 16 }
+	 Dati inviati a [fd:16]
+	 Sender assente
+	 Task di {nick:  }{fd: 15 }{op: 0 } fallita
+	 Dati ricevuti da [fd:16]
+Eseguo richiesta di {nick: paperino } {fd: 16 } {op: 6}
+{nick: paperino} richiede history
+	op: 20 sender: 
+	op: 21 sender: topolino
+	buffer: ddddddddddddddddddddd
+	op: 21 sender: topolino
+	buffer: ccccccccccccccccc
+	op: 21 sender: minni
+	buffer: Ciao a tutti, io ricevo e basta
+	op: 21 sender: qua
+	buffer: Ciao a tutti, io ricevo e basta
+History di {nick: paperino} consegnata
+	 Dati inviati a [fd:16]
+	 Dati ricevuti da [fd:16]
+Eseguo richiesta di {nick: paperino } {fd: 16 } {op: 2}
+	op: 21 sender: paperino
+	buffer: aaaaaaaaaaaaaaaaaaaaaaaaaaa
+Messaggio di {nick: paperino } {fd: 16 } inviato
+	 Dati inviati a [fd:16]
+	 Dati ricevuti da [fd:16]
+Eseguo richiesta di {nick: paperino } {fd: 16 } {op: 2}
+Messaggio per pluto salvato, dim history: 5
+Messaggio di {nick: paperino } {fd: 16 } salvato
+	 Dati inviati a [fd:16]
+	 Dati ricevuti da [fd:16]
+Eseguo richiesta di {nick: paperino } {fd: 16 } {op: 3}
+Messaggio per pippo salvato, dim history: 4
+Messaggio di {nick: paperino } {fd: 16 } salvato
+	op: 21 sender: paperino
+	buffer: ccccccccccccccccc
+Messaggio di {nick: paperino } {fd: 16 } inviato
+	op: 21 sender: paperino
+	buffer: ccccccccccccccccc
+Messaggio di {nick: paperino } {fd: 16 } inviato
+Messaggio per qui salvato, dim history: 4
+Messaggio di {nick: paperino } {fd: 16 } salvato
+Messaggio per quo salvato, dim history: 4
+Messaggio di {nick: paperino } {fd: 16 } salvato
+Messaggio per topolino salvato, dim history: 1
+Messaggio di {nick: paperino } {fd: 16 } salvato
+Messaggio per pluto salvato, dim history: 6
+Messaggio di {nick: paperino } {fd: 16 } salvato
+	op: 21 sender: paperino
+	buffer: ccccccccccccccccc
+Messaggio di {nick: paperino } {fd: 16 } inviato
+	 Dati inviati a [fd:16]
+	 Dati ricevuti da [fd:16]
+Eseguo richiesta di {nick: paperino } {fd: 16 } {op: 2}
+Messaggio per topolino salvato, dim history: 2
+Messaggio di {nick: paperino } {fd: 16 } salvato
+	 Dati inviati a [fd:16]
+	 Dati ricevuti da [fd:16]
+Eseguo richiesta di {nick: paperino } {fd: 16 } {op: 4}
+Upload: /tmp/chatty/libchatty.a
+	op: 22 sender: paperino
+	 Dati ricevuti da [fd:14]
+	 Dati inviati a [fd:16]
+Eseguo richiesta di {nick: minni } {fd: 14 } {op: 5}
+Richiesta file: /tmp/chatty/./libchatty.a
+	 Dati inviati a [fd:14]
+	 Dati ricevuti da [fd:16]
+	 Sender assente
+	 Task di {nick:  }{fd: 16 }{op: 0 } fallita
+	 Dati ricevuti da [fd:17]
+Eseguo richiesta di {nick: pippo } {fd: 17 } {op: 1}
+Connessione utente {nick: pippo } {fd: 17 }
+	 Dati inviati a [fd:17]
+	 Dati ricevuti da [fd:17]
+Eseguo richiesta di {nick: pippo } {fd: 17 } {op: 6}
+{nick: pippo} richiede history
+	op: 20 sender: 
+	op: 21 sender: paperino
+	buffer: ccccccccccccccccc
+	op: 21 sender: topolino
+	buffer: ccccccccccccccccc
+	op: 21 sender: minni
+	buffer: Ciao a tutti, io ricevo e basta
+	op: 21 sender: qua
+	buffer: Ciao a tutti, io ricevo e basta
+History di {nick: pippo} consegnata
+	 Dati inviati a [fd:17]
+	 Dati ricevuti da [fd:17]
+Eseguo richiesta di {nick: pippo } {fd: 17 } {op: 4}
+Upload: /tmp/chatty/listener.o
+	op: 22 sender: pippo
+	 Dati inviati a [fd:17]
+	 Dati ricevuti da [fd:14]
+	 Dati ricevuti da [fd:17]
+Eseguo richiesta di {nick: minni } {fd: 14 } {op: 5}
+Richiesta file: /tmp/chatty/listener.o
+	 Dati inviati a [fd:14]
+	 Sender assente
+	 Task di {nick:  }{fd: 17 }{op: 0 } fallita
+	 Dati ricevuti da [fd:13]
+	 Dati ricevuti da [fd:14]
+	 Sender assente
+	 Task di {nick:  }{fd: 14 }{op: 0 } fallita
+	 Sender assente
+	 Task di {nick:  }{fd: 13 }{op: 0 } fallita
+Chiusura fd
+Eliminazione ThreadPool
+Elimino ThreadPool
+Elimino Thread[0]
+Elimino Thread[1]
+Elimino Thread[2]
+Elimino Thread[3]
+Elimino Thread[4]
+Elimino Thread[5]
+Elimino Thread[6]
+Elimino Thread[7]
+Eliminazione TaskManager
+Eliminazione Stats
+Eliminazione UData
+Elimino UData
+Elimino utenti
+Utenti eliminati
+UData Eliminato!
+Chiusura chatty completata
+==17913== 
+==17913== HEAP SUMMARY:
+==17913==     in use at exit: 0 bytes in 0 blocks
+==17913==   total heap usage: 517 allocs, 517 frees, 435,815 bytes allocated
+==17913== 
+==17913== All heap blocks were freed -- no leaks are possible
+==17913== 
+==17913== For counts of detected and suppressed errors, rerun with: -v
+==17913== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

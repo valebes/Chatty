@@ -1,0 +1,48 @@
+\hypertarget{stats_8h_source}{}\subsection{stats.\+h}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{/*}
+00002 \textcolor{comment}{ * chatterbox Progetto del corso di LSO 2017/2018}
+00003 \textcolor{comment}{ *}
+00004 \textcolor{comment}{ * Dipartimento di Informatica Università di Pisa}
+00005 \textcolor{comment}{ * Docenti: Prencipe, Torquati}
+00006 \textcolor{comment}{ *}
+00007 \textcolor{comment}{ */}
+00018 \textcolor{preprocessor}{#if !defined(MEMBOX\_STATS\_)}
+00019 \textcolor{preprocessor}{#define MEMBOX\_STATS\_}
+00020 
+00021 \textcolor{preprocessor}{#include <stdio.h>}
+00022 \textcolor{preprocessor}{#include <time.h>}
+00023 
+\Hypertarget{stats_8h_source_l00024}\mbox{\hyperlink{structstatistics}{00024}} \textcolor{keyword}{struct }\mbox{\hyperlink{structstatistics}{statistics}} \{
+00025     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} nusers;                       \textcolor{comment}{// n. di utenti registrati}
+00026     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} nonline;                      \textcolor{comment}{// n. di utenti connessi}
+00027     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} ndelivered;                   \textcolor{comment}{// n. di messaggi testuali consegnati}
+00028     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} nnotdelivered;                \textcolor{comment}{// n. di messaggi testuali non ancora consegnati}
+00029     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} nfiledelivered;               \textcolor{comment}{// n. di file consegnati}
+00030     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} nfilenotdelivered;            \textcolor{comment}{// n. di file non ancora consegnati}
+00031     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long} nerrors;                      \textcolor{comment}{// n. di messaggi di errore}
+00032 \};
+00033 
+00034 \textcolor{comment}{/* aggiungere qui altre funzioni di utilita' per le statistiche */}
+00035 
+00036 
+00045 \textcolor{keyword}{static} \textcolor{keyword}{inline} \textcolor{keywordtype}{int} printStats(FILE *fout) \{
+00046     \textcolor{keyword}{extern} \textcolor{keyword}{struct }\mbox{\hyperlink{structstatistics}{statistics}} chattyStats;
+00047 
+00048     \textcolor{keywordflow}{if} (fprintf(fout, \textcolor{stringliteral}{"%ld - %ld %ld %ld %ld %ld %ld %ld\(\backslash\)n"},
+00049         (\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{long})time(NULL),
+00050         chattyStats.nusers,
+00051         chattyStats.nonline,
+00052         chattyStats.ndelivered,
+00053         chattyStats.nnotdelivered,
+00054         chattyStats.nfiledelivered,
+00055         chattyStats.nfilenotdelivered,
+00056         chattyStats.nerrors
+00057         ) < 0) \textcolor{keywordflow}{return} -1;
+00058     fflush(fout);
+00059     \textcolor{keywordflow}{return} 0;
+00060 \}
+00061 
+00062 \textcolor{preprocessor}{#endif }\textcolor{comment}{/* MEMBOX\_STATS\_ */}\textcolor{preprocessor}{}
+\end{DoxyCode}

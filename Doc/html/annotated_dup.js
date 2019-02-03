@@ -1,0 +1,27 @@
+var annotated_dup =
+[
+    [ "_conf", "struct__conf.html", "struct__conf" ],
+    [ "_group", "struct__group.html", "struct__group" ],
+    [ "_history", "struct__history.html", "struct__history" ],
+    [ "_job", "struct__job.html", "struct__job" ],
+    [ "_t_pool", "struct__t__pool.html", "struct__t__pool" ],
+    [ "_task", "struct__task.html", "struct__task" ],
+    [ "_task_manager", "struct__task__manager.html", "struct__task__manager" ],
+    [ "_user", "struct__user.html", "struct__user" ],
+    [ "_user_group", "struct__user__group.html", "struct__user__group" ],
+    [ "_user_list", "struct__user__list.html", "struct__user__list" ],
+    [ "_usersdata", "struct__usersdata.html", "struct__usersdata" ],
+    [ "conf", "structconf.html", null ],
+    [ "data", "structdata.html", null ],
+    [ "header", "structheader.html", null ],
+    [ "message_data_hdr_t", "structmessage__data__hdr__t.html", "structmessage__data__hdr__t" ],
+    [ "message_data_t", "structmessage__data__t.html", "structmessage__data__t" ],
+    [ "message_hdr_t", "structmessage__hdr__t.html", "structmessage__hdr__t" ],
+    [ "message_t", "structmessage__t.html", "structmessage__t" ],
+    [ "messaggio", "structmessaggio.html", null ],
+    [ "operation_t", "structoperation__t.html", "structoperation__t" ],
+    [ "statistics", "structstatistics.html", "structstatistics" ],
+    [ "UT_hash_bucket", "structUT__hash__bucket.html", "structUT__hash__bucket" ],
+    [ "UT_hash_handle", "structUT__hash__handle.html", "structUT__hash__handle" ],
+    [ "UT_hash_table", "structUT__hash__table.html", "structUT__hash__table" ]
+];
